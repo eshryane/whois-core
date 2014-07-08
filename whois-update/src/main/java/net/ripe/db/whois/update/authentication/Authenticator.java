@@ -8,16 +8,12 @@ import net.ripe.db.whois.common.dao.UserDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.domain.PendingUpdate;
 import net.ripe.db.whois.common.domain.User;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.authentication.strategy.AuthenticationFailedException;
 import net.ripe.db.whois.update.authentication.strategy.AuthenticationStrategy;
-import net.ripe.db.whois.update.authentication.strategy.MntByAuthentication;
-import net.ripe.db.whois.update.dao.PendingUpdateDao;
-import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.Origin;
 import net.ripe.db.whois.update.domain.OverrideCredential;
 import net.ripe.db.whois.update.domain.PasswordCredential;
@@ -26,14 +22,12 @@ import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
 import net.ripe.db.whois.update.domain.UpdateStatus;
 import net.ripe.db.whois.update.log.LoggerContext;
-import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.CheckForNull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,23 +43,19 @@ public class Authenticator {
 
     private final IpRanges ipRanges;
     private final UserDao userDao;
-    private final PendingUpdateDao pendingUpdateDao;
     private final LoggerContext loggerContext;
     private final List<AuthenticationStrategy> authenticationStrategies;
     private final Map<CIString, Set<Principal>> principalsMap;
-    private final Map<ObjectType, Set<String>> typesWithPendingAuthenticationSupport;
 
     @Autowired
     public Authenticator(final IpRanges ipRanges,
                          final UserDao userDao,
                          final Maintainers maintainers,
                          final LoggerContext loggerContext,
-                         final AuthenticationStrategy[] authenticationStrategies,
-                         final PendingUpdateDao pendingUpdateDao) {
+                         final AuthenticationStrategy[] authenticationStrategies) {
         this.ipRanges = ipRanges;
         this.userDao = userDao;
         this.loggerContext = loggerContext;
-        this.pendingUpdateDao = pendingUpdateDao;
         Arrays.sort(authenticationStrategies);
         this.authenticationStrategies = Arrays.asList(authenticationStrategies);
 
@@ -77,25 +67,6 @@ public class Authenticator {
         addMaintainers(tempPrincipalsMap, maintainers.getEnumMaintainers(), Principal.ENUM_MAINTAINER);
         addMaintainers(tempPrincipalsMap, maintainers.getDbmMaintainers(), Principal.DBM_MAINTAINER);
         this.principalsMap = Collections.unmodifiableMap(tempPrincipalsMap);
-
-        typesWithPendingAuthenticationSupport = Maps.newEnumMap(ObjectType.class);
-        for (final AuthenticationStrategy authenticationStrategy : authenticationStrategies) {
-            for (final ObjectType objectType : authenticationStrategy.getTypesWithPendingAuthenticationSupport()) {
-                Set<String> strategiesWithPendingAuthenticationSupport = typesWithPendingAuthenticationSupport.get(objectType);
-                if (strategiesWithPendingAuthenticationSupport == null) {
-                    strategiesWithPendingAuthenticationSupport = new HashSet<>();
-                    typesWithPendingAuthenticationSupport.put(objectType, strategiesWithPendingAuthenticationSupport);
-                }
-
-                strategiesWithPendingAuthenticationSupport.add(authenticationStrategy.getName());
-            }
-        }
-
-        for (final Map.Entry<ObjectType, Set<String>> objectTypeSetEntry : typesWithPendingAuthenticationSupport.entrySet()) {
-            final Set<String> authenticationStrategyNames = objectTypeSetEntry.getValue();
-            Validate.isTrue(authenticationStrategyNames.size() > 1, "Pending authentication makes no sense for 1 authentication strategy:", authenticationStrategyNames);
-            LOGGER.info("Pending authentication supported for {}: {}", objectTypeSetEntry.getKey(), authenticationStrategyNames);
-        }
     }
 
     private static void addMaintainers(final Map<CIString, Set<Principal>> principalsMap, final Set<CIString> maintainers, final Principal principal) {
@@ -170,7 +141,6 @@ public class Authenticator {
 
         final Set<String> passedAuthentications = new HashSet<>();
         final Set<String> failedAuthentications = new HashSet<>();
-        final Map<String, Collection<RpslObject>> pendingAuthentications = new HashMap<>();
 
         if (update.getCredentials().ofType(PasswordCredential.class).size() > 20) {
             authenticationMessages.add(UpdateMessages.tooManyPasswordsSpecified());
@@ -182,12 +152,7 @@ public class Authenticator {
                         passedAuthentications.add(authenticationStrategy.getName());
                     } catch (AuthenticationFailedException e) {
                         authenticationMessages.addAll(e.getAuthenticationMessages());
-
-                        if (authenticationStrategy.getTypesWithPendingAuthenticationSupport().contains(update.getType())) {
-                            pendingAuthentications.put(authenticationStrategy.getName(), e.getCandidates());
-                        } else {
-                            failedAuthentications.add(authenticationStrategy.getName());
-                        }
+                        failedAuthentications.add(authenticationStrategy.getName());
                     }
                 }
             }
@@ -204,9 +169,7 @@ public class Authenticator {
             }
         }
 
-        filterAuthentication(updateContext, update, passedAuthentications, failedAuthentications, pendingAuthentications);
-
-        final Subject subject = new Subject(principals, passedAuthentications, failedAuthentications, pendingAuthentications);
+        final Subject subject = new Subject(principals, passedAuthentications, failedAuthentications);
         if (!authenticationMessages.isEmpty()) {
             handleFailure(update, updateContext, subject, authenticationMessages);
         }
@@ -228,56 +191,10 @@ public class Authenticator {
     }
 
     private void handleFailure(final PreparedUpdate update, final UpdateContext updateContext, final Subject subject, final Set<Message> authenticationMessages) {
-        if (isPending(update, updateContext, subject.getPendingAuthentications()) && subject.getFailedAuthentications().isEmpty()) {
-            updateContext.status(update, UpdateStatus.PENDING_AUTHENTICATION);
-        } else {
-            updateContext.status(update, UpdateStatus.FAILED_AUTHENTICATION);
-        }
+        updateContext.status(update, UpdateStatus.FAILED_AUTHENTICATION);
 
         for (final Message message : authenticationMessages) {
             updateContext.addMessage(update, message);
         }
-    }
-
-    boolean isPending(final PreparedUpdate update, final UpdateContext updateContext, final Set<String> pendingAuths) {
-        if (!Action.CREATE.equals(update.getAction())) {
-            return false;
-        }
-
-        final Set<String> supportedPendingAuths = typesWithPendingAuthenticationSupport.get(update.getType());
-
-        return !updateContext.hasErrors(update)
-                && pendingAuths.size() > 0
-                && pendingAuths.size() < supportedPendingAuths.size();
-    }
-
-    private void filterAuthentication(UpdateContext updateContext, PreparedUpdate update, Set<String> passedAuthentications, Set<String> failedAuthentications, Map<String, Collection<RpslObject>> pendingAuthentications) {
-        // we only have pending filter ATM
-        if (isPending(update, updateContext, pendingAuthentications.keySet())) {
-            final PendingUpdate pendingUpdate = findAndStorePendingUpdate(updateContext, update);
-            if (pendingUpdate != null) {
-                if (failedAuthentications.remove(MntByAuthentication.class.getSimpleName())) {
-                    passedAuthentications.add(MntByAuthentication.class.getSimpleName());
-                }
-            }
-        }
-    }
-
-    @CheckForNull
-    private PendingUpdate findAndStorePendingUpdate(UpdateContext updateContext, final PreparedUpdate update) {
-        final RpslObject rpslObject = update.getUpdatedObject();
-
-        for (final PendingUpdate pendingUpdate : pendingUpdateDao.findByTypeAndKey(rpslObject.getType(), rpslObject.getKey().toString())) {
-            if (rpslObject.equals(pendingUpdate.getObject())) {
-                updateContext.addPendingUpdate(update, pendingUpdate);
-                return pendingUpdate;
-            }
-        }
-        return null;
-    }
-
-    public boolean isAuthenticationForTypeComplete(final ObjectType objectType, final PendingUpdate pendingUpdate) {
-        final Set<String> authenticationStrategyNames = typesWithPendingAuthenticationSupport.get(objectType);
-        return pendingUpdate.getPassedAuthentications().containsAll(authenticationStrategyNames);
     }
 }

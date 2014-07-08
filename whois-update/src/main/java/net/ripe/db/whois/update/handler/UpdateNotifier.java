@@ -1,7 +1,5 @@
 package net.ripe.db.whois.update.handler;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
@@ -120,16 +118,6 @@ public class UpdateNotifier {
 
                 case FAILED_AUTHENTICATION:
                     add(notifications, updateContext, update, Notification.Type.FAILED_AUTHENTICATION, rpslObjectDao.getByKeys(ObjectType.MNTNER, object.getValuesForAttribute(AttributeType.MNT_BY)), AttributeType.UPD_TO);
-                    break;
-
-                case PENDING_AUTHENTICATION:
-                    final Iterable<RpslObject> pendingAuthenticationCandidates = Iterables.filter(updateContext.getSubject(update).getPendingAuthenticationCandidates(), new Predicate<RpslObject>() {
-                        @Override
-                        public boolean apply(final RpslObject input) {
-                            return !maintainers.getRsMaintainers().contains(input.getKey());
-                        }
-                    });
-                    add(notifications, updateContext, update, Notification.Type.PENDING_UPDATE, pendingAuthenticationCandidates, AttributeType.UPD_TO);
                     break;
 
                 default:

@@ -85,24 +85,6 @@ abstract class Response extends BasicResponse {
         } as List<Success>
     }
 
-    List<Success> getPendingUpdates() {
-        def split = Lists.newArrayList(Splitter.on("---").omitEmptyStrings().trimResults().split(successSection));
-
-        split.findResults {
-            def matcher = it =~ /(?s)\s*(.*?)\s*[PENDING]*:\s*([^\n]*)\n?\s*(.*)/
-
-            if (!matcher.matches()) {
-                return null
-            }
-
-//            println "PENDING section string[\n" + matcher.group(3) + "\n]"
-
-            List<String> warnings = (matcher.group(3) =~ /(?m)^\*\*\*Warning:\s*((.*)(\n[ ]+.*)*)$/).collect(removeNewLines)
-            List<String> infos = (matcher.group(3) =~ /(?m)^\*\*\*Info:\s*((.*)(\n[ ]+.*)*)$/).collect(removeNewLines)
-            new Success(operation: matcher.group(1).trim(), key: matcher.group(2).trim(), object: matcher.group(3).trim(), warnings: warnings, infos: infos)
-        } as List<Success>
-    }
-
     String[] warningSuccessMessagesFor(String operation, String key) {
         def success = getSuccesses().find { it.operation == operation && it.key.startsWith(key) }
         success == null ? [] : success.warnings
@@ -111,16 +93,6 @@ abstract class Response extends BasicResponse {
     String[] infoSuccessMessagesFor(String operation, String key) {
         def success = getSuccesses().find { it.operation == operation && it.key.startsWith(key) }
         success == null ? [] : success.infos
-    }
-
-    String[] warningPendingMessagesFor(String operation, String key) {
-        def pending = getPendingUpdates().find { it.operation == operation && it.key.startsWith(key) }
-        pending == null ? [] : pending.warnings
-    }
-
-    String[] infoPendingMessagesFor(String operation, String key) {
-        def pending = getPendingUpdates().find { it.operation == operation && it.key.startsWith(key) }
-        pending == null ? [] : pending.infos
     }
 
     def objErrorContains(String op, String result, String objType, String key, String errorStr) {

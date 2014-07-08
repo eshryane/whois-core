@@ -30,7 +30,6 @@ import net.ripe.db.whois.db.WhoisServer;
 import net.ripe.db.whois.query.QueryServer;
 import net.ripe.db.whois.query.support.TestWhoisLog;
 import net.ripe.db.whois.scheduler.task.unref.UnrefCleanup;
-import net.ripe.db.whois.update.dao.PendingUpdateDao;
 import net.ripe.db.whois.update.dns.DnsGatewayStub;
 import net.ripe.db.whois.update.mail.MailGateway;
 import net.ripe.db.whois.update.mail.MailSenderStub;
@@ -64,7 +63,6 @@ public class WhoisFixture {
     protected RpslObjectDao rpslObjectDao;
     protected RpslObjectUpdateDao rpslObjectUpdateDao;
     protected TagsDao tagsDao;
-    protected PendingUpdateDao pendingUpdateDao;
     protected MailGateway mailGateway;
     protected MessageDequeue messageDequeue;
     protected DataSource whoisDataSource;
@@ -118,7 +116,6 @@ public class WhoisFixture {
         rpslObjectDao = applicationContext.getBean(RpslObjectDao.class);
         rpslObjectUpdateDao = applicationContext.getBean(RpslObjectUpdateDao.class);
         tagsDao = applicationContext.getBean(TagsDao.class);
-        pendingUpdateDao = applicationContext.getBean(PendingUpdateDao.class);
         mailGateway = applicationContext.getBean(MailGateway.class);
         whoisDataSource = applicationContext.getBean(SourceAwareDataSource.class);
         sourceContext = applicationContext.getBean(SourceContext.class);
@@ -231,10 +228,6 @@ public class WhoisFixture {
 
     public TagsDao getTagsDao() {
         return tagsDao;
-    }
-
-    public PendingUpdateDao getPendingUpdateDao() {
-        return pendingUpdateDao;
     }
 
     public RpslObjectDao getRpslObjectDao() {

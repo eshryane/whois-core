@@ -20,7 +20,6 @@ public class Ack {
         for (final UpdateResult updateResult : updateResults) {
             switch(updateResult.getStatus()) {
                 case SUCCESS:
-                case PENDING_AUTHENTICATION:
                     succeeded.add(updateResult);
                     break;
                 default:
@@ -84,7 +83,7 @@ public class Ack {
         return Iterables.size(Iterables.filter(succeededUpdates, new Predicate<UpdateResult>() {
             @Override
             public boolean apply(@Nullable UpdateResult input) {
-                return Action.NOOP.equals(input.getAction()) || UpdateStatus.PENDING_AUTHENTICATION.equals(input.getStatus());
+                return Action.NOOP.equals(input.getAction());
             }
         }));
     }

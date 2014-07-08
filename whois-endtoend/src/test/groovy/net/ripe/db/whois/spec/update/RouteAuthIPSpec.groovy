@@ -235,12 +235,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT",
-                 "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -347,12 +341,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT",
-                "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -426,12 +414,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-routes:\" not authenticated by: EXACT-MR-MNT",
-                 "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -506,12 +488,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-routes:\" not authenticated by: EXACT-MR-MNT",
-                 "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -549,12 +525,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-routes:\" not authenticated by: EXACT-MR-MNT",
-                 "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -702,12 +672,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-lower:\" not authenticated by: PARENT-ML-MNT",
-                 "The route object 20.130.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -743,12 +707,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-lower:\" not authenticated by: PARENT-ML-MNT",
-                 "The route object 20.130.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -822,12 +780,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-routes:\" not authenticated by: PARENT-MR-MNT",
-                 "The route object 20.130.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -902,12 +854,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-routes:\" not authenticated by: PARENT-MR-MNT",
-                 "The route object 20.130.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -945,12 +891,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-routes:\" not authenticated by: PARENT-MR-MNT",
-                 "The route object 20.130.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -1109,12 +1049,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT",
-                 "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -1154,12 +1088,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT",
-                 "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -1199,12 +1127,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT",
-                 "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -1285,12 +1207,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-by:\" not authenticated by: PARENT-MB-MNT",
-                 "The route object 20.130.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -1330,12 +1246,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-by:\" not authenticated by: PARENT-MB-MNT",
-                 "The route object 20.130.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -1411,12 +1321,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 0, 0, 1)
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 21.130.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 21.130.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 21.130.0.0/16AS2000") ==
-                ["Authorisation for [inetnum] 21.130.0.0 - 21.130.255.255 failed using \"mnt-by:\" not authenticated by: EXACT-INETNUM-MB-MNT",
-                 "The route object 21.130.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         queryObjectNotFound("-rGBT route 21.130.0.0/16", "route", "21.130.0.0/16")
     }
@@ -1586,12 +1490,6 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         ack.summary.assertErrors(0, 0, 0, 0)
         ack.countErrorWarnInfo(0, 1, 2)
         ack.successes.any { it.operation == "Modify" && it.key == "[route] 20.13.0.0/16AS3000" }
-        ack.pendingUpdates.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
-        ack.warningPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["This update has only passed one of the two required hierarchical authorisations"]
-        ack.infoPendingMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
-                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-routes:\" no valid maintainer found",
-                 "The route object 20.13.0.0/16AS2000 will be saved for one week pending the second authorisation"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")

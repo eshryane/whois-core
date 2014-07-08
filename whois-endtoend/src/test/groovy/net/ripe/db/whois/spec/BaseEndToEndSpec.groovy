@@ -313,10 +313,6 @@ ${response}
         return whoisFixture.getTagsDao()
     }
 
-    def getPendingUpdateDao() {
-        return whoisFixture.getPendingUpdateDao()
-    }
-
     def getApplicationContext() {
         return whoisFixture.getApplicationContext()
     }

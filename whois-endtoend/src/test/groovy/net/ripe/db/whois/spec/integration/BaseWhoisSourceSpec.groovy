@@ -75,8 +75,4 @@ abstract class BaseWhoisSourceSpec extends BaseEndToEndSpec {
         getDatabaseHelper().deleteObject(RpslObject.parse(string))
     }
 
-    def pendingUpdates(ObjectType objectType, String pkey) {
-        getPendingUpdateDao().findByTypeAndKey(objectType, pkey)
-    }
-
 }
