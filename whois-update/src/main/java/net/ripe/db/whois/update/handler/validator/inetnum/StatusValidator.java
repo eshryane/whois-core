@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.CheckForNull;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -119,10 +118,6 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
             if (parentStatus == null) {
                 updateContext.addMessage(update, UpdateMessages.objectHasInvalidStatus("Parent", parentObject.getKey(), parentObject.getValueForAttribute(AttributeType.STATUS)));
                 return;
-            }
-
-            if (updatedObject.getType() == ObjectType.INETNUM) {
-                validateStatusLegacy(updatedObject, parentObject, update, updateContext);
             }
 
             final Set<CIString> updateMntBy = updatedObject.getValuesForAttribute(AttributeType.MNT_BY);
@@ -298,16 +293,6 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
             if (parents.size() != 1) {
                 updateContext.addMessage(update, UpdateMessages.invalidParentEntryForInterval(ipInterval));
                 return;
-            }
-            validateStatusLegacy(update.getUpdatedObject(), objectDao.getById(parents.get(0).getObjectId()), update, updateContext);
-        }
-    }
-
-    private void validateStatusLegacy(final RpslObject updatedObject, final RpslObject parentObject, final PreparedUpdate update, final UpdateContext updateContext) {
-        if (updatedObject.getValueForAttribute(AttributeType.STATUS).equals(InetnumStatus.LEGACY.toString()) &&
-                !parentObject.getValueForAttribute(AttributeType.STATUS).equals(InetnumStatus.LEGACY.toString())) {
-            if (!authByRsOrOverride(updateContext.getSubject(update))) {
-                updateContext.addMessage(update, UpdateMessages.inetnumStatusLegacy());
             }
         }
     }
