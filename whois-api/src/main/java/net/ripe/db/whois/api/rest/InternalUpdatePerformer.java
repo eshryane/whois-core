@@ -12,8 +12,6 @@ import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.sso.CrowdClientException;
-import net.ripe.db.whois.common.sso.SsoTokenTranslator;
 import net.ripe.db.whois.update.domain.Credential;
 import net.ripe.db.whois.update.domain.Credentials;
 import net.ripe.db.whois.update.domain.Keyword;
@@ -23,7 +21,6 @@ import net.ripe.db.whois.update.domain.OverrideCredential;
 import net.ripe.db.whois.update.domain.Paragraph;
 import net.ripe.db.whois.update.domain.PasswordCredential;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.SsoCredential;
 import net.ripe.db.whois.update.domain.Update;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
@@ -54,25 +51,21 @@ public class InternalUpdatePerformer {
     private final DateTimeProvider dateTimeProvider;
     private final WhoisObjectMapper whoisObjectMapper;
     private final LoggerContext loggerContext;
-    private final SsoTokenTranslator ssoTokenTranslator;
 
     @Autowired
     public InternalUpdatePerformer(final UpdateRequestHandler updateRequestHandler,
                                    final DateTimeProvider dateTimeProvider,
                                    final WhoisObjectMapper whoisObjectMapper,
-                                   final LoggerContext loggerContext,
-                                   final SsoTokenTranslator ssoTokenTranslator) {
+                                   final LoggerContext loggerContext) {
         this.updateRequestHandler = updateRequestHandler;
         this.dateTimeProvider = dateTimeProvider;
         this.whoisObjectMapper = whoisObjectMapper;
         this.loggerContext = loggerContext;
-        this.ssoTokenTranslator = ssoTokenTranslator;
     }
 
-    public UpdateContext initContext(final Origin origin, final String ssoToken) {
+    public UpdateContext initContext(final Origin origin) {
         loggerContext.init(getRequestId(origin.getFrom()));
         final UpdateContext updateContext = new UpdateContext(loggerContext);
-        setSsoSessionToContext(updateContext, ssoToken);
         return updateContext;
     }
 
@@ -169,10 +162,6 @@ public class InternalUpdatePerformer {
             credentials.add(OverrideCredential.parse(override));
         }
 
-        if (updateContext.getUserSession() != null) {
-            credentials.add(SsoCredential.createOfferedCredential(updateContext.getUserSession()));
-        }
-
         return new Paragraph(rpslObject.toString(), new Credentials(credentials));
     }
 
@@ -213,17 +202,6 @@ public class InternalUpdatePerformer {
 
     private String getRequestId(final String remoteAddress) {
         return String.format("rest_%s_%s", remoteAddress, dateTimeProvider.getNanoTime());
-    }
-
-    public void setSsoSessionToContext(final UpdateContext updateContext, final String ssoToken) {
-        if (!StringUtils.isBlank(ssoToken)) {
-            try {
-                updateContext.setUserSession(ssoTokenTranslator.translateSsoToken(ssoToken));
-            } catch (CrowdClientException e) {
-                loggerContext.log(new Message(Messages.Type.ERROR, e.getMessage()));
-                updateContext.addGlobalMessage(RestMessages.ssoAuthIgnored());
-            }
-        }
     }
 
     // TODO: [AH] format logging of this properly (e.g. add proper global message support for headers and request url

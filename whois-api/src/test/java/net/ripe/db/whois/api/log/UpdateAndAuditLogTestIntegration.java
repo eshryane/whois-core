@@ -10,7 +10,6 @@ import net.ripe.db.whois.api.rest.client.RestClient;
 import net.ripe.db.whois.api.rest.client.RestClientUtils;
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.sso.CrowdClient;
 import net.ripe.db.whois.common.support.FileHelper;
 import net.ripe.db.whois.update.mail.MailSenderStub;
 import net.ripe.db.whois.update.support.TestUpdateLog;
@@ -67,7 +66,6 @@ public class UpdateAndAuditLogTestIntegration extends AbstractIntegrationTest {
     String auditLog;
 
     @Autowired TestUpdateLog updateLog;
-    @Autowired CrowdClient crowdClient;
     @Autowired MailUpdatesTestSupport mailUpdatesTestSupport;
     @Autowired MailSenderStub mailSenderStub;
 

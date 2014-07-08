@@ -19,12 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.ws.rs.core.Cookie;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -154,75 +151,6 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
 
         assertThat(object.findAttribute(AttributeType.SOURCE).getCleanComment(), not(is("Filtered")));
         assertThat(object.findAttribute(AttributeType.SOURCE).getCleanComment(), is(nullValue()));
-    }
-
-    @Test
-    public void lookup_with_sso_password() throws Exception {
-        databaseHelper.addObject(RpslObject.parse("" +
-                "mntner:        SSO-MNT\n" +
-                "descr:         sso Maintainer\n" +
-                "admin-c:       TP1-TEST\n" +
-                "upd-to:        noreply@ripe.net\n" +
-                "auth:          SSO random@ripe.net\n" +
-                "auth:          MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ #test\n" +
-                "mnt-by:        SSO-MNT\n" +
-                "referral-by:   SSO-MNT\n" +
-                "changed:       dbtest@ripe.net 20120101\n" +
-                "source:        TEST"));
-
-        final RpslObject object = restClient.request()
-                .addParam("password", "test")
-                .lookup(ObjectType.MNTNER, "SSO-MNT");
-
-        assertThat(object.findAttributes(AttributeType.AUTH),
-                hasItems(new RpslAttribute(AttributeType.AUTH, "MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/"),
-                        new RpslAttribute(AttributeType.AUTH, "SSO random@ripe.net")));
-    }
-
-    @Test
-    public void lookup_with_sso_only() throws Exception {
-        databaseHelper.addObject(RpslObject.parse("" +
-                "mntner:        SSO-MNT\n" +
-                "descr:         sso Maintainer\n" +
-                "admin-c:       TP1-TEST\n" +
-                "upd-to:        noreply@ripe.net\n" +
-                "auth:          SSO person@net.net\n" +
-                "mnt-by:        SSO-MNT\n" +
-                "referral-by:   SSO-MNT\n" +
-                "changed:       dbtest@ripe.net 20120101\n" +
-                "source:        TEST"));
-
-        final RpslObject object = restClient.request()
-                .addCookie(new Cookie("crowd.token_key", "valid-token"))
-                .lookup(ObjectType.MNTNER, "SSO-MNT");
-
-        assertThat(object.findAttributes(AttributeType.AUTH),
-                hasItem(new RpslAttribute(AttributeType.AUTH, "SSO person@net.net")));
-    }
-
-    @Test
-    public void create_and_lookup_with_sso_only() throws Exception {
-        final RpslObject object = RpslObject.parse("" +
-                "mntner:        SSO-XX-MNT\n" +
-                "descr:         sso Maintainer\n" +
-                "admin-c:       TP1-TEST\n" +
-                "upd-to:        noreply@ripe.net\n" +
-                "auth:          SSO person@net.net\n" +
-                "mnt-by:        SSO-XX-MNT\n" +
-                "referral-by:   SSO-XX-MNT\n" +
-                "changed:       dbtest@ripe.net 20120101\n" +
-                "source:        TEST");
-
-        final RpslObject returnedObject = restClient.request()
-                .addCookie(new Cookie("crowd.token_key", "valid-token"))
-                .create(object);
-
-        final RpslObject lookedUpObject = restClient.request()
-                .addCookie(new Cookie("crowd.token_key", "valid-token"))
-                .lookup(ObjectType.MNTNER, "SSO-XX-MNT");
-
-        assertThat(lookedUpObject.findAttributes(AttributeType.AUTH),
-                hasItem(new RpslAttribute(AttributeType.AUTH, "SSO person@net.net")));
     }
 
     @Test

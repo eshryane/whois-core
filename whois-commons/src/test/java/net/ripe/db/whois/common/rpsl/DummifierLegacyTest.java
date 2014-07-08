@@ -218,7 +218,6 @@ public class DummifierLegacyTest {
                 "auth: X509-1\n" +
                 "auth: X509-1689\n" +
                 "auth: MD5-PW $1$SaltSalt$ThisIsABrokenMd5Hash.\n" +
-                "auth: SSO 1234-5678-9abc-dead-beef\n" +
                 "notify: guy@ripe.net\n" +
                 "mnt-by: AARDVARK-MNT\n" +
                 "referral-by: AARDVARK-MNT\n" +

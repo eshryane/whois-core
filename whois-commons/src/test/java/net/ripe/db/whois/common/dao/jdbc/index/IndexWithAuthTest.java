@@ -33,7 +33,6 @@ public class IndexWithAuthTest extends IndexTestBase {
             "admin-c:     PP1-TEST\n" +
             "upd-to:      noreply@ripe.net\n" +
             "auth:        MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ #test\n" +
-            "auth:        SSO person@net.net\n" +
             "mnt-by:      OWNER-MNT\n" +
             "referral-by: OWNER-MNT\n" +
             "changed:     dbtest@ripe.net 20120101\n" +
@@ -56,16 +55,6 @@ public class IndexWithAuthTest extends IndexTestBase {
         assertThat(added, is(1));
 
         assertThat(subject.findInIndex(whoisTemplate, "MD5-PW $1$saltsalt$hashhash"), is(empty()));
-    }
-
-    @Test
-    public void addIndex_works_for_sso_hash() throws Exception {
-        RpslObjectInfo maintainer = objectUpdateInfoMap.get(OWNER_MNT);
-
-        final int added = subject.addToIndex(whoisTemplate, maintainer, null, "SSO 1234-5678");
-        assertThat(added, is(1));
-
-        assertThat(subject.findInIndex(whoisTemplate, "SSO 1234-5678"), hasSize(1));
     }
 
     @Test

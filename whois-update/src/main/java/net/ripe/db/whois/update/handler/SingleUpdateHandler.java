@@ -24,7 +24,6 @@ import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
 import net.ripe.db.whois.update.domain.UpdateStatus;
 import net.ripe.db.whois.update.generator.AttributeGenerator;
-import net.ripe.db.whois.update.sso.SsoTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -50,7 +49,6 @@ public class SingleUpdateHandler {
     private final UpdateObjectHandler updateObjectHandler;
     private final IpTreeUpdater ipTreeUpdater;
     private final PendingUpdateHandler pendingUpdateHandler;
-    private final SsoTranslator ssoTranslator;
 
     @Value("#{T(net.ripe.db.whois.common.domain.CIString).ciString('${whois.source}')}")
     private CIString source;
@@ -64,8 +62,7 @@ public class SingleUpdateHandler {
                                final UpdateObjectHandler updateObjectHandler,
                                final RpslObjectDao rpslObjectDao,
                                final IpTreeUpdater ipTreeUpdater,
-                               final PendingUpdateHandler pendingUpdateHandler,
-                               final SsoTranslator ssoTranslator) {
+                               final PendingUpdateHandler pendingUpdateHandler) {
         this.autoKeyResolver = autoKeyResolver;
         this.attributeGenerators = attributeGenerators;
         this.attributeSanitizer = attributeSanitizer;
@@ -75,7 +72,6 @@ public class SingleUpdateHandler {
         this.updateObjectHandler = updateObjectHandler;
         this.ipTreeUpdater = ipTreeUpdater;
         this.pendingUpdateHandler = pendingUpdateHandler;
-        this.ssoTranslator = ssoTranslator;
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
@@ -182,7 +178,6 @@ public class SingleUpdateHandler {
                 throw new IllegalStateException(String.format("Invalid number of results for %s", key), e);
             }
         }
-        originalObject = ssoTranslator.translateFromCacheAuthToUsername(updateContext, originalObject);
         originalObject = attributeSanitizer.sanitize(originalObject, new ObjectMessages());
         return originalObject;
     }

@@ -59,7 +59,6 @@ public class Query {
 
     // TODO: [AH] these fields should be part of QueryContext, not Query
     private List<String> passwords;
-    private String ssoToken;
     private Origin origin;
     private boolean trusted;
     // TODO: [AH] we should use -x flag for direct match for all object types instead of this hack
@@ -105,19 +104,14 @@ public class Query {
         }
     }
 
-    public static Query parse(final String args, final String ssoToken, final List<String> passwords, final boolean trusted) {
+    public static Query parse(final String args, final List<String> passwords, final boolean trusted) {
         final Query query = parse(args, Origin.REST, trusted);
-        query.ssoToken = ssoToken;
         query.passwords = passwords;
         return query;
     }
 
     public List<String> getPasswords() {
         return passwords;
-    }
-
-    public String getSsoToken() {
-        return ssoToken;
     }
 
     public boolean isTrusted() {

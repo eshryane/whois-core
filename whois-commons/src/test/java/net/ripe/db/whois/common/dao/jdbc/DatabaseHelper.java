@@ -15,17 +15,12 @@ import net.ripe.db.whois.common.jdbc.driver.LoggingDriver;
 import net.ripe.db.whois.common.rpsl.AttributeSanitizer;
 import net.ripe.db.whois.common.rpsl.ObjectMessages;
 import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
 import net.ripe.db.whois.common.source.IllegalSourceException;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceAwareDataSource;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.common.sso.AuthTranslator;
-import net.ripe.db.whois.common.sso.CrowdClient;
-import net.ripe.db.whois.common.sso.CrowdClientException;
-import net.ripe.db.whois.common.sso.SsoHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDateTime;
@@ -44,7 +39,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringValueResolver;
 
-import javax.annotation.CheckForNull;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -86,7 +80,6 @@ public class DatabaseHelper implements EmbeddedValueResolverAware {
 
     RpslObjectDao rpslObjectDao;
     RpslObjectUpdateDao rpslObjectUpdateDao;
-    CrowdClient crowdClient;
     private StringValueResolver valueResolver;
 
     @Autowired(required = false)
@@ -116,12 +109,6 @@ public class DatabaseHelper implements EmbeddedValueResolverAware {
     @Qualifier("internalsDataSource")
     public void setPendingDataSource(DataSource pendingDataSource) {
         internalsTemplate = new JdbcTemplate(pendingDataSource);
-    }
-
-    // TODO: [AH] autowire these fields once whois-internals has proper wiring set up
-    @Autowired
-    public void setCrowdClient(CrowdClient crowdClient) {
-        this.crowdClient = crowdClient;
     }
 
     @Autowired
@@ -324,28 +311,10 @@ public class DatabaseHelper implements EmbeddedValueResolverAware {
         return addObject(RpslObject.parse(rpslString));
     }
 
-    public RpslObject translateAuth(final RpslObject rpslObject) {
-        return SsoHelper.translateAuth(rpslObject, new AuthTranslator() {
-            @Override
-            @CheckForNull
-            public RpslAttribute translate(String authType, String authToken, RpslAttribute originalAttribute) {
-                if (authType.equals("SSO")) {
-                    try {
-                        final String uuid = crowdClient.getUuid(authToken);
-                        return new RpslAttribute(originalAttribute.getKey(), "SSO " + uuid);
-                    } catch (CrowdClientException e) {
-                        LOGGER.info(e.getMessage());
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
     // TODO: [AH] we should sanitize when setting up test DB, like we do in production.
     // TODO: [AH] use AttributeSanitizer here when the SQL DB is fully cleaned up
     public RpslObject addObject(final RpslObject rpslObject) {
-        final RpslObjectUpdateInfo objectUpdateInfo = rpslObjectUpdateDao.createObject(translateAuth(rpslObject));
+        final RpslObjectUpdateInfo objectUpdateInfo = rpslObjectUpdateDao.createObject(rpslObject);
         claimId(rpslObject);
         return new RpslObject(objectUpdateInfo.getObjectId(), rpslObject);
     }
@@ -374,7 +343,6 @@ public class DatabaseHelper implements EmbeddedValueResolverAware {
         for (final RpslObject rpslObject : rpslObjects) {
             // create object with key attribute(s) only - without reference to other objects
             RpslObject sanitizedObject = attributeSanitizer.sanitize(rpslObject, new ObjectMessages());
-            sanitizedObject = translateAuth(sanitizedObject);
             RpslObject keysOnlyObject = keepKeyAttributesOnly(new RpslObjectBuilder(sanitizedObject)).get();
             final RpslObjectUpdateInfo updateInfo = addObjectWithoutReferences(keysOnlyObject, rpslObjectUpdateDao);
             claimId(sanitizedObject);

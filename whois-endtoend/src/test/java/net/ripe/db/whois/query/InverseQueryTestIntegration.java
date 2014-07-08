@@ -37,7 +37,6 @@ public class InverseQueryTestIntegration extends AbstractQueryIntegrationTest {
             "admin-c:     PP1-TEST\n" +
             "upd-to:      noreply@ripe.net\n" +
             "auth:        MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ #test\n" +
-            "auth:        SSO person@net.net\n" +
             "auth:        PGPKEY-A8D16B70\n" +
             "mnt-by:      OWNER-MNT\n" +
             "referral-by: OWNER-MNT\n" +
@@ -106,30 +105,6 @@ public class InverseQueryTestIntegration extends AbstractQueryIntegrationTest {
     public void inverse_auth_nonexistant_pgpkey() {
         assertThat(query("-B -i auth PGPKEY-12345678"),
                 containsString("%ERROR:101: no entries found"));
-    }
-
-    @Test
-    public void inverse_auth_sso_with_email() {
-        assertThat(query("-B -i auth SSO person@net.net"),
-                containsString("% Inverse search on 'auth' attribute is limited to 'key-cert' objects only"));
-    }
-
-    @Test
-    public void inverse_auth_sso_with_uuid_untrusted() {
-        ipRanges.setTrusted("::0");
-
-        assertThat(query("-B -i auth SSO 906635c2-0405-429a-800b-0602bd716124"),
-                containsString("% Inverse search on 'auth' attribute is limited to 'key-cert' objects only"));
-    }
-
-    @Test
-    public void inverse_auth_sso_with_uuid_trusted() {
-        ipRanges.setTrusted("127/8", "::1");
-
-        final String response = query("-B -i auth SSO 906635c2-0405-429a-800b-0602bd716124");
-
-        assertThat(response, containsString("mntner:         OWNER-MNT"));
-        assertThat(response, containsString("auth:           SSO # Filtered"));
     }
 
     @Test

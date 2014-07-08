@@ -16,7 +16,6 @@ import net.ripe.db.whois.update.handler.response.ResponseFactory;
 import net.ripe.db.whois.update.log.LogCallback;
 import net.ripe.db.whois.update.log.LoggerContext;
 import net.ripe.db.whois.update.log.UpdateLog;
-import net.ripe.db.whois.update.sso.SsoTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,6 @@ public class UpdateRequestHandler {
     private final SingleUpdateHandler singleUpdateHandler;
     private final LoggerContext loggerContext;
     private final DnsChecker dnsChecker;
-    private final SsoTranslator ssoTranslator;
     private final UpdateNotifier updateNotifier;
     private final UpdateLog updateLog;
 
@@ -45,7 +43,6 @@ public class UpdateRequestHandler {
                                 final SingleUpdateHandler singleUpdateHandler,
                                 final LoggerContext loggerContext,
                                 final DnsChecker dnsChecker,
-                                final SsoTranslator ssoTranslator,
                                 final UpdateNotifier updateNotifier,
                                 final UpdateLog updateLog) {
         this.sourceContext = sourceContext;
@@ -53,7 +50,6 @@ public class UpdateRequestHandler {
         this.singleUpdateHandler = singleUpdateHandler;
         this.loggerContext = loggerContext;
         this.dnsChecker = dnsChecker;
-        this.ssoTranslator = ssoTranslator;
         this.updateNotifier = updateNotifier;
         this.updateLog = updateLog;
     }
@@ -95,10 +91,6 @@ public class UpdateRequestHandler {
 
     private UpdateResponse handleUpdates(final UpdateRequest updateRequest, final UpdateContext updateContext) {
         dnsChecker.checkAll(updateRequest, updateContext);
-
-        for (final Update update : updateRequest.getUpdates()) {
-            ssoTranslator.populateCacheAuthToUuid(updateContext, update);
-        }
 
         processUpdateQueue(updateRequest, updateContext);
 

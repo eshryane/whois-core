@@ -23,7 +23,6 @@ import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
-import net.ripe.db.whois.update.sso.SsoTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +41,6 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
     private final Maintainers maintainers;
     private final AuthenticationModule authenticationModule;
     private final RpslObjectDao rpslObjectDao;
-    private final SsoTranslator ssoTranslator;
     private final Ipv4Tree ipv4Tree;
     private final Ipv6Tree ipv6Tree;
 
@@ -50,13 +48,11 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
     MntByAuthentication(final Maintainers maintainers,
                         final AuthenticationModule authenticationModule,
                         final RpslObjectDao rpslObjectDao,
-                        final SsoTranslator ssoTranslator,
                         final Ipv4Tree ipv4Tree,
                         final Ipv6Tree ipv6Tree) {
         this.maintainers = maintainers;
         this.authenticationModule = authenticationModule;
         this.rpslObjectDao = rpslObjectDao;
-        this.ssoTranslator = ssoTranslator;
         this.ipv4Tree = ipv4Tree;
         this.ipv6Tree = ipv6Tree;
     }
@@ -92,11 +88,7 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
 
         final List<RpslObject> candidates = rpslObjectDao.getByKeys(ObjectType.MNTNER, keys);
         if (isSelfReference(update, keys)) {
-            if (update.getAction().equals(Action.CREATE)) {
-                candidates.add(ssoTranslator.translateFromCacheAuthToUuid(updateContext, update.getReferenceObject()));
-            } else {
-                candidates.add(update.getReferenceObject());
-            }
+            candidates.add(update.getReferenceObject());
         }
 
         final List<RpslObject> authenticatedBy = authenticationModule.authenticate(update, updateContext, candidates);

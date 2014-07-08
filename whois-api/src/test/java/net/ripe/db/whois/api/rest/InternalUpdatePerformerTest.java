@@ -6,9 +6,6 @@ import net.ripe.db.whois.common.DateTimeProvider;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.sso.CrowdClientException;
-import net.ripe.db.whois.common.sso.SsoTokenTranslator;
-import net.ripe.db.whois.common.sso.UserSession;
 import net.ripe.db.whois.update.domain.Origin;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.handler.UpdateRequestHandler;
@@ -42,7 +39,6 @@ public class InternalUpdatePerformerTest {
     @Mock private DateTimeProvider dateTimeProviderMock;
     @Mock private WhoisObjectServerMapper whoisObjectMapperMock;
     @Mock private LoggerContext loggerContextMock;
-    @Mock private SsoTokenTranslator ssoTokenTranslatorMock;
     @Mock private HttpServletRequest requestMock;
     @Mock private UpdateContext updateContextMock;
     @InjectMocks private InternalUpdatePerformer subject;
@@ -198,43 +194,5 @@ public class InternalUpdatePerformerTest {
         assertThat(origin.getResponseHeader(), containsString("" +
                 "- From-Host: 127.0.0.1\n" +
                 " - Date/Time: Mon Jan 31 06:49:37"));
-    }
-
-    @Test
-    public void setSsoSessionToContext_no_sso_token() {
-        subject.setSsoSessionToContext(updateContextMock, "");
-
-        verifyZeroInteractions(ssoTokenTranslatorMock);
-        verifyZeroInteractions(loggerContextMock);
-
-        subject.setSsoSessionToContext(updateContextMock, null);
-
-        verifyZeroInteractions(ssoTokenTranslatorMock);
-        verifyZeroInteractions(loggerContextMock);
-    }
-
-    @Test
-    public void setSsoSessionToContext_successful_sso_translation() {
-        final UserSession userSession = new UserSession("test-user", true, "2033-01-30T16:38:27.369+11:00");
-        when(ssoTokenTranslatorMock.translateSsoToken("test-token")).thenReturn(userSession);
-
-        subject.setSsoSessionToContext(updateContextMock, "test-token");
-
-        verify(ssoTokenTranslatorMock).translateSsoToken("test-token");
-        verifyZeroInteractions(loggerContextMock);
-        verify(updateContextMock).setUserSession(userSession);
-    }
-
-    @Test
-    public void setSsoSessionToContext_exception_is_logged() {
-        when(ssoTokenTranslatorMock.translateSsoToken("test-token")).thenThrow(new CrowdClientException("exception"));
-
-        try {
-            subject.setSsoSessionToContext(updateContextMock, "test-token");
-        } catch (CrowdClientException e) {
-            verify(ssoTokenTranslatorMock.translateSsoToken("test-token"));
-            verify(loggerContextMock).log(new Message(Messages.Type.ERROR, "exception"));
-            verify(updateContextMock).addGlobalMessage(RestMessages.ssoAuthIgnored());
-        }
     }
 }

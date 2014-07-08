@@ -110,7 +110,7 @@ public class DummifierCurrent implements Dummifier {
         }
 
         String passwordType = SPACE_SPLITTER.split(attribute.getCleanValue().toUpperCase()).iterator().next();
-        if (passwordType.endsWith("-PW") || passwordType.startsWith("SSO")) {     // history table has CRYPT-PW, has to be able to dummify that too!
+        if (passwordType.endsWith("-PW")) {     // history table has CRYPT-PW, has to be able to dummify that too!
             return new RpslAttribute(AttributeType.AUTH, passwordType + FILTERED_APPENDIX);
         }
 

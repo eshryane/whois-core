@@ -15,7 +15,6 @@ import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateMessages;
-import net.ripe.db.whois.update.sso.SsoTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +49,6 @@ public class MntByAuthenticationTest {
     @Mock RpslObjectDao rpslObjectDao;
     @Mock Ipv4Tree ipv4Tree;
     @Mock Ipv6Tree ipv6Tree;
-    @Mock SsoTranslator ssoTranslator;
 
     @InjectMocks MntByAuthentication subject;
 
@@ -115,8 +113,6 @@ public class MntByAuthenticationTest {
         when(rpslObjectDao.getByKeys(ObjectType.MNTNER, mntner.getValuesForAttribute(AttributeType.MNT_BY))).thenReturn(Lists.<RpslObject>newArrayList());
 
         when(credentialValidators.authenticate(update, updateContext, candidates)).thenReturn(candidates);
-
-        when(ssoTranslator.translateFromCacheAuthToUuid(updateContext, mntner)).thenReturn(mntner);
 
         final List<RpslObject> result = subject.authenticate(update, updateContext);
 

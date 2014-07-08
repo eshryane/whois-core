@@ -38,26 +38,6 @@ public class InverseValidatorTest {
     }
 
     @Test
-    public void searchValue_not_SSO_nor_MD5() {
-        when(query.isInverse()).thenReturn(TRUE);
-        when(query.getSearchValue()).thenReturn("ORG-TP1-TEST");
-
-        subject.validate(query, messages);
-
-        assertThat(messages.hasMessages(), is(false));
-    }
-
-    @Test
-    public void searchValue_SSO() {
-        when(query.isInverse()).thenReturn(TRUE);
-        when(query.getSearchValue()).thenReturn("SSO test@test.net");
-
-        subject.validate(query, messages);
-
-        assertThat(messages.getErrors(), contains(QueryMessages.inverseSearchNotAllowed()));
-    }
-
-    @Test
     public void searchValue_MD5() {
         when(query.isInverse()).thenReturn(TRUE);
         when(query.getSearchValue()).thenReturn("MD5-PW \\$1\\$fU9ZMQN9\\$QQtm3kRqZXWAuLpeOiLN7.");

@@ -46,7 +46,6 @@ import net.ripe.db.whois.query.query.Query;
 import net.ripe.db.whois.update.domain.Keyword;
 import net.ripe.db.whois.update.domain.Origin;
 import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.sso.SsoTranslator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -57,7 +56,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -158,8 +156,6 @@ public class WhoisRestService {
     private final WhoisObjectMapper whoisObjectMapper;
     private final WhoisObjectServerMapper whoisObjectServerMapper;
     private final InternalUpdatePerformer updatePerformer;
-    private final SsoTranslator ssoTranslator;
-
     private final WhoisService whoisService;
 
     @Autowired
@@ -170,7 +166,6 @@ public class WhoisRestService {
                             final WhoisObjectMapper whoisObjectMapper,
                             final WhoisObjectServerMapper whoisObjectServerMapper,
                             final InternalUpdatePerformer updatePerformer,
-                            final SsoTranslator ssoTranslator,
                             final WhoisService whoisService) {
         this.rpslObjectDao = rpslObjectDao;
         this.sourceContext = sourceContext;
@@ -179,7 +174,6 @@ public class WhoisRestService {
         this.whoisObjectMapper = whoisObjectMapper;
         this.whoisObjectServerMapper = whoisObjectServerMapper;
         this.updatePerformer = updatePerformer;
-        this.ssoTranslator = ssoTranslator;
         this.whoisService = whoisService;
     }
 
@@ -193,19 +187,15 @@ public class WhoisRestService {
             @PathParam("key") final String key,
             @QueryParam("reason") @DefaultValue("--") final String reason,
             @QueryParam("password") final List<String> passwords,
-            @CookieParam("crowd.token_key") final String crowdTokenKey,
             @QueryParam("override") final String override) {
 
         checkForMainSource(request, source);
 
         final Origin origin = updatePerformer.createOrigin(request);
-        final UpdateContext updateContext = updatePerformer.initContext(origin, crowdTokenKey);
+        final UpdateContext updateContext = updatePerformer.initContext(origin);
 
         try {
             RpslObject originalObject = rpslObjectDao.getByKey(ObjectType.getByName(objectType), key);
-
-            ssoTranslator.populateCacheAuthToUsername(updateContext, originalObject);
-            originalObject = ssoTranslator.translateFromCacheAuthToUsername(updateContext, originalObject);
 
             return updatePerformer.performUpdate(
                     updateContext,
@@ -230,7 +220,6 @@ public class WhoisRestService {
             @PathParam("objectType") final String objectType,
             @PathParam("key") final String key,
             @QueryParam("password") final List<String> passwords,
-            @CookieParam("crowd.token_key") final String crowdTokenKey,
             @QueryParam("override") final String override) {
 
         checkForMainSource(request, source);
@@ -239,7 +228,7 @@ public class WhoisRestService {
         validateSubmittedUpdateObject(request, submittedObject, objectType, key);
 
         final Origin origin = updatePerformer.createOrigin(request);
-        final UpdateContext updateContext = updatePerformer.initContext(origin, crowdTokenKey);
+        final UpdateContext updateContext = updatePerformer.initContext(origin);
         try {
             return updatePerformer.performUpdate(
                     updateContext,
@@ -263,7 +252,6 @@ public class WhoisRestService {
             @PathParam("source") final String source,
             @PathParam("objectType") final String objectType,
             @QueryParam("password") final List<String> passwords,
-            @CookieParam("crowd.token_key") final String crowdTokenKey,
             @QueryParam("override") final String override) {
 
         checkForMainSource(request, source);
@@ -272,7 +260,7 @@ public class WhoisRestService {
         validateSubmittedCreateObject(request, submittedObject, objectType);
 
         final Origin origin = updatePerformer.createOrigin(request);
-        final UpdateContext updateContext = updatePerformer.initContext(origin, crowdTokenKey);
+        final UpdateContext updateContext = updatePerformer.initContext(origin);
         try {
             return updatePerformer.performUpdate(
                     updateContext,
@@ -294,8 +282,7 @@ public class WhoisRestService {
             @PathParam("source") final String source,
             @PathParam("objectType") final String objectType,
             @PathParam("key") final String key,
-            @QueryParam("password") final List<String> passwords,
-            @CookieParam("crowd.token_key") final String crowdTokenKey) {
+            @QueryParam("password") final List<String> passwords) {
 
         if (!sourceContext.getAllSourceNames().contains(ciString(source))) {
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity(whoisService.createErrorEntity(request, RestMessages.invalidSource(source))).build());
@@ -314,7 +301,7 @@ public class WhoisRestService {
         }
 
         try {
-            final Query query = Query.parse(queryBuilder.build(key), crowdTokenKey, passwords, isTrusted(request)).setMatchPrimaryKeyOnly(true);
+            final Query query = Query.parse(queryBuilder.build(key), passwords, isTrusted(request)).setMatchPrimaryKeyOnly(true);
             return handleQueryAndStreamResponse(query, request, InetAddresses.forString(request.getRemoteAddr()), null, null);
         } catch (QueryException e) {
             throw getWebApplicationException(e, request, Lists.<Message>newArrayList());

@@ -80,7 +80,7 @@ public interface AttributeSyntax extends Documented {
             "inbound | outbound [<as-expression>]\n");
 
     AttributeSyntax AUTH_SCHEME_SYNTAX = new AttributeSyntaxRegexp(
-            Pattern.compile("(?i)^(MD5-PW \\$1\\$[A-Z0-9./]{1,8}\\$[A-Z0-9./]{22}|PGPKEY-[A-F0-9]{8}|SSO [-@.\\w]{1,90}|X509-[1-9][0-9]{0,19}|AUTO-[1-9][0-9]*)$"), "" +
+            Pattern.compile("(?i)^(MD5-PW \\$1\\$[A-Z0-9./]{1,8}\\$[A-Z0-9./]{22}|PGPKEY-[A-F0-9]{8}|X509-[1-9][0-9]{0,19}|AUTO-[1-9][0-9]*)$"), "" +
             "<auth-scheme> <scheme-info>       Description\n" +
             "\n" +
             "MD5-PW        encrypted           We strongly advise phrases longer\n" +
@@ -99,12 +99,7 @@ public interface AttributeSyntax extends Documented {
             "X509-<nnn>                        Strong scheme of authentication.\n" +
             "                                  <nnn> is the index number of the\n" +
             "                                  corresponding key-cert object's\n" +
-            "                                  \"key-cert:\" attribute (X509-nnn).\n" +
-            "\n" +
-            "SSO           username            The username is the same as one used \n" +
-            "                                  for a RIPE NCC Access account. This must \n" +
-            "                                  be a valid username and is checked \n" +
-            "                                  against the RIPE NCC Access user list.\n"
+            "                                  \"key-cert:\" attribute (X509-nnn).\n"
     );
 
     AttributeSyntax CERTIF_SYNTAX = new AnySyntax("" +

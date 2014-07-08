@@ -10,7 +10,6 @@ import net.ripe.db.whois.update.domain.Credentials;
 import net.ripe.db.whois.update.domain.PasswordCredential;
 import net.ripe.db.whois.update.domain.PgpCredential;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.SsoCredential;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.X509Credential;
 import net.ripe.db.whois.update.log.LoggerContext;
@@ -21,15 +20,12 @@ import org.springframework.stereotype.Component;
 import sun.reflect.Reflection;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 @Component
 public class AuthenticationModule {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationModule.class);
-    private static final AuthComparator AUTH_COMPARATOR = new AuthComparator();
 
     private final Map<Class<? extends Credential>, CredentialValidator> credentialValidatorMap;
     private final LoggerContext loggerContext;
@@ -63,7 +59,6 @@ public class AuthenticationModule {
 
     private boolean hasValidCredentialForCandidate(final PreparedUpdate update, final UpdateContext updateContext, final Credentials offered, final RpslObject maintainer) {
         final List<CIString> authAttributes = Lists.newArrayList(maintainer.getValuesForAttribute(AttributeType.AUTH));
-        Collections.sort(authAttributes, AUTH_COMPARATOR);
 
         for (final CIString auth : authAttributes) {
             final Credential credential = getCredential(auth);
@@ -95,28 +90,6 @@ public class AuthenticationModule {
             return X509Credential.createKnownCredential(auth.toString());
         }
 
-        if (auth.startsWith("sso")) {
-            return SsoCredential.createKnownCredential(auth.toString());
-        }
-
         return null;
-    }
-
-    private static class AuthComparator implements Comparator<CIString> {
-        private static final CIString SSO = CIString.ciString("SSO");
-
-        @Override
-        public int compare(final CIString o1, final CIString o2) {
-            final boolean o1Sso = o1.startsWith(SSO);
-            final boolean o2Sso = o2.startsWith(SSO);
-
-            if (o1Sso == o2Sso) {
-                return 0;
-            } else if (o1Sso) {
-                return -1;
-            } else {
-                return 1;
-            }
-        }
     }
 }

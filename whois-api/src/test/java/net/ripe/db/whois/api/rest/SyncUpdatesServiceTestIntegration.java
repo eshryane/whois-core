@@ -4,10 +4,7 @@ import net.ripe.db.whois.api.AbstractIntegrationTest;
 import net.ripe.db.whois.api.RestTest;
 import net.ripe.db.whois.api.rest.client.RestClientUtils;
 import net.ripe.db.whois.common.IntegrationTest;
-import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.IpRanges;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.mail.MailSenderStub;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -176,120 +173,6 @@ public class SyncUpdatesServiceTestIntegration extends AbstractIntegrationTest {
     }
 
     @Test
-    public void create_person_only_data_parameter_with_sso_token() throws Exception {
-        databaseHelper.addObject(PERSON_ANY1_TEST);
-        databaseHelper.addObject("" +
-                "mntner:        SSO-MNT\n" +
-                "descr:         description\n" +
-                "admin-c:       TP1-TEST\n" +
-                "upd-to:        noreply@ripe.net\n" +
-                "auth:          SSO person@net.net\n" +
-                "mnt-by:        SSO-MNT\n" +
-                "referral-by:   SSO-MNT\n" +
-                "changed:       noreply@ripe.net 20130102\n" +
-                "source:        TEST");
-
-        final String person = "" +
-                "person:    Test Person\n" +
-                "address:   Amsterdam\n" +
-                "phone:     +31-6-123456\n" +
-                "nic-hdl:   TP2-TEST\n" +
-                "mnt-by:    SSO-MNT\n" +
-                "changed:   noreply@ripe.net 20130102\n" +
-                "source:    TEST";
-
-        String response = RestTest.target(getPort(), "whois/syncupdates/test?" + "DATA=" + RestClientUtils.encode(person))
-                .request()
-                .cookie("crowd.token_key", "valid-token")
-                .get(String.class);
-
-        assertThat(response, containsString("Create SUCCEEDED: [person] TP2-TEST"));
-    }
-
-    @Test
-    public void create_person_only_data_parameter_with_invalid_sso_token() throws Exception {
-        databaseHelper.addObject(PERSON_ANY1_TEST);
-        databaseHelper.addObject("" +
-                "mntner:        SSO-MNT\n" +
-                "descr:         description\n" +
-                "admin-c:       TP1-TEST\n" +
-                "upd-to:        noreply@ripe.net\n" +
-                "auth:          SSO person@net.net\n" +
-                "mnt-by:        SSO-MNT\n" +
-                "referral-by:   SSO-MNT\n" +
-                "changed:       noreply@ripe.net 20130102\n" +
-                "source:        TEST");
-
-        final String person = "" +
-                "person:    Test Person\n" +
-                "address:   Amsterdam\n" +
-                "phone:     +31-6-123456\n" +
-                "nic-hdl:   TP2-TEST\n" +
-                "mnt-by:    SSO-MNT\n" +
-                "changed:   noreply@ripe.net 20130102\n" +
-                "source:    TEST";
-
-        String response = RestTest.target(getPort(), "whois/syncupdates/test?" + "DATA=" + RestClientUtils.encode(person))
-                .request()
-                .cookie("crowd.token_key", "invalid-token")
-                .get(String.class);
-
-        assertThat(response, containsString("Create FAILED: [person] TP2-TEST   Test Person"));
-        assertThat(response, containsString(
-                "***Error:   Authorisation for [person] TP2-TEST failed\n" +
-                "            using \"mnt-by:\"\n" +
-                "            not authenticated by: SSO-MNT"));
-    }
-
-    @Test
-    public void create_maintainer_only_data_parameter_with_sso_token() throws Exception {
-        databaseHelper.addObject(PERSON_ANY1_TEST);
-        databaseHelper.addObject(MNTNER_TEST_MNTNER);
-
-        final String mntner =
-                "mntner:        SSO-MNT\n" +
-                "descr:         description\n" +
-                "admin-c:       TP1-TEST\n" +
-                "upd-to:        noreply@ripe.net\n" +
-                "auth:          SSO person@net.net\n" +
-                "mnt-by:        mntner\n" +
-                "referral-by:   mntner\n" +
-                "changed:       noreply@ripe.net 20130102\n" +
-                "source:        TEST";
-
-        String response = RestTest.target(getPort(), "whois/syncupdates/test?" + "DATA=" + RestClientUtils.encode(mntner + "\npassword: emptypassword"))
-                .request()
-                .cookie("crowd.token_key", "valid-token")
-                .get(String.class);
-
-        assertThat(response, containsString("Create SUCCEEDED: [mntner] SSO-MNT"));
-        assertThat(databaseHelper.lookupObject(ObjectType.MNTNER, "SSO-MNT").getValueForAttribute(AttributeType.AUTH), is(CIString.ciString("SSO 906635c2-0405-429a-800b-0602bd716124")));
-    }
-
-    @Test
-    public void create_selfrefencing_maintainer_new_and_data_parameters_with_sso_token() throws Exception {
-        databaseHelper.addObject(PERSON_ANY1_TEST);
-
-        final String mntner =
-                "mntner:        SSO-MNT\n" +
-                "descr:         description\n" +
-                "admin-c:       TP1-TEST\n" +
-                "upd-to:        noreply@ripe.net\n" +
-                "auth:          SSO person@net.net\n" +
-                "mnt-by:        SSO-MNT\n" +
-                "referral-by:   SSO-MNT\n" +
-                "changed:       noreply@ripe.net 20130102\n" +
-                "source:        TEST";
-
-        String response = RestTest.target(getPort(), "whois/syncupdates/test?" + "DATA=" + RestClientUtils.encode(mntner) + "&NEW=yes")
-                .request()
-                .cookie("crowd.token_key", "valid-token")
-                .get(String.class);
-
-        assertThat(response, containsString("Create SUCCEEDED: [mntner] SSO-MNT"));
-    }
-
-    @Test
     public void create_selfreferencing_maintainer_password_with_spaces() throws Exception {
         databaseHelper.addObject(PERSON_ANY1_TEST);
         databaseHelper.addObject(MNTNER_TEST_MNTNER);
@@ -310,29 +193,6 @@ public class SyncUpdatesServiceTestIntegration extends AbstractIntegrationTest {
                 .get(String.class);
 
         assertThat(response, containsString("Create SUCCEEDED: [mntner] TESTING-MNT"));
-    }
-
-    @Test
-    public void update_selfrefencing_maintainer_only_data_parameter_with_sso_token() throws Exception {
-        databaseHelper.addObject(PERSON_ANY1_TEST);
-        final String mntner =
-                "mntner:        SSO-MNT\n" +
-                "descr:         description\n" +
-                "admin-c:       TP1-TEST\n" +
-                "upd-to:        noreply@ripe.net\n" +
-                "auth:          SSO person@net.net\n" +
-                "mnt-by:        SSO-MNT\n" +
-                "referral-by:   SSO-MNT\n" +
-                "changed:       noreply@ripe.net 20130102\n" +
-                "source:        TEST";
-        databaseHelper.addObject(mntner);
-
-        final String response = RestTest.target(getPort(), "whois/syncupdates/test?" + "DATA=" + RestClientUtils.encode(mntner + "\nremarks: updated"))
-                .request()
-                .cookie("crowd.token_key", "valid-token")
-                .get(String.class);
-
-        assertThat(response, containsString("Modify SUCCEEDED: [mntner] SSO-MNT"));
     }
 
     @Test

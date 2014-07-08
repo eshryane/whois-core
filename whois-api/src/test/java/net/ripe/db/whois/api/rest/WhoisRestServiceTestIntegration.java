@@ -49,7 +49,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAllowedException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
@@ -65,7 +64,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import static net.ripe.db.whois.common.rpsl.RpslObjectFilter.buildGenericObject;
 import static net.ripe.db.whois.common.support.StringMatchesRegexp.stringMatchesRegexp;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -105,7 +103,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
             "admin-c:     TP1-TEST\n" +
             "upd-to:      noreply@ripe.net\n" +
             "auth:        MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ #test\n" +
-            "auth:        SSO person@net.net\n" +
             "mnt-by:      OWNER-MNT\n" +
             "referral-by: OWNER-MNT\n" +
             "changed:     dbtest@ripe.net 20120101\n" +
@@ -121,29 +118,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
             "referral-by: PASSWORD-ONLY-MNT\n" +
             "changed:     dbtest@ripe.net 20120101\n" +
             "source:      TEST");
-
-    private static final RpslObject SSO_ONLY_MNT = RpslObject.parse("" +
-            "mntner:         SSO-ONLY-MNT\n" +
-            "descr:          Maintainer\n" +
-            "admin-c:        TP1-TEST\n" +
-            "auth:           SSO person@net.net\n" +
-            "mnt-by:         SSO-ONLY-MNT\n" +
-            "referral-by:    SSO-ONLY-MNT\n" +
-            "upd-to:         noreply@ripe.net\n" +
-            "changed:        noreply@ripe.net 20120101\n" +
-            "source:         TEST");
-
-    private static final RpslObject SSO_AND_PASSWORD_MNT = RpslObject.parse("" +
-            "mntner:         SSO-PASSWORD-MNT\n" +
-            "descr:          Maintainer\n" +
-            "admin-c:        TP1-TEST\n" +
-            "auth:           SSO person@net.net\n" +
-            "auth:           MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ #test\n" +
-            "mnt-by:         SSO-PASSWORD-MNT\n" +
-            "referral-by:    SSO-PASSWORD-MNT\n" +
-            "upd-to:         noreply@ripe.net\n" +
-            "changed:        noreply@ripe.net 20120101\n" +
-            "source:         TEST");
 
     private static final RpslObject TEST_PERSON = RpslObject.parse("" +
             "person:    Test Person\n" +
@@ -223,7 +197,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 "descr:          Owner Maintainer\n" +
                 "admin-c:        TP1-TEST\n" +
                 "auth:           MD5-PW\n" +
-                "auth:           SSO\n" +
                 "mnt-by:         OWNER-MNT\n" +
                 "referral-by:    OWNER-MNT\n" +
                 "source:         TEST")));
@@ -520,31 +493,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
     }
 
     @Test
-    public void lookup_mntner_does_not_have_referenced_type_in_sso() throws Exception {
-        databaseHelper.addObject("" +
-                "mntner:         MNT-TEST" + "\n" +
-                "descr:          test\n" +
-                "admin-c:        TP1-TEST\n" +
-                "upd-to:         noreply@ripe.net\n" +
-                "auth:           MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ #test\n" +
-                "auth:           SSO test@ripe.net\n" +
-                "mnt-by:         OWNER-MNT\n" +
-                "referral-by:    OWNER-MNT\n" +
-                "changed:        asd@as.com\n" +
-                "source:         TEST");
-
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/TEST/mntner/MNT-TEST?password=test&unfiltered")
-                .request(MediaType.APPLICATION_XML_TYPE)
-                .get(WhoisResources.class);
-
-        assertThat(whoisResources.getErrorMessages(), is(empty()));
-        assertThat(whoisResources.getWhoisObjects(), hasSize(1));
-
-        Attribute expected = new Attribute("auth", "SSO test@ripe.net", null, null, null);
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItem(expected));
-    }
-
-    @Test
     public void grs_lookup_object_wrong_source() {
         try {
             RestTest.target(getPort(), "whois/pez/person/PP1-TEST").request().get(String.class);
@@ -615,7 +563,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 new Attribute("descr", "Owner Maintainer"),
                 new Attribute("admin-c", "TP1-TEST", null, "person", new Link("locator", "http://rest-test.db.ripe.net/test/person/TP1-TEST")),
                 new Attribute("auth", "MD5-PW", "Filtered", null, null),
-                new Attribute("auth", "SSO", "Filtered", null, null),
                 new Attribute("mnt-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("referral-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("source", "TEST", "Filtered", null, null)));
@@ -657,7 +604,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 new Attribute("admin-c", "TP1-TEST", null, "person", new Link("locator", "http://rest-test.db.ripe.net/test/person/TP1-TEST")),
                 new Attribute("upd-to", "noreply@ripe.net", null, null, null),
                 new Attribute("auth", "MD5-PW", "Filtered", null, null),
-                new Attribute("auth", "SSO", "Filtered", null, null),
                 new Attribute("mnt-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("referral-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("changed", "dbtest@ripe.net 20120101", null, null, null),
@@ -677,7 +623,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 new Attribute("admin-c", "TP1-TEST", null, "person", new Link("locator", "http://rest-test.db.ripe.net/test/person/TP1-TEST")),
                 new Attribute("upd-to", "noreply@ripe.net", null, null, null),
                 new Attribute("auth", "MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/", "test", null, null),
-                new Attribute("auth", "SSO person@net.net", null, null, null),
                 new Attribute("mnt-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("referral-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("changed", "dbtest@ripe.net 20120101", null, null, null),
@@ -696,7 +641,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 new Attribute("descr", "Owner Maintainer"),
                 new Attribute("admin-c", "TP1-TEST", null, "person", new Link("locator", "http://rest-test.db.ripe.net/test/person/TP1-TEST")),
                 new Attribute("auth", "MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/", "test", null, null),
-                new Attribute("auth", "SSO person@net.net", null, null, null),
                 new Attribute("mnt-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("referral-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("source", "TEST", "Filtered", null, null)));
@@ -715,7 +659,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 new Attribute("descr", "Owner Maintainer"),
                 new Attribute("admin-c", "TP1-TEST", null, "person", new Link("locator", "http://rest-test.db.ripe.net/test/person/TP1-TEST")),
                 new Attribute("auth", "MD5-PW", "Filtered", null, null),
-                new Attribute("auth", "SSO", "Filtered", null, null),
                 new Attribute("mnt-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("referral-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("source", "TEST", "Filtered", null, null)));
@@ -735,7 +678,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 new Attribute("admin-c", "TP1-TEST", null, "person", new Link("locator", "http://rest-test.db.ripe.net/test/person/TP1-TEST")),
                 new Attribute("upd-to", "noreply@ripe.net", null, null, null),
                 new Attribute("auth", "MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/", "test", null, null),
-                new Attribute("auth", "SSO person@net.net", null, null, null),
                 new Attribute("mnt-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("referral-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("changed", "dbtest@ripe.net 20120101", null, null, null),
@@ -774,63 +716,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 new Attribute("referral-by", "AUTH-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/AUTH-MNT")),
                 new Attribute("changed", "dbtest@ripe.net 20120101", null, null, null),
                 new Attribute("source", "TEST", null, null, null)));
-    }
-
-    @Test
-    public void lookup_mntner_with_valid_crowd_token_without_unfiltered_param_is_filtered() {
-        final WhoisResources whoisResources =
-                RestTest.target(getPort(), "whois/test/mntner/OWNER-MNT")
-                        .request(MediaType.APPLICATION_XML)
-                        .cookie("crowd.token_key", "valid-token")
-                        .get(WhoisResources.class);
-
-        final WhoisObject whoisObject = whoisResources.getWhoisObjects().get(0);
-        assertThat(whoisObject.getAttributes(), hasItems(
-                new Attribute("auth", "MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/", "test", null, null),
-                new Attribute("auth", "SSO person@net.net", null, null, null),
-                new Attribute("source", "TEST", "Filtered", null, null)));
-    }
-
-    @Test
-    public void lookup_mntner_with_valid_crowd_token_and_unfiltered_param_is_unfiltered() {
-        final WhoisResources whoisResources =
-                RestTest.target(getPort(), "whois/test/mntner/OWNER-MNT?unfiltered")
-                        .request(MediaType.APPLICATION_XML)
-                        .cookie("crowd.token_key", "valid-token")
-                        .get(WhoisResources.class);
-
-        final WhoisObject whoisObject = whoisResources.getWhoisObjects().get(0);
-        assertThat(whoisObject.getAttributes(), hasItems(
-                new Attribute("auth", "MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/", "test", null, null),
-                new Attribute("auth", "SSO person@net.net"),
-                new Attribute("source", "TEST")));
-    }
-
-    @Test
-    public void lookup_maintainer_invalid_crowd_uuid() throws Exception {
-        databaseHelper.addObject(
-                "mntner:         MNT-TEST\n" +
-                        "descr:          Test maintainer\n" +
-                        "admin-c:        TP1-TEST\n" +
-                        "upd-to:         noreply@ripe.net\n" +
-                        "auth:           MD5-PW $1$EmukTVYX$Z6fWZT8EAzHoOJTQI6jFJ1  # 123\n" +
-                        "auth:           SSO e58f4ee0-5d26-450f-a933-349ce1440fbc\n" +
-                        "mnt-by:         MNT-TEST\n" +
-                        "referral-by:    MNT-TEST\n" +
-                        "changed:        noreply@ripe.net 20140115\n" +
-                        "source:         TEST"
-        );
-
-        try {
-            RestTest.target(getPort(), "whois/TEST/mntner/MNT-TEST?password=123&unfiltered")
-                    .request(MediaType.APPLICATION_XML_TYPE)
-                    .cookie("crowd.access_key", "xyzinvalid")
-                    .get(WhoisResources.class);
-            fail();
-        } catch (InternalServerErrorException e) {
-            // TODO: [ES] also test that we log the error on the server side.
-            assertThat(e.getResponse().readEntity(String.class), containsString("internal software error"));
-        }
     }
 
     @Test
@@ -924,7 +809,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 "            <link xlink:type=\"locator\" xlink:href=\"http://rest-test.db.ripe.net/test/person/TP1-TEST\"/>\n" +
                 "        </attribute>\n" +
                 "        <attribute name=\"auth\" value=\"MD5-PW\" comment=\"Filtered\"/>\n" +
-                "        <attribute name=\"auth\" value=\"SSO\" comment=\"Filtered\"/>\n" +
                 "        <attribute name=\"remarks\" value=\"\"/>\n" +
                 "        <attribute name=\"remarks\" value=\"remark with\" comment=\"comment\"/>\n" +
                 "        <attribute name=\"mnt-by\" value=\"OWNER-MNT\" referenced-type=\"mntner\">\n" +
@@ -983,10 +867,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                         "    }, {\n" +
                         "      \"name\" : \"auth\",\n" +
                         "      \"value\" : \"MD5-PW\",\n" +
-                        "      \"comment\" : \"Filtered\"\n" +
-                        "    }, {\n" +
-                        "      \"name\" : \"auth\",\n" +
-                        "      \"value\" : \"SSO\",\n" +
                         "      \"comment\" : \"Filtered\"\n" +
                         "    }, {\n" +
                         "      \"name\" : \"remarks\",\n" +
@@ -1759,66 +1639,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
     }
 
     @Test
-    public void create_self_referencing_maintainer_sso_auth_only() {
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/mntner")
-                .request()
-                .cookie("crowd.token_key", "valid-token")
-                .post(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, SSO_ONLY_MNT), MediaType.APPLICATION_XML), WhoisResources.class);
-
-        assertThat(whoisResources.getErrorMessages(), is(empty()));
-        assertThat(whoisResources.getWhoisObjects(), hasSize(1));
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItems(new Attribute("auth", "SSO person@net.net")));
-
-        assertThat(databaseHelper.lookupObject(ObjectType.MNTNER, "SSO-ONLY-MNT").findAttributes(AttributeType.AUTH),
-                contains(new RpslAttribute(AttributeType.AUTH, "SSO 906635c2-0405-429a-800b-0602bd716124")));
-    }
-
-    @Test
-    public void create_self_referencing_maintainer_sso_auth_only_invalid_username() throws Exception {
-        try {
-            final RpslObject updatedObject = buildGenericObject(SSO_ONLY_MNT, "auth: SSO in@valid.net");
-
-            RestTest.target(getPort(), "whois/test/mntner")
-                    .request()
-                    .cookie("crowd.token_key", "valid-token")
-                    .post(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, updatedObject), MediaType.APPLICATION_XML), WhoisResources.class);
-            fail();
-        } catch (BadRequestException e) {
-            RestTest.assertOnlyErrorMessage(e, "Error", "No RIPE NCC Access Account found for %s", "in@valid.net");
-        }
-    }
-
-    @Test
-    public void create_self_referencing_maintainer_sso_auth_only_invalid_token() {
-        try {
-            RestTest.target(getPort(), "whois/test/mntner")
-                    .request()
-                    .cookie("crowd.token_key", "invalid")
-                    .post(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, SSO_ONLY_MNT), MediaType.APPLICATION_XML), WhoisResources.class);
-            fail();
-        } catch (NotAuthorizedException e) {
-            final WhoisResources whoisResources = RestTest.mapClientException(e);
-            RestTest.assertErrorCount(whoisResources, 2);
-            RestTest.assertErrorMessage(whoisResources, 0, "Error", "Authorisation for [%s] %s failed\nusing \"%s:\"\nnot authenticated by: %s", "mntner", "SSO-ONLY-MNT", "mnt-by", "SSO-ONLY-MNT");
-            RestTest.assertErrorMessage(whoisResources, 1, "Info", "RIPE NCC Access token ignored");
-        }
-    }
-
-    @Test
-    public void create_self_referencing_maintainer_password_auth_only_with_invalid_sso_username() {
-        final RpslObject updatedObject = new RpslObjectBuilder(PASSWORD_ONLY_MNT).append(new RpslAttribute(AttributeType.AUTH, "SSO in@valid.net")).get();
-
-        try {
-            RestTest.target(getPort(), "whois/test/mntner?password=test")
-                    .request()
-                    .post(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, updatedObject), MediaType.APPLICATION_XML), WhoisResources.class);
-            fail();
-        } catch (BadRequestException e) {
-            RestTest.assertOnlyErrorMessage(e, "Error", "No RIPE NCC Access Account found for %s", "in@valid.net");
-        }
-    }
-
-    @Test
     public void create_non_ascii_characters_are_preserved() {
         assertThat(RestTest.target(getPort(), "whois/test/person?password=test")
                 .request(MediaType.APPLICATION_JSON)
@@ -2125,90 +1945,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
         assertThat(whoisResources.getWhoisObjects(), hasSize(1));
         try {
             databaseHelper.lookupObject(ObjectType.PERSON, "PP1-TEST");
-            fail();
-        } catch (EmptyResultDataAccessException ignored) {
-            // expected
-        }
-    }
-
-    @Test
-    public void delete_person_with_crowd_token_succeeds() {
-        databaseHelper.addObject(PAULETH_PALTHEN);
-
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/person/PP1-TEST")
-                .request()
-                .cookie("crowd.token_key", "valid-token")
-                .delete(WhoisResources.class);
-
-        assertThat(whoisResources.getErrorMessages(), is(empty()));
-        assertThat(whoisResources.getWhoisObjects(), hasSize(1));
-        try {
-            databaseHelper.lookupObject(ObjectType.PERSON, "PP1-TEST");
-            fail();
-        } catch (EmptyResultDataAccessException ignored) {
-            // expected
-        }
-    }
-
-    @Test
-    public void delete_self_referencing_maintainer_with_sso_auth_attribute_authenticated_with_crowd_token_succeeds() throws Exception {
-        databaseHelper.addObject(SSO_ONLY_MNT);
-
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/mntner/SSO-ONLY-MNT")
-                .request()
-                .cookie("crowd.token_key", "valid-token")
-                .delete(WhoisResources.class);
-
-        assertThat(whoisResources.getErrorMessages(), is(empty()));
-        assertThat(whoisResources.getWhoisObjects(), hasSize(1));
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItem(new Attribute("auth", "SSO person@net.net")));
-
-        try {
-            databaseHelper.lookupObject(ObjectType.MNTNER, "SSO-ONLY-MNT");
-            fail();
-        } catch (EmptyResultDataAccessException ignored) {
-            // expected
-        }
-    }
-
-    @Test
-    public void delete_self_referencing_maintainer_with_sso_auth_attribute_authenticated_with_password_succeeds() throws Exception {
-        databaseHelper.addObject(SSO_AND_PASSWORD_MNT);
-
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/mntner/SSO-PASSWORD-MNT")
-                .queryParam("password", "test")
-                .request()
-                .delete(WhoisResources.class);
-
-        assertThat(whoisResources.getErrorMessages(), is(empty()));
-        assertThat(whoisResources.getWhoisObjects(), hasSize(1));
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItem(new Attribute("auth", "SSO person@net.net")));
-
-        try {
-            databaseHelper.lookupObject(ObjectType.MNTNER, "SSO-PASSWORD-MNT");
-            fail();
-        } catch (EmptyResultDataAccessException ignored) {
-            // expected
-        }
-    }
-
-    @Test
-    public void delete_self_referencing_maintainer_with_sso_auth_attribute_invalid_token_authenticated_with_password_succeeds() throws Exception {
-        databaseHelper.addObject(SSO_AND_PASSWORD_MNT);
-
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/mntner/SSO-PASSWORD-MNT")
-                .queryParam("password", "test")
-                .request()
-                .cookie("crowd.token_key", "invalid-token")
-                .delete(WhoisResources.class);
-
-        RestTest.assertErrorCount(whoisResources, 1);
-        RestTest.assertErrorMessage(whoisResources, 0, "Info", "RIPE NCC Access token ignored");
-        assertThat(whoisResources.getWhoisObjects(), hasSize(1));
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItem(new Attribute("auth", "SSO person@net.net")));
-
-        try {
-            databaseHelper.lookupObject(ObjectType.MNTNER, "SSO-PASSWORD-MNT");
             fail();
         } catch (EmptyResultDataAccessException ignored) {
             // expected
@@ -2728,81 +2464,9 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
         }
     }
 
-    @Test
-    public void update_person_with_crowd_token_succeeds() {
-        databaseHelper.addObject(PAULETH_PALTHEN);
-        final RpslObject updatedObject = new RpslObjectBuilder(PAULETH_PALTHEN).append(new RpslAttribute(AttributeType.REMARKS, "updated")).sort().get();
-
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/person/PP1-TEST")
-                .request(MediaType.APPLICATION_XML)
-                .cookie("crowd.token_key", "valid-token")
-                .put(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, updatedObject), MediaType.APPLICATION_XML), WhoisResources.class);
-
-        assertThat(whoisResources.getErrorMessages(), is(empty()));
-        assertThat(whoisResources.getWhoisObjects(), hasSize(1));
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItem(new Attribute("remarks", "updated")));
-    }
-
-    @Test
-    public void update_maintainer_with_crowd_token_succeeds() {
-        final RpslObject updatedObject = new RpslObjectBuilder(OWNER_MNT).append(new RpslAttribute(AttributeType.REMARKS, "updated")).get();
-
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/mntner/OWNER-MNT")
-                .request(MediaType.APPLICATION_XML)
-                .cookie("crowd.token_key", "valid-token")
-                .put(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, updatedObject), MediaType.APPLICATION_XML), WhoisResources.class);
-
-        assertThat(whoisResources.getErrorMessages(), is(empty()));
-        assertThat(whoisResources.getWhoisObjects(), hasSize(1));
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItem(new Attribute("remarks", "updated")));
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItem(new Attribute("auth", "MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/", "test", null, null)));
-        assertThat(whoisResources.getWhoisObjects().get(0).getAttributes(), hasItem(new Attribute("auth", "SSO person@net.net")));
-        assertThat(databaseHelper.lookupObject(ObjectType.MNTNER, "OWNER-MNT").findAttributes(AttributeType.AUTH),
-                containsInAnyOrder(
-                        new RpslAttribute(AttributeType.AUTH, "MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ #test"),
-                        new RpslAttribute(AttributeType.AUTH, "SSO 906635c2-0405-429a-800b-0602bd716124"))
-        );
-    }
-
-    @Test
-    public void update_maintainer_with_invalid_sso_username_fails() {
-        final RpslObject updatedObject = new RpslObjectBuilder(OWNER_MNT).replaceAttribute(
-                new RpslAttribute(AttributeType.AUTH, "SSO person@net.net"),
-                new RpslAttribute(AttributeType.AUTH, "SSO in@valid.net")).get();
-
-        try {
-            RestTest.target(getPort(), "whois/test/mntner/OWNER-MNT")
-                    .request(MediaType.APPLICATION_XML)
-                    .cookie("crowd.token_key", "valid-token")
-                    .put(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, updatedObject), MediaType.APPLICATION_XML), WhoisResources.class);
-            fail();
-        } catch (BadRequestException e) {
-            RestTest.assertOnlyErrorMessage(e, "Error", "No RIPE NCC Access Account found for %s", "in@valid.net");
-        }
-    }
-
-    @Test
-    public void update_person_with_invalid_crowd_token_fails() {
-        databaseHelper.addObject(PAULETH_PALTHEN);
-        final RpslObject updatedObject = new RpslObjectBuilder(PAULETH_PALTHEN).append(new RpslAttribute(AttributeType.REMARKS, "updated")).sort().get();
-
-        try {
-            RestTest.target(getPort(), "whois/test/person/PP1-TEST")
-                    .request(MediaType.APPLICATION_XML)
-                    .cookie("crowd.token_key", "invalid-token")
-                    .put(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, updatedObject), MediaType.APPLICATION_XML), WhoisResources.class);
-            fail();
-        } catch (NotAuthorizedException e) {
-            final WhoisResources whoisResources = RestTest.mapClientException(e);
-            RestTest.assertErrorCount(whoisResources, 2);
-            RestTest.assertErrorMessage(whoisResources, 0, "Error", "Authorisation for [%s] %s failed\nusing \"%s:\"\nnot authenticated by: %s", "person", "PP1-TEST", "mnt-by", "OWNER-MNT");
-            RestTest.assertErrorMessage(whoisResources, 1, "Info", "RIPE NCC Access token ignored");
-        }
-    }
-
     @Test(expected = BadRequestException.class)
     public void update_bad_input_empty_body() {
-        final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/person/TP1-TEST?password=test")
+        RestTest.target(getPort(), "whois/test/person/TP1-TEST?password=test")
                 .request(MediaType.APPLICATION_XML)
                 .put(Entity.entity("", MediaType.APPLICATION_XML), WhoisResources.class);
     }
@@ -3891,7 +3555,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 new Attribute("descr", "Owner Maintainer"),
                 new Attribute("admin-c", "TP1-TEST", null, "person", new Link("locator", "http://rest-test.db.ripe.net/test/person/TP1-TEST")),
                 new Attribute("auth", "MD5-PW", "Filtered", null, null),
-                new Attribute("auth", "SSO", "Filtered", null, null),
                 new Attribute("mnt-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("referral-by", "OWNER-MNT", null, "mntner", new Link("locator", "http://rest-test.db.ripe.net/test/mntner/OWNER-MNT")),
                 new Attribute("source", "TEST", "Filtered", null, null)
@@ -4441,21 +4104,6 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                 .get(String.class);
 
         assertThat(whoisResources, not(containsString("xmlns=\"\"")));
-    }
-
-    @Test
-    public void search_sso_auth_filtered() {
-        databaseHelper.addObject("" +
-                "mntner: TEST-MNT\n" +
-                "mnt-by:TEST-MNT\n" +
-                "auth: SSO test@ripe.net\n" +
-                "source: TEST");
-
-        final String response = RestTest.target(getPort(), "whois/search?query-string=TEST-MNT&source=TEST")
-                .request(MediaType.APPLICATION_XML)
-                .get(String.class);
-
-        assertThat(response, containsString("<attribute name=\"auth\" value=\"SSO\" comment=\"Filtered\"/>"));
     }
 
     @Test(expected = NotFoundException.class)

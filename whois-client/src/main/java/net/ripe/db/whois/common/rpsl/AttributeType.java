@@ -722,7 +722,7 @@ public enum AttributeType implements Documented {
     }
 
     public Set<ObjectType> getReferences(final CIString value) {
-        if (this == AUTH && (value.startsWith("md5-pw") || value.startsWith("sso"))) {
+        if (this == AUTH && (value.startsWith("md5-pw"))) {
             return Collections.emptySet();
         }
 
