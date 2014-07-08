@@ -43,7 +43,6 @@ import java.util.Set;
 @Component
 class RpslObjectSearcher {
     private static final Set<AttributeType> INVERSE_ATTRIBUTE_TYPES = EnumSet.noneOf(AttributeType.class);
-    private static final Set<AttributeType> INVERSE_ATTRIBUTE_TYPES_OVERRIDE = EnumSet.of(AttributeType.SPONSORING_ORG);
 
     static {
         for (final ObjectType objectType : ObjectType.values()) {
@@ -261,7 +260,7 @@ class RpslObjectSearcher {
     private Iterable<ResponseObject> indexLookupReverse(final Query query) {
         final List<ResponseObject> errors = Lists.newArrayList();
         for (final AttributeType attributeType : query.getAttributeTypes()) {
-            if (!(INVERSE_ATTRIBUTE_TYPES.contains(attributeType) || (query.isTrusted() && INVERSE_ATTRIBUTE_TYPES_OVERRIDE.contains(attributeType)))) {
+            if (!INVERSE_ATTRIBUTE_TYPES.contains(attributeType)) {
                 errors.add(new MessageObject(QueryMessages.attributeNotSearchable(attributeType.getName())));
             }
         }

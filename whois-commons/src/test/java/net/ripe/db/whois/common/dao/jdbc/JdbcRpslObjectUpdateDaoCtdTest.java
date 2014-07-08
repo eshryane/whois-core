@@ -97,17 +97,6 @@ public class JdbcRpslObjectUpdateDaoCtdTest extends AbstractDaoTest {
     }
 
     @Test
-    public void getSponsoringOrgReference() {
-        final RpslObjectUpdateInfo object = subject.createObject(RpslObject.parse("organisation: ORG-TEST"));
-
-        final RpslObject inet = RpslObject.parse("inetnum: 192.168.0.0 - 192.168.0.255\nsponsoring-org:ORG-TEST\nnetname: TEST-RIPE");
-        subject.createObject(inet);
-
-        final RpslObjectInfo attributeReference = subject.getAttributeReference(AttributeType.SPONSORING_ORG, ciString("ORG-TEST"));
-        assertThat(attributeReference.getObjectId(), is(object.getObjectId()));
-    }
-
-    @Test
     public void getReferences() {
         final RpslObject role = RpslObject.parse("role: Role\nnic-hdl: NIC-TEST\nabuse-mailbox:abuse@ripe.net");
         subject.createObject(role);

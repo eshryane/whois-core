@@ -547,32 +547,4 @@ public final class UpdateMessages {
     public static Message dryRunNotice() {
         return new Message(Type.INFO, "Dry-run performed, no changes to the database have been made");
     }
-
-    public static Message statusCannotBeRemoved() {
-        return new Message(Type.WARNING, "\"status:\" attribute cannot be removed");
-    }
-
-    public static Message sponsoringOrgChanged() {
-        return new Message(Type.ERROR, "The sponsoring-org can only be changed by the RIPE NCC");
-    }
-
-    public static Message sponsoringOrgAdded() {
-        return new Message(Type.ERROR, "The sponsoring-org can only be added by the RIPE NCC");
-    }
-
-    public static Message sponsoringOrgRemoved() {
-        return new Message(Type.ERROR, "The sponsoring-org can only be removed by the RIPE NCC");
-    }
-
-    public static Message sponsoringOrgNotLIR() {
-        return new Message(Type.ERROR, "Referenced organisation must have org-type: LIR");
-    }
-
-    public static Message sponsoringOrgNotAllowedWithStatus(final CharSequence status) {
-        return new Message(Type.ERROR, "The \"sponsoring-org:\" attribute is not allowed with status value \"%s\"", status);
-    }
-
-    public static Message sponsoringOrgMustBePresent() {
-        return new Message(Type.ERROR, "This resource object must be created with a sponsoring-org attribute");
-    }
 }

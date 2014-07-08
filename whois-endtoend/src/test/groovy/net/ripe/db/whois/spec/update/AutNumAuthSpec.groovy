@@ -30,7 +30,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS251
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -172,7 +171,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS200
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -188,7 +186,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS250
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -205,7 +202,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS300
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS200 accept ANY
                 export:         to AS200 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -286,7 +282,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS250
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -328,7 +323,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS250
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 default:        to AS8505
@@ -373,7 +367,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS250
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -416,7 +409,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS250
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -456,7 +448,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS650
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -494,7 +485,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS650
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -895,7 +885,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS94967295
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -937,7 +926,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS4294967295
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 org:            ORG-OTO1-TEST
                 admin-c:        TP1-TEST
                 tech-c:         TP1-TEST
@@ -975,7 +963,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS65535
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -1017,7 +1004,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        As0
                 as-name:        End-User-1
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -1517,7 +1503,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS200
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -1560,7 +1545,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS200
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -1608,7 +1592,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS200
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -1652,7 +1635,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS200
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -1696,7 +1678,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS200
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -1740,7 +1721,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS200
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
@@ -1786,7 +1766,6 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
                 aut-num:        AS200
                 as-name:        ASTEST
                 descr:          description
-                sponsoring-org: ORG-LIRA-TEST
                 import:         from AS1 accept ANY
                 export:         to AS1 announce AS2
                 mp-import:      afi ipv6.unicast from AS1 accept ANY
