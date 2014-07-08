@@ -23,10 +23,3 @@ DROP TABLE IF EXISTS `version`;
 CREATE TABLE `version` (
   `version` varchar(80) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `legacy_autnums`;
-CREATE TABLE `legacy_autnums` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `autnum` varchar(16) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;

@@ -27,7 +27,6 @@ import net.ripe.db.whois.common.generated.V6FilterParser;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
 import net.ripe.db.whois.common.rpsl.attrs.AddressPrefixRange;
-import net.ripe.db.whois.common.rpsl.attrs.AutnumStatus;
 import net.ripe.db.whois.common.rpsl.attrs.Inet6numStatus;
 import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;
 import net.ripe.db.whois.common.rpsl.attrs.OrgType;
@@ -876,13 +875,6 @@ public interface AttributeSyntax extends Documented {
                     } catch (IllegalArgumentException ignored) {
                         return false;
                     }
-                case AUT_NUM:
-                    try {
-                        AutnumStatus.valueOf(value.toUpperCase());
-                        return true;
-                    } catch (IllegalArgumentException ignored) {
-                        return false;
-                    }
                 default:
                     return false;
             }
@@ -902,12 +894,6 @@ public interface AttributeSyntax extends Documented {
                     return descriptionBuilder.toString();
                 case INET6NUM:
                     for (final Inet6numStatus status : Inet6numStatus.values()) {
-                        descriptionBuilder.append("o ").append(status).append('\n');
-                    }
-
-                    return descriptionBuilder.toString();
-                case AUT_NUM:
-                    for (final AutnumStatus status : AutnumStatus.values()) {
                         descriptionBuilder.append("o ").append(status).append('\n');
                     }
 

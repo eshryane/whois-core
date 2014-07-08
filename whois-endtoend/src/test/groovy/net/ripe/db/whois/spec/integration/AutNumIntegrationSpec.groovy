@@ -1,8 +1,5 @@
 package net.ripe.db.whois.spec.integration
-
 import net.ripe.db.whois.common.IntegrationTest
-import net.ripe.db.whois.common.rpsl.ObjectType
-import net.ripe.db.whois.common.rpsl.RpslObject
 import net.ripe.db.whois.spec.domain.SyncUpdate
 
 @org.junit.experimental.categories.Category(IntegrationTest.class)
@@ -359,7 +356,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def insertResponse = syncUpdate(new SyncUpdate(data: """\
                         aut-num:        AS400
                         as-name:        End-User-2
-                        status:         OTHER
                         member-of:      AS-TESTSET
                         descr:          description
                         admin-c:        AP1-TEST
@@ -379,7 +375,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def updateResponse = syncUpdate(new SyncUpdate(data: """\
                         aut-num:        AS400
                         as-name:        End-User-2
-                        status:         OTHER
                         member-of:      AS-TESTSET
                         descr:          other description
                         admin-c:        AP1-TEST
@@ -478,7 +473,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def insertResponse = syncUpdate(new SyncUpdate(data: """\
                         aut-num:        AS400
                         as-name:        End-User-2
-                        status:         OTHER
                         descr:          description
                         admin-c:        AP1-TEST
                         tech-c:         AP1-TEST
@@ -495,7 +489,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def updateResponse = syncUpdate(new SyncUpdate(data: """\
                         aut-num:        AS400
                         as-name:        End-User-2
-                        status:         OTHER
                         member-of:      AS-TESTSET
                         descr:          other description
                         admin-c:        AP1-TEST
@@ -548,418 +541,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         response =~ /Syntax error in ato AS1 announce 192.0.0.1/
         response =~ /Syntax error in _UPD-MNT-MNT-MNT/
         response =~ /Syntax error in to AS5580 announce AS2/
-    }
-
-    // autnum status tests
-
-    def "create aut-num object, generate OTHER status"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS100
-                        as-name:        End-User-2
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /SUCCESS/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS100")
-        autnum =~ /status:         OTHER/
-    }
-
-    def "create aut-num object, generate ASSIGNED status"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: hm
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /SUCCESS/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS102")
-        autnum =~ /status:         ASSIGNED/
-    }
-
-    def "create aut-num object, generate LEGACY status"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS103
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /SUCCESS/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS103")
-        autnum =~ /status:         LEGACY/
-    }
-
-    def "create aut-num object, user maintainer, replace incorrect status"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        status:         LEGACY
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /\*\*\*Warning: Supplied attribute 'status' has been replaced with a generated value/
-        response =~ /SUCCESS/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS100")
-        autnum =~ /status:         OTHER/
-    }
-
-    def "create aut-num object, rs maintainer, replace incorrect status"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        status:         LEGACY
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: hm
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /SUCCESS/
-        response =~ /\*\*\*Warning: Supplied attribute 'status' has been replaced with a generated value/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS102")
-        autnum =~ /status:         ASSIGNED/
-    }
-
-    def "update aut-num object, rs maintainer, status cannot be removed, remark can be removed"() {
-        given:
-        syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        status:         ASSIGNED
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: hm
-                        password: update
-                        """.stripIndent())
-        when:
-        def update = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: hm
-                        password: update
-                        """.stripIndent())
-        then:
-        update =~ /Modify SUCCEEDED: \[aut-num\] AS102/
-        update =~ /Warning: "status:" attribute cannot be removed/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS102")
-        autnum.equals(RpslObject.parse("""\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        status:         ASSIGNED
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
-    }
-
-    def "update autnum object, user maintainer, status cannot be removed"() {
-        when:
-        def create = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        create =~ /Create SUCCEEDED: \[aut-num\] AS100/
-        then:
-        def createdAutnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS100")
-        createdAutnum.equals(RpslObject.parse("""\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        status:         OTHER
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
-        when:
-        def update = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        remarks:        remarks
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        update =~ /Modify SUCCEEDED: \[aut-num\] AS100/
-        update =~ /\*\*\*Warning: "status:" attribute cannot be removed/
-        then:
-        def updatedAutnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS100")
-        updatedAutnum.equals(RpslObject.parse("""\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        remarks:        remarks
-                        status:         OTHER
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
-    }
-
-
-    def "update autnum object, user maintainer, moving remark is allowed"() {
-        when:
-        def create = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        create =~ /Create SUCCEEDED: \[aut-num\] AS100/
-        then:
-        def createdAutnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS100")
-        createdAutnum.equals(RpslObject.parse("""\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        status:         OTHER
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
-        when:
-        def update = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS100
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        status:         OTHER
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        update =~ /Modify SUCCEEDED: \[aut-num\] AS100/
-        then:
-        def updatedAutnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS100")
-        updatedAutnum.equals(RpslObject.parse("""\
-                        aut-num:        AS100
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        status:         OTHER
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
-    }
-
-    def "create aut-num object, rs maintainer, generate ASSIGNED status, generate remark"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: hm
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /SUCCESS/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS102")
-        autnum.equals(RpslObject.parse("""\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        status:         ASSIGNED
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
-    }
-
-    def "create aut-num object, rs maintainer, generate ASSIGNED status, user-specified remark is moved beside status"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        descr:          description
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        remarks:        user remark
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: hm
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /SUCCESS/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS102")
-        autnum.equals(RpslObject.parse("""\
-                        aut-num:        AS102
-                        as-name:        RS-2
-                        descr:          description
-                        remarks:        user remark
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        status:         ASSIGNED
-                        mnt-by:         RIPE-NCC-HM-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
-    }
-
-    def "create aut-num object, user maintainer, replace invalid status"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        status:         INVALID
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /\*\*\*Warning: Supplied attribute 'status' has been replaced with a generated value/
-        response =~ /SUCCESS/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS100")
-        autnum.equals(RpslObject.parse("""\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        status:         OTHER
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
-    }
-
-    def "create aut-num object, user maintainer, duplicate status"() {
-        when:
-        def response = syncUpdate new SyncUpdate(data: """\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        status:         OTHER
-                        status:         OTHER
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        password: update
-                        """.stripIndent())
-        then:
-        response =~ /SUCCESS/
-        then:
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS100")
-        println autnum
-        autnum.equals(RpslObject.parse("""\
-                        aut-num:        AS100
-                        as-name:        End-User
-                        remarks:        For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                        status:         OTHER
-                        descr:          description
-                        admin-c:        AP1-TEST
-                        tech-c:         AP1-TEST
-                        mnt-by:         UPD-MNT
-                        changed:        noreply@ripe.net 20120101
-                        source:         TEST
-                        """.stripIndent()))
     }
 
     // sponsoring org
@@ -1191,7 +772,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def create = syncUpdate(new SyncUpdate(data: """\
                 aut-num:        AS400
                 as-name:        End-User-2
-                status:         ASSIGNED
                 member-of:      AS-TESTSET
                 descr:          other description
                 admin-c:        AP1-TEST
@@ -1211,7 +791,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def update = syncUpdate(new SyncUpdate(data: """\
                 aut-num:        AS400
                 as-name:        End-User-2
-                status:         ASSIGNED
                 member-of:      AS-TESTSET
                 sponsoring-org: ORG-NCC1-RIPE
                 descr:          other description
@@ -1235,7 +814,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         databaseHelper.addObject("""\
                 aut-num:        AS400
                 as-name:        End-User-2
-                status:         OTHER
                 member-of:      AS-TESTSET
                 descr:          other description
                 sponsoring-org: ORG-NCC1-RIPE
@@ -1251,7 +829,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def update = syncUpdate(new SyncUpdate(data: """\
                 aut-num:        AS400
                 as-name:        End-User-2
-                status:         OTHER
                 member-of:      AS-TESTSET
                 descr:          changed description
                 sponsoring-org: ORG-NCC1-RIPE
@@ -1272,7 +849,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         databaseHelper.addObject("""\
                 aut-num:        AS400
                 as-name:        End-User-2
-                status:         OTHER
                 member-of:      AS-TESTSET
                 descr:          other description
                 sponsoring-org: ORG-NCC1-RIPE
@@ -1288,7 +864,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def update = syncUpdate(new SyncUpdate(data: """\
                 aut-num:        AS400
                 as-name:        End-User-2
-                status:         OTHER
                 member-of:      AS-TESTSET
                 descr:          changed description
                 admin-c:        AP1-TEST
@@ -1305,49 +880,11 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         queryObject("-rBG AS400", "sponsoring-org", "ORG-NCC1-RIPE")
     }
 
-    def "modify autnum without status in db with same object adds status"() {
-        given:
-        databaseHelper.addObject("""\
-                aut-num:        AS400
-                as-name:        End-User-2
-                member-of:      AS-TESTSET
-                descr:          description
-                sponsoring-org: ORG-NCC1-RIPE
-                admin-c:        AP1-TEST
-                tech-c:         AP1-TEST
-                mnt-by:         UPD-MNT
-                changed:        noreply@ripe.net 20120101
-                source:         TEST
-                override:       denis,override1
-                """.stripIndent())
-
-        when:
-        def update = syncUpdate(new SyncUpdate(data: """\
-                aut-num:        AS400
-                as-name:        End-User-2
-                member-of:      AS-TESTSET
-                descr:          description
-                sponsoring-org: ORG-NCC1-RIPE
-                admin-c:        AP1-TEST
-                tech-c:         AP1-TEST
-                mnt-by:         UPD-MNT
-                changed:        noreply@ripe.net 20120101
-                source:         TEST
-                password: update
-                """.stripIndent()))
-
-        then:
-        update =~ /Modify SUCCEEDED: \[aut-num\] AS400/
-        def autnum = databaseHelper.lookupObject(ObjectType.AUT_NUM, "AS400")
-        autnum =~ "status:         OTHER"
-    }
-
     def "delete autnum with sponsoring-org"() {
         when:
         databaseHelper.addObject("" +
                 "aut-num:        AS400\n" +
                 "as-name:        End-User-2\n" +
-                "status:         OTHER\n" +
                 "member-of:      AS-TESTSET\n" +
                 "sponsoring-org: ORG-NCC1-RIPE\n" +
                 "descr:          other description\n" +
@@ -1363,7 +900,6 @@ class AutNumIntegrationSpec extends BaseWhoisSourceSpec {
         def delete = syncUpdate(new SyncUpdate(data: """\
                 aut-num:        AS400
                 as-name:        End-User-2
-                status:         OTHER
                 member-of:      AS-TESTSET
                 sponsoring-org: ORG-NCC1-RIPE
                 descr:          other description
