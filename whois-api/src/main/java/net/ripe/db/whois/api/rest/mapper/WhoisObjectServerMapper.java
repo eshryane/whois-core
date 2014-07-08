@@ -1,11 +1,9 @@
 package net.ripe.db.whois.api.rest.mapper;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.api.rest.domain.Link;
 import net.ripe.db.whois.api.rest.domain.WhoisObject;
 import net.ripe.db.whois.api.rest.domain.WhoisTag;
 import net.ripe.db.whois.api.rest.domain.WhoisVersion;
-import net.ripe.db.whois.api.rest.domain.WhoisVersionInternal;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.domain.serials.Operation;
 import net.ripe.db.whois.common.rpsl.RpslObject;
@@ -56,34 +54,5 @@ public class WhoisObjectServerMapper {
             object.setTags(whoisTags);
         }
         return object;
-    }
-
-    public List<WhoisVersionInternal> mapVersionsInternal(final List<VersionResponseObject> versions, final String source, final String type, final String key) {
-        final List<WhoisVersionInternal> whoisVersions = Lists.newArrayList();
-
-        int versionIdCounter = 1;
-        for (int i = 0; i < versions.size(); i++) {
-            final VersionResponseObject currentVersion = versions.get(i);
-            VersionResponseObject nextVersion = null;
-
-            if (i + 1 < versions.size()) {
-                nextVersion = versions.get(i + 1);
-            }
-
-            if (currentVersion.getOperation() != Operation.DELETE) {
-                whoisVersions.add(new WhoisVersionInternal(
-                        versionIdCounter,
-                        currentVersion.getDateTime().toString(),
-                        nextVersion == null ? "" : nextVersion.getDateTime().toString(),
-                        currentVersion.getOperation().toString(),
-                        createWhoisVersionInternalLink(source, type, key + "/" + versionIdCounter)));
-                versionIdCounter++;
-            }
-        }
-        return whoisVersions;
-    }
-
-    private Link createWhoisVersionInternalLink(String source, String type, String versionId) {
-        return new Link("locator", String.format("%s/api/rnd/%s/%s/%s", baseUrl, source, type, versionId));
     }
 }
