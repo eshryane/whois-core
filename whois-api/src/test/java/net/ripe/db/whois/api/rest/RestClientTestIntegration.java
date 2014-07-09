@@ -3,7 +3,6 @@ package net.ripe.db.whois.api.rest;
 import net.ripe.db.whois.api.AbstractIntegrationTest;
 import net.ripe.db.whois.api.rest.client.RestClient;
 import net.ripe.db.whois.api.rest.client.RestClientException;
-import net.ripe.db.whois.api.rest.domain.AbuseContact;
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
@@ -188,58 +187,6 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
 
         assertThat(obj.getValueForAttribute(AttributeType.AUTH).toString(), startsWith("MD5-PW"));
         assertThat(obj.getValueForAttribute(AttributeType.AUTH).toString(), not(is("MD5-PW")));
-    }
-
-    @Test
-    public void lookup_abuse_contact() {
-        final RpslObject ABUSE_CONTACT_ROLE = RpslObject.parse("" +
-                "role:          Abuse Contact\n" +
-                "nic-hdl:       AC1-TEST\n" +
-                "abuse-mailbox: abuse@test.net\n" +
-                "source:        TEST");
-
-        final RpslObject ABUSE_CONTACT_ORGANISATION = RpslObject.parse("" +
-                "organisation:  ORG-RN1-TEST\n" +
-                "org-name:      Ripe NCC\n" +
-                "org-type:      OTHER\n" +
-                "address:       Amsterdam\n" +
-                "abuse-c:       AC1-TEST\n" +
-                "e-mail:        some@email.net\n" +
-                "mnt-ref:       OWNER-MNT\n" +
-                "mnt-by:        OWNER-MNT\n" +
-                "changed:       dbtest@ripe.net 20121016\n" +
-                "source:        TEST");
-
-        final RpslObject ABUSE_CONTACT_INETNUM = RpslObject.parse("" +
-                "inetnum:       193.0.0.0 - 193.0.0.255\n" +
-                "netname:       RIPE-NCC\n" +
-                "descr:         some description\n" +
-                "org:           ORG-RN1-TEST\n" +
-                "country:       NL\n" +
-                "admin-c:       TP1-TEST\n" +
-                "tech-c:        TP1-TEST\n" +
-                "status:        SUB-ALLOCATED PA\n" +
-                "mnt-by:        OWNER-MNT\n" +
-                "changed:       org@ripe.net 20120505\n" +
-                "source:        TEST");
-
-
-        databaseHelper.addObjects(ABUSE_CONTACT_ROLE, ABUSE_CONTACT_ORGANISATION, ABUSE_CONTACT_INETNUM);
-        resetIpTrees();
-
-        final AbuseContact abuseContact = restClient.request().lookupAbuseContact("193.0.0.1");
-
-        assertThat(abuseContact.getEmail(), is("abuse@test.net"));
-    }
-
-    @Test
-    public void lookup_abuse_contact_not_found() {
-        try {
-            restClient.request().lookupAbuseContact("10.0.0.1");
-            fail();
-        } catch (RestClientException e) {
-            assertThat(e.getErrorMessages().get(0).getText(), is("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><abuse-resources xmlns:xlink=\"http://www.w3.org/1999/xlink\"><message>No abuse contact found for 10.0.0.1</message></abuse-resources>"));
-        }
     }
 
     @Test

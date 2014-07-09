@@ -1,8 +1,6 @@
 package net.ripe.db.whois.api.rest.client;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.api.rest.domain.AbuseContact;
-import net.ripe.db.whois.api.rest.domain.AbuseResources;
 import net.ripe.db.whois.api.rest.domain.WhoisObject;
 import net.ripe.db.whois.api.rest.domain.WhoisResources;
 import net.ripe.db.whois.api.rest.domain.WhoisVersion;
@@ -267,25 +265,6 @@ public class RestClientTarget {
             return whoisResources.getVersions().getVersions();
         } catch (ClientErrorException e) {
             throw createException(e);
-        }
-    }
-
-    public AbuseContact lookupAbuseContact(final String resource) {
-        try {
-            final Invocation.Builder request = client.target(baseUrl)
-                    .path("abuse-contact")
-                    .path(resource)
-                    .request();
-
-            setCookies(request);
-            setHeaders(request);
-
-            final AbuseResources abuseResources = request.get(AbuseResources.class);
-
-            return abuseResources.getAbuseContact();
-
-        } catch (ClientErrorException e) {
-            throw createExceptionFromMessage(e);
         }
     }
 

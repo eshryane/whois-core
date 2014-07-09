@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import net.ripe.db.whois.api.httpserver.DefaultExceptionMapper;
 import net.ripe.db.whois.api.httpserver.ServletDeployer;
-import net.ripe.db.whois.internal.api.abusec.AbuseCService;
 import net.ripe.db.whois.internal.api.acl.AclBanService;
 import net.ripe.db.whois.internal.api.acl.AclLimitService;
 import net.ripe.db.whois.internal.api.acl.AclMirrorService;
@@ -29,7 +28,6 @@ public class InternalServletDeployer implements ServletDeployer {
     private final AclLimitService aclLimitService;
     private final AclMirrorService aclMirrorService;
     private final AclProxyService aclProxyService;
-    private final AbuseCService abuseCService;
     private final LogSearchService logSearchService;
     private final DefaultExceptionMapper defaultExceptionMapper;
 
@@ -39,14 +37,12 @@ public class InternalServletDeployer implements ServletDeployer {
                                    final AclLimitService aclLimitService,
                                    final AclMirrorService aclMirrorService,
                                    final AclProxyService aclProxyService,
-                                   final AbuseCService abuseCService,
                                    final LogSearchService logSearchService,
                                    final DefaultExceptionMapper defaultExceptionMapper) {
         this.aclBanService = aclBanService;
         this.aclLimitService = aclLimitService;
         this.aclMirrorService = aclMirrorService;
         this.aclProxyService = aclProxyService;
-        this.abuseCService = abuseCService;
         this.apiKeyFilter = apiKeyFilter;
         this.logSearchService = logSearchService;
         this.defaultExceptionMapper = defaultExceptionMapper;
@@ -61,7 +57,6 @@ public class InternalServletDeployer implements ServletDeployer {
         resourceConfig.register(aclLimitService);
         resourceConfig.register(aclMirrorService);
         resourceConfig.register(aclProxyService);
-        resourceConfig.register(abuseCService);
         resourceConfig.register(logSearchService);
         resourceConfig.register(defaultExceptionMapper);
 
