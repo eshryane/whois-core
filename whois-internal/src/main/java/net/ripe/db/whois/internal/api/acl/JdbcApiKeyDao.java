@@ -1,4 +1,4 @@
-package net.ripe.db.whois.internal.api.abusec;
+package net.ripe.db.whois.internal.api.acl;
 
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.aspects.RetryFor;

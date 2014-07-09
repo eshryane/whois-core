@@ -2,7 +2,6 @@ package net.ripe.db.whois.internal.api.acl;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import net.ripe.db.whois.internal.api.abusec.JdbcApiKeyDao;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

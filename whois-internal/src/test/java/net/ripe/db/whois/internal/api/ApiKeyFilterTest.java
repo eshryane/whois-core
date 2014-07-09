@@ -1,7 +1,7 @@
 package net.ripe.db.whois.internal.api;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.internal.api.abusec.JdbcApiKeyDao;
+import net.ripe.db.whois.internal.api.acl.JdbcApiKeyDao;
 import net.ripe.db.whois.internal.api.acl.ApiKeyFilter;
 import org.junit.Before;
 import org.junit.Test;
