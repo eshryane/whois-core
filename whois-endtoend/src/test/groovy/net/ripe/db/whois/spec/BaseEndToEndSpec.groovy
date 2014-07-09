@@ -12,7 +12,6 @@ import net.ripe.db.whois.spec.domain.Message
 import net.ripe.db.whois.spec.domain.NotificationResponse
 import net.ripe.db.whois.spec.domain.SyncUpdate
 import net.ripe.db.whois.spec.domain.SyncUpdateResponse
-import net.ripe.db.whois.update.dns.DnsGatewayStub
 import spock.lang.Specification
 
 import javax.mail.Address
@@ -319,10 +318,6 @@ ${response}
 
     def getMailSender(){
         return whoisFixture.getMailSender()
-    }
-
-    public DnsGatewayStub getDnsGatewayStub() {
-        return whoisFixture.getDnsGatewayStub();
     }
 
     public TestWhoisLog getTestWhoisLog() {

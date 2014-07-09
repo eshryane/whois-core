@@ -127,6 +127,10 @@ public class SingleUpdateHandler {
         // run business validation
         final boolean businessRulesOk = updateObjectHandler.validateBusinessRules(preparedUpdate, updateContext);
 
+        if (!businessRulesOk || updateContext.hasErrors(update)) {
+            throw new UpdateFailedException();
+        }
+
         // defer setting prepared update so that on failure, we report back with the object without resolved auto keys
         // FIXME: [AH] per-attribute error messages generated up to this point will not get reported in ACK if they have been changed (by attributeGenerator or AUTO-key generator), as the report goes for the pre-auto-key-generated version of the object, in which the newly generated attributes are not present
         updateContext.setPreparedUpdate(preparedUpdate);

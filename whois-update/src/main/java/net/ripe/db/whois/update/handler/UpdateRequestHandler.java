@@ -3,7 +3,6 @@ package net.ripe.db.whois.update.handler;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.update.dns.DnsChecker;
 import net.ripe.db.whois.update.domain.Ack;
 import net.ripe.db.whois.update.domain.Keyword;
 import net.ripe.db.whois.update.domain.Update;
@@ -33,7 +32,6 @@ public class UpdateRequestHandler {
     private final ResponseFactory responseFactory;
     private final SingleUpdateHandler singleUpdateHandler;
     private final LoggerContext loggerContext;
-    private final DnsChecker dnsChecker;
     private final UpdateNotifier updateNotifier;
     private final UpdateLog updateLog;
 
@@ -42,14 +40,12 @@ public class UpdateRequestHandler {
                                 final ResponseFactory responseFactory,
                                 final SingleUpdateHandler singleUpdateHandler,
                                 final LoggerContext loggerContext,
-                                final DnsChecker dnsChecker,
                                 final UpdateNotifier updateNotifier,
                                 final UpdateLog updateLog) {
         this.sourceContext = sourceContext;
         this.responseFactory = responseFactory;
         this.singleUpdateHandler = singleUpdateHandler;
         this.loggerContext = loggerContext;
-        this.dnsChecker = dnsChecker;
         this.updateNotifier = updateNotifier;
         this.updateLog = updateLog;
     }
@@ -90,8 +86,6 @@ public class UpdateRequestHandler {
     }
 
     private UpdateResponse handleUpdates(final UpdateRequest updateRequest, final UpdateContext updateContext) {
-        dnsChecker.checkAll(updateRequest, updateContext);
-
         processUpdateQueue(updateRequest, updateContext);
 
         // Create update response before sending notifications, so in case of an exception

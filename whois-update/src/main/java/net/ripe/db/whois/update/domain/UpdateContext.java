@@ -11,8 +11,6 @@ import net.ripe.db.whois.common.rpsl.ObjectMessages;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.authentication.Subject;
-import net.ripe.db.whois.update.dns.DnsCheckRequest;
-import net.ripe.db.whois.update.dns.DnsCheckResponse;
 import net.ripe.db.whois.update.log.LoggerContext;
 
 import javax.annotation.CheckForNull;
@@ -30,7 +28,6 @@ public class UpdateContext {
     private final Map<Update, CIString> placeHolderForUpdate = Maps.newHashMap();
     private final Map<CIString, GeneratedKey> generatedKeys = Maps.newHashMap();
     private final Map<Update, Context> contexts = Maps.newLinkedHashMap();
-    private final Map<DnsCheckRequest, DnsCheckResponse> dnsCheckResponses = Maps.newHashMap();
     private final LoggerContext loggerContext;
 
     private int nrSinceRestart;
@@ -52,18 +49,6 @@ public class UpdateContext {
 
     public int getNrSinceRestart() {
         return nrSinceRestart;
-    }
-
-    public void addDnsCheckResponse(final DnsCheckRequest request, final DnsCheckResponse response) {
-        final DnsCheckResponse previous = dnsCheckResponses.put(request, response);
-        if (previous != null) {
-            throw new IllegalStateException("Existing response for request: " + request);
-        }
-    }
-
-    @CheckForNull
-    public DnsCheckResponse getCachedDnsCheckResponse(final DnsCheckRequest dnsCheckRequest) {
-        return dnsCheckResponses.get(dnsCheckRequest);
     }
 
     public void addMessages(final UpdateContainer updateContainer, final ObjectMessages objectMessages) {

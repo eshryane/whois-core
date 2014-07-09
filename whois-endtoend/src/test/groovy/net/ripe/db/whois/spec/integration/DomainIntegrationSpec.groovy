@@ -196,7 +196,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("***Error:   Creating enum domain requires administrative authorisation")
-        dnsCheckedFor "2.1.2.1.5.5.5.2.0.2.1.e164.arpa"
     }
 
     def "create enum domain with ENUM MAINTAINER"() {
@@ -216,7 +215,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 2.1.2.1.5.5.5.2.0.2.1.e164.arpa")
-        dnsCheckedFor "2.1.2.1.5.5.5.2.0.2.1.e164.arpa"
     }
 
     def "create ipv4 domain success"() {
@@ -237,7 +235,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        dnsCheckedFor "0.0.193.in-addr.arpa"
     }
 
     def "create ipv4 domain parent auth failed"() {
@@ -261,8 +258,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
                 "***Error:   Authorisation for [inetnum] 10.0.0.0 - 10.0.0.255 failed\n" +
                 "            using \"mnt-domains:\"\n" +
                 "            not authenticated by: DOMAIN-MNT")
-
-        dnsCheckedFor "0.0.10.in-addr.arpa"
     }
 
     def "create ipv4 domain parent exists"() {
@@ -324,8 +319,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
         insertResponse.contains("" +
                 "***Info:    Value ns.foo.net.0.0.193.in-addr.arpa. 10.0.0.0/32 converted to\n" +
                 "            ns.foo.net.0.0.193.in-addr.arpa 10.0.0.0")
-
-        dnsCheckedFor "0.0.193.in-addr.arpa"
     }
 
     def "create ipv4 domain with nserver not ending with domain name and glue"() {
@@ -345,10 +338,10 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
                 """.stripIndent())
 
       then:
+
+
         insertResponse.contains("Create FAILED: [domain] 0.0.193.in-addr.arpa")
         insertResponse.contains("***Error:   Glue records only allowed if hostname ends with 0.0.193.in-addr.arpa")
-
-        dnsCheckedFor "0.0.193.in-addr.arpa"
     }
 
     def "create enum domain with nserver and glue"() {
@@ -368,8 +361,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("***Error:   Enum domain has invalid glue 10.0.0.0/32")
-
-        dnsCheckedFor "0.0.0.e164.arpa"
     }
 
     def "modify ipv4 domain success"() {
@@ -390,7 +381,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        dnsCheckedFor "0.0.193.in-addr.arpa"
 
       when:
         def updateResponse = syncUpdate new SyncUpdate(data: """\
@@ -412,8 +402,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
         updateResponse.contains("" +
                 "***Info:    Value ns.foo.net.0.0.193.in-addr.arpa. 10.0.0.0/32 converted to\n" +
                 "            ns.foo.net.0.0.193.in-addr.arpa 10.0.0.0")
-
-        dnsCheckedFor "0.0.193.in-addr.arpa"
     }
 
     def "add ipv4 domain with parent should fail"() {
@@ -434,7 +422,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        dnsCheckedFor "0.0.193.in-addr.arpa"
 
       when:
         def updateResponse = syncUpdate new SyncUpdate(data: """\
@@ -454,8 +441,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
       then:
         updateResponse.contains("Create FAILED: [domain] 0-127.0.0.193.in-addr.arpa")
         updateResponse.contains("***Error:   Existing less specific domain object found 193.0.0.0/24")
-
-        dnsCheckedFor "0-127.0.0.193.in-addr.arpa"
     }
 
     def "delete ipv4 domain"() {
@@ -476,7 +461,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        dnsCheckedFor "0.0.193.in-addr.arpa"
 
       when:
         def updateResponse = syncUpdate new SyncUpdate(data: """\
@@ -496,7 +480,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         updateResponse.contains("Delete SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        !dnsCheckedFor("0.0.193.in-addr.arpa")
     }
 
     def "create and modify ipv4 domain check number dns check count"() {
@@ -531,7 +514,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
         insertResponse.contains("Modify SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        dnsCheckedFor("0.0.193.in-addr.arpa")
     }
 
     def "create and noop ipv4 domain check number dns check count"() {
@@ -565,7 +547,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
         insertResponse.contains("No operation: [domain] 0.0.193.in-addr.arpa")
-        dnsCheckedFor("0.0.193.in-addr.arpa")
     }
 
     def "create multiple ipv4 domain objects check number dns check count"() {
@@ -741,19 +722,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.203.in-addr.arpa")
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.204.in-addr.arpa")
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.205.in-addr.arpa")
-        dnsCheckedFor("0.0.193.in-addr.arpa")
-        dnsCheckedFor("0.0.194.in-addr.arpa")
-        dnsCheckedFor("0.0.195.in-addr.arpa")
-        dnsCheckedFor("0.0.196.in-addr.arpa")
-        dnsCheckedFor("0.0.197.in-addr.arpa")
-        dnsCheckedFor("0.0.198.in-addr.arpa")
-        dnsCheckedFor("0.0.199.in-addr.arpa")
-        dnsCheckedFor("0.0.200.in-addr.arpa")
-        dnsCheckedFor("0.0.201.in-addr.arpa")
-        dnsCheckedFor("0.0.202.in-addr.arpa")
-        dnsCheckedFor("0.0.203.in-addr.arpa")
-        dnsCheckedFor("0.0.204.in-addr.arpa")
-        dnsCheckedFor("0.0.205.in-addr.arpa")
     }
 
     def "create ipv4 domain check number dns check count after reorder"() {
@@ -785,7 +753,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
       then:
         insertResponse.contains("Create SUCCEEDED: [person] SP1-TEST   Some person")
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        dnsCheckedFor("0.0.193.in-addr.arpa")
     }
 
     def "create ipv4 domain check skipped for override"() {
@@ -806,7 +773,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        !dnsCheckedFor("0.0.193.in-addr.arpa")
     }
 
     def "delete domain by mnt-domains"() {
@@ -862,7 +828,6 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         insertResponse.contains("Create SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        dnsCheckedFor "0.0.193.in-addr.arpa"
 
       when:
         def updateResponse = syncUpdate new SyncUpdate(data: """\
@@ -882,6 +847,5 @@ class DomainIntegrationSpec extends BaseWhoisSourceSpec {
 
       then:
         updateResponse.contains("Delete SUCCEEDED: [domain] 0.0.193.in-addr.arpa")
-        !dnsCheckedFor("0.0.193.in-addr.arpa")
     }
 }

@@ -1223,10 +1223,6 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         queryObjectNotFound("-rGBT domain .193.in-addr.arpa", "domain", ".193.in-addr.arpa")
 
       when:
-        dnsStubbedResponse(".193.in-addr.arpa",
-                "Host name .193.in-addr.arpa is illegal (syntax error at ) The hostname is not syntactially correct according to RFC 952.  A common error is to begin the hostname with a non-letter (a-z) or use invalid characters (only a-z, 0-9 and - are allowed).",
-                ".193.in-addr.arpa is not a valid name for a zone.")
-
         def message = syncUpdate("""\
                 domain:         .193.in-addr.arpa
                 descr:          reverse domain
@@ -1261,10 +1257,6 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         queryObjectNotFound("-rGBT domain 1.99.in-addr.arpa", "domain", "1.99.in-addr.arpa")
 
       when:
-        dnsStubbedResponse("1.99.in-addr.arpa",
-                "No name servers found at child. No name servers could be found at the child. This usually means that the child is not configured to answer queries about the zone.",
-                "Fatal error in delegation for zone 1.99.in-addr.arpa. No name servers found at child or at parent. No further testing can be performed.")
-
         def message = syncUpdate("""\
                 domain:         1.99.in-addr.arpa
                 descr:          reverse domain
@@ -2107,10 +2099,6 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         queryObjectNotFound("-rGBT domain 193.in-addr.arpa", "domain", "193.in-addr.arpa")
 
       when:
-        dnsStubbedResponse("193.in-addr.arpa",
-                "Too few name servers (1). Only one name server was found for the zone. You should always have at least two name servers for a zone to be able to handle transient connectivity problems.",
-                "Too few IPv4 name servers (1). Only one IPv4 name server was found for the zone. You should always have at least two IPv4 name servers for a zone to be able to handle transient connectivity problems.")
-
         def message = syncUpdate("""\
                 domain:         193.in-addr.arpa
                 descr:          reverse domain
@@ -2386,8 +2374,6 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         queryObjectNotFound("-rGBT domain 193.in-addr.arpa", "domain", "193.in-addr.arpa")
 
       when:
-        dnsStubbedResponse("0.0.193.in-addr.arpa", "The zone 0.0.193.in-addr.arpa has published DS records, but none of them work.")
-
         def message = syncUpdate("""\
                 domain:         0.0.193.in-addr.arpa
                 descr:          reverse domain
@@ -2717,10 +2703,6 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         queryObjectNotFound("-rGBT domain mydomain.net", "domain", "mydomain.net")
 
       when:
-        dnsStubbedResponse("mydomain.net",
-                "No name servers found at child. No name servers could be found at the child. This usually means that the child is not configured to answer queries about the zone.",
-                "Fatal error in delegation for zone mydomain.net. No name servers found at child or at parent. No further testing can be performed.")
-
         def message = syncUpdate("""\
                 domain:         mydomain.net
                 descr:          forward domain

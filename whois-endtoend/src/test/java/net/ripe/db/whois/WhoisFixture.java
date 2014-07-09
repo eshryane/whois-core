@@ -30,7 +30,6 @@ import net.ripe.db.whois.db.WhoisServer;
 import net.ripe.db.whois.query.QueryServer;
 import net.ripe.db.whois.query.support.TestWhoisLog;
 import net.ripe.db.whois.scheduler.task.unref.UnrefCleanup;
-import net.ripe.db.whois.update.dns.DnsGatewayStub;
 import net.ripe.db.whois.update.mail.MailGateway;
 import net.ripe.db.whois.update.mail.MailSenderStub;
 import org.joda.time.LocalDateTime;
@@ -50,8 +49,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
-
 public class WhoisFixture {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhoisFixture.class);
@@ -66,7 +63,6 @@ public class WhoisFixture {
     protected MailGateway mailGateway;
     protected MessageDequeue messageDequeue;
     protected DataSource whoisDataSource;
-    protected DnsGatewayStub dnsGatewayStub;
 
     protected IpRanges ipRanges;
     protected TestDateTimeProvider testDateTimeProvider;
@@ -106,7 +102,6 @@ public class WhoisFixture {
         jettyBootstrap = applicationContext.getBean(JettyBootstrap.class);
         mailUpdatesTestSupport = applicationContext.getBean(MailUpdatesTestSupport.class);
         mailSender = applicationContext.getBean(MailSenderStub.class);
-        dnsGatewayStub = applicationContext.getBean(DnsGatewayStub.class);
         ipTreeUpdater = applicationContext.getBean(IpTreeUpdater.class);
         ipRanges = applicationContext.getBean(IpRanges.class);
         stubs = applicationContext.getBeansOfType(Stub.class);
@@ -197,10 +192,6 @@ public class WhoisFixture {
                 .setRedirect(isRedirect)
                 .build()
                 .post();
-    }
-
-    public boolean dnsCheckedFor(final String key) {
-        return dnsGatewayStub.getCheckedUpdates().remove(ciString(key));
     }
 
     public void setRipeRanges(final String... ripeRanges) {
@@ -295,10 +286,6 @@ public class WhoisFixture {
 
     public ClassPathXmlApplicationContext getApplicationContext() {
         return applicationContext;
-    }
-
-    public DnsGatewayStub getDnsGatewayStub() {
-        return dnsGatewayStub;
     }
 
     public TestWhoisLog getTestWhoisLog() {

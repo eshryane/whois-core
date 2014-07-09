@@ -32,10 +32,6 @@ abstract class BaseWhoisSourceSpec extends BaseEndToEndSpec {
         whoisFixture.dumpSchema()
     }
 
-    def dnsCheckedFor(String key) {
-        whoisFixture.dnsCheckedFor(key)
-    }
-
     def setRipeRanges(String... ripeRanges) {
         whoisFixture.setRipeRanges(ripeRanges)
     }

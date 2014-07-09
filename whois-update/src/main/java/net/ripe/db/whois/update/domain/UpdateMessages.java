@@ -365,10 +365,6 @@ public final class UpdateMessages {
         return new Message(Type.ERROR, "Membership claim is not supported by mbrs-by-ref: attribute of the referenced set %s", asName);
     }
 
-    public static Message dnsCheckTimeout() {
-        return new Message(Type.ERROR, "Timeout performing DNS check");
-    }
-
     // NOTE: this errormessage is being used by webupdates.
     public static Message authorisationRequiredForEnumDomain() {
         return new Message(Type.ERROR, "Creating enum domain requires administrative authorisation");
