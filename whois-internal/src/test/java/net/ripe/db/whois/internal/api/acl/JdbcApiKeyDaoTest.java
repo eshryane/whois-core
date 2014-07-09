@@ -1,7 +1,6 @@
-package net.ripe.db.whois.internal.api.abusec;
+package net.ripe.db.whois.internal.api.acl;
 
 import net.ripe.db.whois.internal.AbstractInternalTest;
-import net.ripe.db.whois.internal.api.acl.JdbcApiKeyDao;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
