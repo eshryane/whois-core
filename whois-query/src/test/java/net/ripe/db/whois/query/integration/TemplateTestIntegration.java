@@ -206,7 +206,6 @@ public class TemplateTestIntegration extends AbstractQueryIntegrationTest {
                 "     o ASSIGNED ANYCAST\n" +
                 "     o EARLY-REGISTRATION\n" +
                 "     o NOT-SET\n" +
-                "     o LEGACY\n" +
                 "\n" +
                 "remarks\n" +
                 "\n" +
@@ -372,7 +371,6 @@ public class TemplateTestIntegration extends AbstractQueryIntegrationTest {
                 "org:            [optional]   [single]     [inverse key]\n" +
                 "admin-c:        [mandatory]  [multiple]   [inverse key]\n" +
                 "tech-c:         [mandatory]  [multiple]   [inverse key]\n" +
-                "status:         [generated]  [single]     [ ]\n" +
                 "notify:         [optional]   [multiple]   [inverse key]\n" +
                 "mnt-lower:      [optional]   [multiple]   [inverse key]\n" +
                 "mnt-routes:     [optional]   [multiple]   [inverse key]\n" +
@@ -567,16 +565,6 @@ public class TemplateTestIntegration extends AbstractQueryIntegrationTest {
                 "     optionally followed by a source specification.  The first digit\n" +
                 "     must not be \"0\".  Source specification starts with \"-\" followed\n" +
                 "     by source name up to 9-character length.\n" +
-                "\n" +
-                "status\n" +
-                "\n" +
-                "   Specifies the status of the resource.\n" +
-                "\n" +
-                "     Status can have one of these values:\n" +
-                "     \n" +
-                "     o ASSIGNED\n" +
-                "     o LEGACY\n" +
-                "     o OTHER\n" +
                 "\n" +
                 "notify\n" +
                 "\n" +

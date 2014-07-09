@@ -635,15 +635,4 @@ public class SimpleTestIntegration extends AbstractQueryIntegrationTest {
 
         assertThat(query, containsString("route6:         2aaa:6fff::/48"));
     }
-
-    @Test
-    public void autnum_status_description() {
-        final String query = DummyWhoisClient.query(QueryServer.port, "-v aut-num");
-
-        assertThat(query, containsString("status:         [generated]  [single]     [ ]"));
-        assertThat(query, containsString("status"));
-        assertThat(query, containsString("o ASSIGNED"));
-        assertThat(query, containsString("o LEGACY"));
-        assertThat(query, containsString("o OTHER"));
-    }
 }
