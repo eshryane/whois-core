@@ -25,7 +25,6 @@ public class WhoisServletDeployer implements ServletDeployer {
     private final WhoisRestService whoisRestService;
     private final SyncUpdatesService syncUpdatesService;
     private final WhoisMetadata whoisMetadata;
-    private final GeolocationService geolocationService;
     private final DefaultExceptionMapper defaultExceptionMapper;
     private final MaintenanceModeFilter maintenanceModeFilter;
 
@@ -33,13 +32,11 @@ public class WhoisServletDeployer implements ServletDeployer {
     public WhoisServletDeployer(final WhoisRestService whoisRestService,
                                 final SyncUpdatesService syncUpdatesService,
                                 final WhoisMetadata whoisMetadata,
-                                final GeolocationService geolocationService,
                                 final DefaultExceptionMapper defaultExceptionMapper,
                                 final MaintenanceModeFilter maintenanceModeFilter) {
         this.whoisRestService = whoisRestService;
         this.syncUpdatesService = syncUpdatesService;
         this.whoisMetadata = whoisMetadata;
-        this.geolocationService = geolocationService;
         this.defaultExceptionMapper = defaultExceptionMapper;
         this.maintenanceModeFilter = maintenanceModeFilter;
     }
@@ -55,7 +52,6 @@ public class WhoisServletDeployer implements ServletDeployer {
         resourceConfig.register(whoisRestService);
         resourceConfig.register(syncUpdatesService);
         resourceConfig.register(whoisMetadata);
-        resourceConfig.register(geolocationService);
         resourceConfig.register(defaultExceptionMapper);
 
         final JacksonJaxbJsonProvider jaxbJsonProvider = new JacksonJaxbJsonProvider();
