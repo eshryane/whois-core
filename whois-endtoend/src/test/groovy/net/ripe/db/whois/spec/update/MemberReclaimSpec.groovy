@@ -226,7 +226,6 @@ class MemberReclaimSpec extends BaseQueryUpdateSpec {
             "AS10000": """\
                 aut-num:     AS10000
                 as-name:     TEST-AS
-                status:      OTHER
                 descr:       Testing Authorisation code
                 admin-c:     TP1-TEST
                 tech-c:      TP1-TEST
@@ -237,7 +236,6 @@ class MemberReclaimSpec extends BaseQueryUpdateSpec {
             "AS20000": """\
                 aut-num:     AS20000
                 as-name:     TEST-AS
-                status:      OTHER
                 descr:       Testing Authorisation code
                 admin-c:     TP1-TEST
                 tech-c:      TP1-TEST
@@ -1620,8 +1618,6 @@ class MemberReclaimSpec extends BaseQueryUpdateSpec {
 
                 aut-num:     AS20000
                 as-name:     TEST-AS
-                remarks:     For information on "status:" attribute read https://www.ripe.net/data-tools/db/faq/faq-status-values-legacy-resources
-                status:      OTHER
                 descr:       Testing Authorisation code
                 admin-c:     TP1-TEST
                 tech-c:      TP1-TEST
