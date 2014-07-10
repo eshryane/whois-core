@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.net.InetAddress;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -71,7 +72,8 @@ public class HazelcastPersonalObjectAccounting implements PersonalObjectAccounti
     @Override
     public int accountPersonalObject(final InetAddress remoteAddress, final int amount) {
         try {
-            Integer count = counterMap.tryLockAndGet(remoteAddress, 3, TimeUnit.SECONDS);
+            counterMap.lock(remoteAddress);
+            Integer count = counterMap.getAsync(remoteAddress).get(3, TimeUnit.SECONDS);
 
             if (count == null) {
                 count = amount;
@@ -79,10 +81,15 @@ public class HazelcastPersonalObjectAccounting implements PersonalObjectAccounti
                 count += amount;
             }
 
-            counterMap.putAndUnlock(remoteAddress, count);
+            counterMap.putAsync(remoteAddress, count).get(3, TimeUnit.SECONDS);
             return count;
-        } catch (TimeoutException e) {
+
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             LOGGER.info("Unable to account personal object, allowed by default");
+        } finally {
+            if (counterMap.isLocked(remoteAddress)) {
+                counterMap.unlock(remoteAddress);
+            }
         }
 
         return 0;
