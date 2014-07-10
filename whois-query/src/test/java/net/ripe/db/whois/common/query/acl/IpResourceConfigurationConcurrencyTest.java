@@ -1,5 +1,6 @@
 package net.ripe.db.whois.common.query.acl;
 
+import net.ripe.db.whois.common.query.ipresource.IpResourceConfiguration;
 import com.google.common.base.Stopwatch;
 import net.ripe.db.whois.common.domain.IpResourceEntry;
 import org.junit.Before;

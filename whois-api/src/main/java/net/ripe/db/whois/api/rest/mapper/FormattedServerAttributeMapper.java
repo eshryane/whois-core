@@ -1,6 +1,6 @@
 package net.ripe.db.whois.api.rest.mapper;
 
-import net.ripe.db.whois.api.rest.ReferencedTypeResolver;
+//import net.ripe.db.whois.api.rest.ReferencedTypeResolver;
 import net.ripe.db.whois.api.rest.domain.Attribute;
 import net.ripe.db.whois.api.rest.domain.Link;
 import net.ripe.db.whois.common.domain.CIString;
@@ -17,12 +17,11 @@ import java.util.List;
 
 @Component
 public class FormattedServerAttributeMapper implements AttributeMapper {
-    private final ReferencedTypeResolver referencedTypeResolver;
+//    private final ReferencedTypeResolver referencedTypeResolver;
     private final String baseUrl;
 
     @Autowired
-    public FormattedServerAttributeMapper(final ReferencedTypeResolver referencedTypeResolver, @Value("${api.rest.baseurl}") final String baseUrl) {
-        this.referencedTypeResolver = referencedTypeResolver;
+    public FormattedServerAttributeMapper(@Value("${api.rest.baseurl}") final String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
@@ -36,8 +35,8 @@ public class FormattedServerAttributeMapper implements AttributeMapper {
         final List<Attribute> result = new ArrayList(4);
         for (CIString value : rpslAttribute.getCleanValues()) {
             // TODO: [AH] for each person or role reference returned, we make an sql lookup - baaad
-            final String referencedType = (rpslAttribute.getType() != null) ? referencedTypeResolver.getReferencedType(rpslAttribute.getType(), value) : null;
-            final Link link = (referencedType != null) ? createLink(source, referencedType, value.toString()) : null;
+            final String referencedType = null; //(rpslAttribute.getType() != null) ? referencedTypeResolver.getReferencedType(rpslAttribute.getType(), value) : null;
+            final Link link = null; // (referencedType != null) ? createLink(source, referencedType, value.toString()) : null;
             result.add(new Attribute(rpslAttribute.getKey(), value.toString(), rpslAttribute.getCleanComment(), referencedType, link));
         }
         return result;

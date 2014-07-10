@@ -1,7 +1,6 @@
 package net.ripe.db.whois.api.rest.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import net.ripe.db.whois.api.rest.mapper.ValidXmlAdapter;
 import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Nullable;

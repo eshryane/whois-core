@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.query.pipeline;
 
 import net.ripe.db.whois.common.ip.IpInterval;
-import net.ripe.db.whois.common.query.acl.IpResourceConfiguration;
+import net.ripe.db.whois.common.query.ipresource.IpResourceConfiguration;
 import net.ripe.db.whois.common.query.domain.QueryCompletionInfo;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.handler.WhoisLog;

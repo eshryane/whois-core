@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.query.dao;
 import net.ripe.db.whois.common.domain.BlockEvent;
 import net.ripe.db.whois.common.domain.BlockEvents;
 import net.ripe.db.whois.common.ip.IpInterval;
-import net.ripe.db.whois.common.query.acl.IpResourceConfiguration;
+import net.ripe.db.whois.common.query.ipresource.IpResourceConfiguration;
 import org.joda.time.LocalDate;
 
 import java.util.List;

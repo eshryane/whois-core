@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.query.acl;
+package net.ripe.db.whois.common.query.ipresource;
 
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.domain.IpResourceEntry;

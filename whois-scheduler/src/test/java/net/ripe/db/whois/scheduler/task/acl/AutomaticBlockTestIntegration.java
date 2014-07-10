@@ -5,7 +5,7 @@ import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.QueryServer;
-import net.ripe.db.whois.common.query.acl.IpResourceConfiguration;
+import net.ripe.db.whois.common.query.ipresource.IpResourceConfiguration;
 import net.ripe.db.whois.common.query.acl.PersonalObjectAccounting;
 import net.ripe.db.whois.scheduler.AbstractSchedulerIntegrationTest;
 import org.joda.time.LocalDateTime;

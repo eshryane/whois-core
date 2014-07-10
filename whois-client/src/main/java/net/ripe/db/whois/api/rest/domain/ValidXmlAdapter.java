@@ -1,4 +1,4 @@
-package net.ripe.db.whois.api.rest.mapper;
+package net.ripe.db.whois.api.rest.domain;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.regex.Pattern;
