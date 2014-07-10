@@ -3,7 +3,7 @@ package net.ripe.db.whois.api;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import net.ripe.db.whois.query.QueryFlag;
+import net.ripe.db.whois.common.query.QueryFlag;
 
 import java.util.Arrays;
 import java.util.Collection;

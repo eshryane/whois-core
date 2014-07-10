@@ -9,7 +9,7 @@ import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
-import net.ripe.db.whois.query.QueryFlag;
+import net.ripe.db.whois.common.query.QueryFlag;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;

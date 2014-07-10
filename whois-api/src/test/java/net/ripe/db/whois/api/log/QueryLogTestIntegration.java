@@ -8,7 +8,7 @@ import net.ripe.db.whois.api.rest.domain.WhoisObject;
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.query.support.TestWhoisLog;
+import net.ripe.db.whois.common.query.support.TestWhoisLog;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;

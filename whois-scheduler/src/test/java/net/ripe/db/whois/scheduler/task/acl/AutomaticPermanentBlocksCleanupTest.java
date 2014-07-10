@@ -1,7 +1,7 @@
 package net.ripe.db.whois.scheduler.task.acl;
 
 import net.ripe.db.whois.common.DateTimeProvider;
-import net.ripe.db.whois.query.dao.AccessControlListDao;
+import net.ripe.db.whois.common.query.dao.AccessControlListDao;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.joda.time.LocalDate;

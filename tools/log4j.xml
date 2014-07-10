@@ -68,7 +68,7 @@
     </appender>
 
     <!-- Loggers -->
-    <logger name="net.ripe.db.whois.query.handler.WhoisLog" additivity="false">
+    <logger name="net.ripe.db.whois.common.query.handler.WhoisLog" additivity="false">
         <level value="ALL" />
         <appender-ref ref="QUERYLOG" />
     </logger>

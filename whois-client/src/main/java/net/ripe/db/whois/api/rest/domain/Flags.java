@@ -1,7 +1,7 @@
 package net.ripe.db.whois.api.rest.domain;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.query.QueryFlag;
+import net.ripe.db.whois.common.query.QueryFlag;
 
 import javax.annotation.concurrent.Immutable;
 import javax.xml.bind.annotation.XmlAccessType;

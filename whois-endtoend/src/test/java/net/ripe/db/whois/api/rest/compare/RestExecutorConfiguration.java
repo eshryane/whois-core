@@ -1,6 +1,6 @@
 package net.ripe.db.whois.api.rest.compare;
 
-import net.ripe.db.whois.query.endtoend.compare.ComparisonConfiguration;
+import net.ripe.db.whois.common.query.endtoend.compare.ComparisonConfiguration;
 
 public class RestExecutorConfiguration implements ComparisonConfiguration {
     public enum ResponseFormat {COMPACT, DEFAULT}

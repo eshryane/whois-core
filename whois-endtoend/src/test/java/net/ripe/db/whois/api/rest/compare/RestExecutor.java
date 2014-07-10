@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.google.common.base.Stopwatch;
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.query.endtoend.compare.ComparisonExecutor;
+import net.ripe.db.whois.common.query.endtoend.compare.ComparisonExecutor;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -7,7 +7,7 @@ import net.ripe.db.whois.api.rest.domain.WhoisResources;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.source.IllegalSourceException;
-import net.ripe.db.whois.query.domain.QueryException;
+import net.ripe.db.whois.common.query.domain.QueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;

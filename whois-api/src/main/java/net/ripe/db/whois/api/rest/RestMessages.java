@@ -2,7 +2,7 @@ package net.ripe.db.whois.api.rest;
 
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
-import net.ripe.db.whois.query.QueryFlag;
+import net.ripe.db.whois.common.query.QueryFlag;
 
 public class RestMessages {
     public static Message uriMismatch(final CharSequence objectType, final CharSequence key) {

@@ -4,7 +4,7 @@ import com.jayway.awaitility.Awaitility;
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.iptree.IpTreeCacheManager;
 import net.ripe.db.whois.common.source.SourceConfiguration;
-import net.ripe.db.whois.query.dao.AccessControlListDao;
+import net.ripe.db.whois.common.query.dao.AccessControlListDao;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;

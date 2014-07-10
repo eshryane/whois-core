@@ -5,8 +5,8 @@ import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.query.QueryMessages;
-import net.ripe.db.whois.query.domain.TagResponseObject;
+import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.query.domain.TagResponseObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
