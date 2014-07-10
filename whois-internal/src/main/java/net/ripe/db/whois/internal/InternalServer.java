@@ -28,17 +28,17 @@ public class InternalServer {
 
         final ClassPathXmlApplicationContext applicationContext = WhoisProfile.initContextWithProfile("applicationContext-internal.xml", WhoisProfile.DEPLOYED);
 
-        final InternalServer logSearchServer = applicationContext.getBean(InternalServer.class);
+        final InternalServer internalServer = applicationContext.getBean(InternalServer.class);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                logSearchServer.stop();
+                internalServer.stop();
             }
         });
 
-        logSearchServer.start();
+        internalServer.start();
 
-        LOGGER.info("Whois server started in {}", stopwatch.stop());
+        LOGGER.info("Whois internal server started in {}", stopwatch.stop());
     }
 
     public void start() {

@@ -101,11 +101,6 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>net.ripe.db:whois-logsearch</exclude>
-                                </excludes>
-                            </artifactSet>
                         </configuration>
                     </plugin>
                 </plugins>

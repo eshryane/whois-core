@@ -9,7 +9,6 @@ import net.ripe.db.whois.internal.api.acl.AclLimitService;
 import net.ripe.db.whois.internal.api.acl.AclMirrorService;
 import net.ripe.db.whois.internal.api.acl.AclProxyService;
 import net.ripe.db.whois.internal.api.acl.ApiKeyFilter;
-import net.ripe.db.whois.internal.api.logsearch.LogSearchService;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -28,7 +27,6 @@ public class InternalServletDeployer implements ServletDeployer {
     private final AclLimitService aclLimitService;
     private final AclMirrorService aclMirrorService;
     private final AclProxyService aclProxyService;
-    private final LogSearchService logSearchService;
     private final DefaultExceptionMapper defaultExceptionMapper;
 
     @Autowired
@@ -37,14 +35,12 @@ public class InternalServletDeployer implements ServletDeployer {
                                    final AclLimitService aclLimitService,
                                    final AclMirrorService aclMirrorService,
                                    final AclProxyService aclProxyService,
-                                   final LogSearchService logSearchService,
                                    final DefaultExceptionMapper defaultExceptionMapper) {
         this.aclBanService = aclBanService;
         this.aclLimitService = aclLimitService;
         this.aclMirrorService = aclMirrorService;
         this.aclProxyService = aclProxyService;
         this.apiKeyFilter = apiKeyFilter;
-        this.logSearchService = logSearchService;
         this.defaultExceptionMapper = defaultExceptionMapper;
     }
 
@@ -57,7 +53,6 @@ public class InternalServletDeployer implements ServletDeployer {
         resourceConfig.register(aclLimitService);
         resourceConfig.register(aclMirrorService);
         resourceConfig.register(aclProxyService);
-        resourceConfig.register(logSearchService);
         resourceConfig.register(defaultExceptionMapper);
 
         final JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
