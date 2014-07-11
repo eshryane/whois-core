@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.query.integration;
 
 import net.ripe.db.whois.common.IntegrationTest;
-import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.pipeline.QueryServer;
 import net.ripe.db.whois.common.query.pipeline.QueryChannelsRegistry;
 import net.ripe.db.whois.common.query.support.AbstractQueryIntegrationTest;
 import org.junit.After;

@@ -4,7 +4,7 @@ import com.google.common.base.Charsets;
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
-import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.pipeline.QueryServer;
 import net.ripe.db.whois.common.query.domain.ResponseHandler;
 import net.ripe.db.whois.common.query.handler.QueryHandler;
 import net.ripe.db.whois.common.query.pipeline.*;

@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.query.integration;
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
-import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.pipeline.QueryServer;
 import net.ripe.db.whois.common.query.support.AbstractQueryIntegrationTest;
 import org.junit.After;
 import org.junit.Before;

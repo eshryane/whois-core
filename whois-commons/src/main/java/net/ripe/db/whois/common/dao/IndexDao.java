@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.dao.jdbc;
+package net.ripe.db.whois.common.dao;
 
 public interface IndexDao {
     void rebuild();

@@ -1,7 +1,7 @@
 package net.ripe.db.whois.spec.integration
 
 import net.ripe.db.whois.common.IntegrationTest
-import net.ripe.db.whois.common.domain.CIString
+import net.ripe.db.whois.common.utils.CIString
 import net.ripe.db.whois.common.domain.Tag
 import net.ripe.db.whois.common.rpsl.ObjectType
 import org.joda.time.LocalDateTime

@@ -2,7 +2,7 @@ package net.ripe.db.whois.common.query.support;
 
 import net.ripe.db.whois.common.support.AbstractDaoTest;
 import net.ripe.db.whois.common.query.QueryMessages;
-import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.pipeline.QueryServer;
 import net.ripe.db.whois.common.query.ipresource.IpResourceConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;

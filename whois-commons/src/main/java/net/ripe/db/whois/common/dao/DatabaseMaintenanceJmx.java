@@ -1,6 +1,5 @@
 package net.ripe.db.whois.common.dao;
 
-import net.ripe.db.whois.common.dao.jdbc.IndexDao;
 import net.ripe.db.whois.common.jmx.JmxBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

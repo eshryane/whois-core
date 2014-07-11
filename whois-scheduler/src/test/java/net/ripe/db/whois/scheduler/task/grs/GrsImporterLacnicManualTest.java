@@ -9,7 +9,7 @@ import net.ripe.db.whois.common.grs.AuthoritativeResourceData;
 import net.ripe.db.whois.common.grs.AuthoritativeResourceImportTask;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
 import net.ripe.db.whois.common.support.FileHelper;
-import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.pipeline.QueryServer;
 import net.ripe.db.whois.scheduler.AbstractSchedulerIntegrationTest;
 import org.junit.AfterClass;
 import org.junit.Before;

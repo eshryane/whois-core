@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.dao;
 
-import net.ripe.db.whois.common.dao.jdbc.IndexDao;
+import net.ripe.db.whois.common.dao.IndexDao;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import org.junit.Test;
 import org.junit.runner.RunWith;

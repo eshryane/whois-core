@@ -4,7 +4,7 @@ import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
-import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.pipeline.QueryServer;
 import net.ripe.db.whois.common.query.acl.AccessControlListManager;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.domain.ResponseHandler;

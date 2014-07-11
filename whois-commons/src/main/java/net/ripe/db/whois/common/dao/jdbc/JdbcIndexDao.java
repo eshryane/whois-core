@@ -3,6 +3,7 @@ package net.ripe.db.whois.common.dao.jdbc;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.ripe.db.whois.common.dao.IndexDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.UpdateLockDao;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;

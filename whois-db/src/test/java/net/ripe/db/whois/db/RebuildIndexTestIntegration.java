@@ -2,7 +2,7 @@ package net.ripe.db.whois.db;
 
 import net.ripe.db.whois.api.AbstractIntegrationTest;
 import net.ripe.db.whois.common.IntegrationTest;
-import net.ripe.db.whois.common.dao.jdbc.IndexDao;
+import net.ripe.db.whois.common.dao.IndexDao;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.support.database.diff.Database;
 import net.ripe.db.whois.common.support.database.diff.DatabaseDiff;

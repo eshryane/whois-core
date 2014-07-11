@@ -1,7 +1,7 @@
 package net.ripe.db.whois.scheduler;
 
 import net.ripe.db.whois.common.dao.jdbc.AbstractDatabaseHelperTest;
-import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.pipeline.QueryServer;
 import net.ripe.db.whois.common.query.ipresource.IpResourceConfiguration;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,8 @@
-package net.ripe.db.whois.common.query;
+package net.ripe.db.whois.common.query.pipeline;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 import net.ripe.db.whois.common.ApplicationService;
 import net.ripe.db.whois.common.MaintenanceMode;
-import net.ripe.db.whois.common.query.pipeline.QueryChannelsRegistry;
-import net.ripe.db.whois.common.query.pipeline.WhoisServerPipelineFactory;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFactory;

@@ -6,7 +6,7 @@ import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.transform.FilterAuthFunction;
 import net.ripe.db.whois.common.rpsl.transform.FilterEmailFunction;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
-import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.pipeline.QueryServer;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.VersionDateTime;
 import net.ripe.db.whois.common.query.support.AbstractQueryIntegrationTest;
