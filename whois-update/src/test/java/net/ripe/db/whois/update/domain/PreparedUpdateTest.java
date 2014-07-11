@@ -1,6 +1,6 @@
 package net.ripe.db.whois.update.domain;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.junit.Before;
@@ -11,7 +11,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;

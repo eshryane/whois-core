@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.rpsl.attrs;
 
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static net.ripe.db.whois.common.rpsl.attrs.OrgType.IANA;
 import static net.ripe.db.whois.common.rpsl.attrs.OrgType.LIR;
 import static net.ripe.db.whois.common.rpsl.attrs.OrgType.OTHER;

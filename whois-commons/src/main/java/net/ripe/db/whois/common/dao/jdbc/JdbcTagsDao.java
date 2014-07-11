@@ -2,7 +2,7 @@ package net.ripe.db.whois.common.dao.jdbc;
 
 import net.ripe.db.whois.common.aspects.RetryFor;
 import net.ripe.db.whois.common.dao.TagsDao;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

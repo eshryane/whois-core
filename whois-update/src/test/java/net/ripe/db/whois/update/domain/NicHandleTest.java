@@ -1,13 +1,13 @@
 package net.ripe.db.whois.update.domain;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciSet;
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciSet;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 

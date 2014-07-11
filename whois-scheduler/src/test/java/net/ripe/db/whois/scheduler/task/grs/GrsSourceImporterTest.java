@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;

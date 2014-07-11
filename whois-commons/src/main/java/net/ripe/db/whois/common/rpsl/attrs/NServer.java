@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.rpsl.attrs;
 
 import com.google.common.base.Splitter;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 
@@ -9,7 +9,7 @@ import javax.annotation.CheckForNull;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 public final class NServer {
     private static final Pattern HOSTNAME_PATTERN = Pattern.compile("(?i)^(([A-Z0-9]|[A-Z0-9][A-Z0-9\\-]*[A-Z0-9])\\.)*([A-Z0-9]|[A-Z0-9][A-Z0-9\\-]*[A-Z0-9])$");

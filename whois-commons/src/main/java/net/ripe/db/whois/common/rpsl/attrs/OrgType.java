@@ -1,12 +1,12 @@
 package net.ripe.db.whois.common.rpsl.attrs;
 
 import com.google.common.collect.Maps;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 public enum OrgType {
     IANA("for Internet Assigned Numbers Authority"),

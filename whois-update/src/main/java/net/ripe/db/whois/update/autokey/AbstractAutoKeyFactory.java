@@ -1,7 +1,7 @@
 package net.ripe.db.whois.update.autokey;
 
 import com.google.common.base.Splitter;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.autokey.dao.AutoKeyRepository;
 import net.ripe.db.whois.update.domain.AutoKey;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 abstract class AbstractAutoKeyFactory<T extends AutoKey> implements AutoKeyFactory<T> {
     private static final Pattern AUTO_PATTERN = Pattern.compile("(?i)(AUTO-(?:\\d+))([A-Z]*)");

@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.query.executor;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.source.IllegalSourceException;
@@ -23,8 +23,8 @@ import org.mockito.stubbing.Answer;
 
 import java.util.Collections;
 
-import static net.ripe.db.whois.common.domain.CIString.ciSet;
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciSet;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;

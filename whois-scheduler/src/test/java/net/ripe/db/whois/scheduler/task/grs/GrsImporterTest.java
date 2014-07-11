@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 

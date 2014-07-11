@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.query;
 import com.google.common.base.Joiner;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.QueryMessage;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.Hosts;
 import org.apache.commons.lang.StringUtils;
 

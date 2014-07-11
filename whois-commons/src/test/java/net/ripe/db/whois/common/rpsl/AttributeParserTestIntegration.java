@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.rpsl;
 
 import net.ripe.db.whois.common.IntegrationTest;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;

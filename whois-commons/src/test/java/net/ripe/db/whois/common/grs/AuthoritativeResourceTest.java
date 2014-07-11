@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.grs;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.junit.Rule;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.zip.GZIPInputStream;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 

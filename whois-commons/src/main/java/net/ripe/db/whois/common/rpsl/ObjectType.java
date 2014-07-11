@@ -1,11 +1,11 @@
 package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 import java.util.*;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 public enum ObjectType {
     AS_BLOCK("as-block", "ak"),

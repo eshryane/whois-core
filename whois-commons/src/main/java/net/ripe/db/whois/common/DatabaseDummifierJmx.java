@@ -3,7 +3,7 @@ package net.ripe.db.whois.common;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.ripe.db.whois.common.dao.jdbc.JdbcStreamingHelper;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.jdbc.SimpleDataSourceFactory;
 import net.ripe.db.whois.common.jmx.JmxBase;
 import net.ripe.db.whois.common.rpsl.AttributeType;

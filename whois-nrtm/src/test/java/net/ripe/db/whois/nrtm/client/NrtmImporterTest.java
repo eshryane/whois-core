@@ -1,6 +1,6 @@
 package net.ripe.db.whois.nrtm.client;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.source.SourceContext;
 import org.junit.Before;
 import org.junit.Test;

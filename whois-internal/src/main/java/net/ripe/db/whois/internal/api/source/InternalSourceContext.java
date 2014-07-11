@@ -1,7 +1,7 @@
 package net.ripe.db.whois.internal.api.source;
 
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.source.BasicSourceContext;
 import net.ripe.db.whois.common.source.IllegalSourceException;
 import net.ripe.db.whois.common.source.Source;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 /**
  * For the internal API, for the moment we keep it simple and only use the whois readonly slave

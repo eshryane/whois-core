@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.grs;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciSet;
+import static net.ripe.db.whois.common.utils.CIString.ciSet;
 
 @Component
 class AuthoritativeResourceDataValidator {

@@ -7,7 +7,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.TagsDao;
 import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
 import net.ripe.db.whois.common.rpsl.AttributeType;
@@ -25,7 +25,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static net.ripe.db.whois.common.dao.jdbc.JdbcStreamingHelper.executeStreaming;
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 @Component
 class ResourceTagger {

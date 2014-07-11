@@ -6,7 +6,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.mchange.v2.c3p0.DataSources;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.jdbc.DataSourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciSet;
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciSet;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 @Component
 public class DefaultSourceContext implements SourceContext {

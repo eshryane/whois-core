@@ -2,7 +2,7 @@ package net.ripe.db.whois.scheduler.task.grs;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.DateTimeProvider;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
 import net.ripe.db.whois.common.grs.AuthoritativeResourceData;
 import net.ripe.db.whois.common.domain.io.Downloader;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 abstract class GrsSource implements InitializingBean {
     final CIString name;

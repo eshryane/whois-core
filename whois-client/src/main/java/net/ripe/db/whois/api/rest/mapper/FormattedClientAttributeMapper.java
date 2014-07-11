@@ -1,7 +1,7 @@
 package net.ripe.db.whois.api.rest.mapper;
 
 import net.ripe.db.whois.api.rest.domain.Attribute;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;

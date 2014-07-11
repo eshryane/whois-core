@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.source;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 public final class IllegalSourceException extends IllegalArgumentException {
     private static final long serialVersionUID = 1L;

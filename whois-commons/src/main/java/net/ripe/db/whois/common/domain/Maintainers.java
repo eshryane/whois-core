@@ -1,5 +1,6 @@
 package net.ripe.db.whois.common.domain;
 
+import net.ripe.db.whois.common.utils.CIString;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciImmutableSet;
+import static net.ripe.db.whois.common.utils.CIString.ciImmutableSet;
 
 @Component
 public class Maintainers {

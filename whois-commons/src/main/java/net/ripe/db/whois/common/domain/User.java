@@ -1,5 +1,6 @@
 package net.ripe.db.whois.common.domain;
 
+import net.ripe.db.whois.common.utils.CIString;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -9,7 +10,7 @@ import org.springframework.util.DigestUtils;
 import java.util.Collections;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 public final class User {
     private final CIString username;

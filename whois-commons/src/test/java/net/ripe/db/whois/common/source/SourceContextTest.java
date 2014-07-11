@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.source;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.jdbc.DataSourceFactory;
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -13,7 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import javax.sql.DataSource;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;

@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static net.ripe.db.whois.common.domain.CIString.ciSet;
+import static net.ripe.db.whois.common.utils.CIString.ciSet;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;

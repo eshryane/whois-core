@@ -1,5 +1,6 @@
 package net.ripe.db.whois.common.domain;
 
+import net.ripe.db.whois.common.utils.CIString;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 

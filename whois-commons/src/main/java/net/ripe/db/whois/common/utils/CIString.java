@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.domain;
+package net.ripe.db.whois.common.utils;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;

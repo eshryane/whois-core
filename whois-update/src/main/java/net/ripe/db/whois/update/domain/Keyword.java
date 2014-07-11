@@ -1,12 +1,12 @@
 package net.ripe.db.whois.update.domain;
 
 import com.google.common.collect.Maps;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 public enum Keyword {
     NEW("new", "NEW", true),

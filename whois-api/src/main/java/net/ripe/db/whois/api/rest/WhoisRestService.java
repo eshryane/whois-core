@@ -84,7 +84,7 @@ import java.util.Set;
 
 import static net.ripe.db.whois.api.rest.RestServiceHelper.getServerAttributeMapper;
 import static net.ripe.db.whois.api.rest.RestServiceHelper.isQueryParamSet;
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static net.ripe.db.whois.common.query.QueryFlag.ABUSE_CONTACT;
 import static net.ripe.db.whois.common.query.QueryFlag.ALL_SOURCES;
 import static net.ripe.db.whois.common.query.QueryFlag.BRIEF;

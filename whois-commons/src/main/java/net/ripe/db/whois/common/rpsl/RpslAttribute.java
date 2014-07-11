@@ -2,7 +2,7 @@ package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
 import org.apache.commons.lang.Validate;
 
@@ -14,8 +14,8 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciImmutableSet;
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciImmutableSet;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 @Immutable
 public final class RpslAttribute {

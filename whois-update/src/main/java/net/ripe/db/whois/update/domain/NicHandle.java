@@ -1,14 +1,14 @@
 package net.ripe.db.whois.update.domain;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.ripe.db.whois.common.domain.CIString.ciSet;
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciSet;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 public class NicHandle extends AutoKey {
     private static final Pattern NIC_HDL_PATTERN = Pattern.compile("([a-zA-Z]{1,4})(\\d*)(?:-(.{0,10}))?");

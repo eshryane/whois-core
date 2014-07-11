@@ -3,7 +3,7 @@ package net.ripe.db.whois.update.autokey;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.collect.CollectionHelper;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.*;
 import net.ripe.db.whois.update.domain.*;
 import org.apache.commons.lang.Validate;

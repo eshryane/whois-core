@@ -2,7 +2,7 @@ package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 import javax.annotation.CheckForNull;
 import java.util.Arrays;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static net.ripe.db.whois.common.rpsl.AttributeSyntax.AGGR_BNDRY_SYNTAX;
 import static net.ripe.db.whois.common.rpsl.AttributeSyntax.AGGR_MTD_SYNTAX;
 import static net.ripe.db.whois.common.rpsl.AttributeSyntax.ALIAS_SYNTAX;

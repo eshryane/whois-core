@@ -4,7 +4,7 @@ import net.ripe.db.whois.api.AbstractIntegrationTest;
 import net.ripe.db.whois.api.RestTest;
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.query.acl.AccessControlListManager;
-import net.ripe.db.whois.common.query.acl.IpResourceConfiguration;
+import net.ripe.db.whois.common.query.ipresource.IpResourceConfiguration;
 import net.ripe.db.whois.common.query.support.TestPersonalObjectAccounting;
 import org.junit.After;
 import org.junit.Before;

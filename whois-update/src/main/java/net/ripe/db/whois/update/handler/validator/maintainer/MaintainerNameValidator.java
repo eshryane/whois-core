@@ -1,7 +1,7 @@
 package net.ripe.db.whois.update.handler.validator.maintainer;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.domain.Action;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciSet;
+import static net.ripe.db.whois.common.utils.CIString.ciSet;
 
 @Component
 public class MaintainerNameValidator implements BusinessRuleValidator {

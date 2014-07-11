@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.query.executor.decorators;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
 import net.ripe.db.whois.common.grs.AuthoritativeResourceData;

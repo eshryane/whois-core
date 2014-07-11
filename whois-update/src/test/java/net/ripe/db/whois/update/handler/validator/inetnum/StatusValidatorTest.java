@@ -4,7 +4,7 @@ package net.ripe.db.whois.update.handler.validator.inetnum;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.Maintainers;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
@@ -32,7 +32,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collections;
 
-import static net.ripe.db.whois.common.domain.CIString.ciSet;
+import static net.ripe.db.whois.common.utils.CIString.ciSet;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;

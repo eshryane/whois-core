@@ -2,7 +2,7 @@ package net.ripe.db.whois.update.handler;
 
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.UpdateLockDao;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.iptree.IpTreeUpdater;
 import net.ripe.db.whois.common.rpsl.AttributeSanitizer;
 import net.ripe.db.whois.common.rpsl.AttributeType;
@@ -48,7 +48,7 @@ public class SingleUpdateHandler {
     private final UpdateObjectHandler updateObjectHandler;
     private final IpTreeUpdater ipTreeUpdater;
 
-    @Value("#{T(net.ripe.db.whois.common.domain.CIString).ciString('${whois.source}')}")
+    @Value("#{T(net.ripe.db.whois.common.utils.CIString).ciString('${whois.source}')}")
     private CIString source;
 
     @Autowired

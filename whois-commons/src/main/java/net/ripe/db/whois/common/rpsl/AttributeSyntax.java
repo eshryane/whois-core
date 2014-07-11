@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 // TODO: [AH] queries should NOT match AUTO- versions of keys, we should remove the AUTO- patterns from here
 // TODO: [AH] fix capture groups (add '?:' where capture is not needed)

@@ -1,11 +1,11 @@
 package net.ripe.db.whois.update.domain;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 
 import javax.annotation.concurrent.Immutable;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 @Immutable
 public final class ObjectKey {

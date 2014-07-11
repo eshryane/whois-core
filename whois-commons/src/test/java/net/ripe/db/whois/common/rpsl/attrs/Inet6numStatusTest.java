@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.rpsl.attrs;
 
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import org.junit.Test;
 
 import static net.ripe.db.whois.common.rpsl.attrs.Inet6numStatus.AGGREGATED_BY_LIR;

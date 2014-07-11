@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.source;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 import java.util.Collection;
 import java.util.Set;

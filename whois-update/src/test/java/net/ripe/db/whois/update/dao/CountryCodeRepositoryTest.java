@@ -3,7 +3,7 @@ package net.ripe.db.whois.update.dao;
 import org.junit.Before;
 import org.junit.Test;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 

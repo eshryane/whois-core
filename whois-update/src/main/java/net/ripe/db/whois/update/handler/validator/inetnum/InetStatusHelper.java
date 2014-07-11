@@ -1,6 +1,6 @@
 package net.ripe.db.whois.update.handler.validator.inetnum;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.attrs.Inet6numStatus;
 import net.ripe.db.whois.common.rpsl.attrs.InetStatus;
 import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;

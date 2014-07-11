@@ -10,7 +10,7 @@ import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectRowMapper;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategy;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.*;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static net.ripe.db.whois.common.dao.jdbc.JdbcRpslObjectOperations.*;
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 @Repository
 @Transactional

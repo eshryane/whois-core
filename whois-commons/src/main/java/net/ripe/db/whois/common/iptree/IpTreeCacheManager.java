@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.iptree;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.serials.Operation;
 import net.ripe.db.whois.common.etree.IntersectingIntervalException;
 import net.ripe.db.whois.common.etree.IntervalMap;

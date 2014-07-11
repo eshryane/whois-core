@@ -1,10 +1,10 @@
 package net.ripe.db.whois.common.source;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 import javax.annotation.concurrent.Immutable;
 
-import static net.ripe.db.whois.common.domain.CIString.ciString;
+import static net.ripe.db.whois.common.utils.CIString.ciString;
 
 @Immutable
 public final class Source {

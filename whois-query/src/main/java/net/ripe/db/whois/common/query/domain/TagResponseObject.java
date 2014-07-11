@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.query.domain;
 
 import net.ripe.db.whois.common.collect.CollectionHelper;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.query.QueryMessages;

@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.ip;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.net.InetAddresses;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;

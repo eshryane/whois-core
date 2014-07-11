@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.rpsl.attrs;
 
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.regex.Matcher;

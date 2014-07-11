@@ -2,7 +2,7 @@ package net.ripe.db.whois.common.dao;
 
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.aspects.RetryFor;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
 import net.ripe.db.whois.common.etree.IntervalMap;

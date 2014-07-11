@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.query.executor.decorators;
 
 import net.ripe.db.whois.common.collect.IterableTransformer;
-import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.Dummifier;
