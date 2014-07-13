@@ -4,7 +4,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.aspects.RetryFor;
 import net.ripe.db.whois.common.dao.UserDao;
-import net.ripe.db.whois.common.domain.User;
+import net.ripe.db.whois.common.rpsl.User;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

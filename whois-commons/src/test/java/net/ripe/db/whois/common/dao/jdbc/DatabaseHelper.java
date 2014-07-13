@@ -10,7 +10,7 @@ import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.domain.BlockEvent;
-import net.ripe.db.whois.common.domain.User;
+import net.ripe.db.whois.common.rpsl.User;
 import net.ripe.db.whois.common.jdbc.driver.LoggingDriver;
 import net.ripe.db.whois.common.rpsl.AttributeSanitizer;
 import net.ripe.db.whois.common.rpsl.ObjectMessages;

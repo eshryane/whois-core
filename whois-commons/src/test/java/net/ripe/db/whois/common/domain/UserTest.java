@@ -2,6 +2,7 @@ package net.ripe.db.whois.common.domain;
 
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import org.junit.Test;
+import net.ripe.db.whois.common.rpsl.User;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;

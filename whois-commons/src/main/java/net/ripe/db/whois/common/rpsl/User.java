@@ -1,10 +1,9 @@
-package net.ripe.db.whois.common.domain;
+package net.ripe.db.whois.common.rpsl;
 
 import net.ripe.db.whois.common.utils.CIString;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.rpsl.ObjectType;
 import org.springframework.util.DigestUtils;
 
 import java.util.Collections;

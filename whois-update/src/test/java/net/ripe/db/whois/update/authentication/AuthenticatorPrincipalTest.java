@@ -6,7 +6,7 @@ import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.dao.UserDao;
 import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.domain.User;
+import net.ripe.db.whois.common.rpsl.User;
 import net.ripe.db.whois.common.ip.Interval;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.rpsl.ObjectType;

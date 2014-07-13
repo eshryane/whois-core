@@ -1,8 +1,10 @@
-package net.ripe.db.whois.common.rpsl.attrs;
+package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.base.Splitter;
 import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attrs.AttributeParseException;
+import net.ripe.db.whois.common.rpsl.attrs.AutNum;
 
 import javax.annotation.concurrent.Immutable;
 import java.text.MessageFormat;

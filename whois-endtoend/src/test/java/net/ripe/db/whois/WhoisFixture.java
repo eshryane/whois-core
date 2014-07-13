@@ -16,7 +16,7 @@ import net.ripe.db.whois.common.dao.jdbc.DatabaseHelper;
 import net.ripe.db.whois.common.dao.IndexDao;
 import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.domain.IpRanges;
-import net.ripe.db.whois.common.domain.User;
+import net.ripe.db.whois.common.rpsl.User;
 import net.ripe.db.whois.common.iptree.IpTreeUpdater;
 import net.ripe.db.whois.common.profiles.WhoisProfile;
 import net.ripe.db.whois.common.rpsl.ObjectType;
