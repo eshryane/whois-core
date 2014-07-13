@@ -1,7 +1,6 @@
-package net.ripe.db.whois.common.dao.jdbc.domain;
+package net.ripe.db.whois.common.iptree;
 
 import net.ripe.db.whois.common.ip.Ipv4Resource;
-import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

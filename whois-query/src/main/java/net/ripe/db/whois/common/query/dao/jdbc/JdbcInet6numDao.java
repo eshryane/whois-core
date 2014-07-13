@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.query.dao.jdbc;
 
-import net.ripe.db.whois.common.dao.jdbc.domain.Ipv6EntryMapper;
+import net.ripe.db.whois.common.iptree.Ipv6EntryMapper;
 import net.ripe.db.whois.common.iptree.Ipv6Entry;
 import net.ripe.db.whois.common.query.dao.Inet6numDao;
 import org.springframework.beans.factory.annotation.Autowired;
