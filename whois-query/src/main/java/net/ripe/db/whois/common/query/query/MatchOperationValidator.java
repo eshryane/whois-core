@@ -23,7 +23,7 @@ class MatchOperationValidator implements QueryValidator {
                 return;
             }
 
-            final IpInterval<?> maxRange = AttributeType.INETNUM.equals(ipKey.getAttributeType()) ? Ipv4Resource.MAX_RANGE : Ipv6Resource.MAX_RANGE;
+            final IpInterval<?> maxRange = (ipKey.getVersion() == 4) ? Ipv4Resource.MAX_RANGE : Ipv6Resource.MAX_RANGE;
             if (maxRange.equals(ipKey)) {
                 messages.add(QueryMessages.illegalRange());
             }

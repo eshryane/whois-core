@@ -13,7 +13,7 @@ public class IpIntervalTest {
     public void ipv4() throws Exception {
         final IpInterval<?> subject = IpInterval.parse("128/8");
 
-        assertThat(subject.getAttributeType(), is(AttributeType.INETNUM));
+        assertThat(subject.getVersion(), is(4));
         assertThat(subject.toString(), is("128.0.0.0/8"));
     }
 
@@ -21,7 +21,7 @@ public class IpIntervalTest {
     public void ipv6() throws Exception {
         final IpInterval<?> subject = IpInterval.parse("::0/8");
 
-        assertThat(subject.getAttributeType(), is(AttributeType.INET6NUM));
+        assertThat(subject.getVersion(), is(6));
         assertThat(subject.toString(), is("::/8"));
     }
 
@@ -29,7 +29,7 @@ public class IpIntervalTest {
     public void ipInterval_ipv4() throws Exception {
         final IpInterval<?> subject = IpInterval.asIpInterval(InetAddress.getByName("128.0.0.0"));
 
-        assertThat(subject.getAttributeType(), is(AttributeType.INETNUM));
+        assertThat(subject.getVersion(), is(4));
         assertThat(subject.toString(), is("128.0.0.0/32"));
     }
 
@@ -52,7 +52,7 @@ public class IpIntervalTest {
     public void ipInterval_ipv6() throws Exception {
         final IpInterval<?> subject = IpInterval.asIpInterval(InetAddress.getByName("3ffe:6a88:85a3:08d3:1319:8a2e:0370:7344"));
 
-        assertThat(subject.getAttributeType(), is(AttributeType.INET6NUM));
+        assertThat(subject.getVersion(), is(6));
         assertThat(subject.toString(), is("3ffe:6a88:85a3:8d3:1319:8a2e:370:7344/128"));
     }
 }

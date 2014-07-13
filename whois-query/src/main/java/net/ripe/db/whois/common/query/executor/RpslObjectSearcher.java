@@ -168,13 +168,13 @@ class RpslObjectSearcher {
             return Collections.emptyList();
         }
 
-        switch (ipInterval.getAttributeType()) {
-            case INETNUM:
+        switch (ipInterval.getVersion()) {
+            case 4:
                 return proxy(ipTreeLookup(ipv4DomainTree, ipInterval, query));
-            case INET6NUM:
+            case 6:
                 return proxy(ipTreeLookup(ipv6DomainTree, ipInterval, query));
             default:
-                throw new IllegalArgumentException(String.format("Unexpected type: %s", ipInterval.getAttributeType()));
+                throw new IllegalArgumentException(String.format("Unexpected type: %d", ipInterval.getVersion()));
         }
     }
 

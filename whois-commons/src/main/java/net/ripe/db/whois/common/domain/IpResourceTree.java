@@ -27,13 +27,13 @@ public class IpResourceTree<V> {
     }
 
     private IntervalMap<IpInterval<?>, V> getTree(IpInterval<?> ipInterval) {
-        switch (ipInterval.getAttributeType()) {
-            case INETNUM:
+        switch (ipInterval.getVersion()) {
+            case 4:
                 return ipv4Tree;
-            case INET6NUM:
+            case 6:
                 return ipv6Tree;
             default:
-                throw new IllegalArgumentException("Unsupported IP interval object type: " + ipInterval.getAttributeType());
+                throw new IllegalArgumentException("Unsupported IP interval object version: " + ipInterval.getVersion());
         }
     }
 }

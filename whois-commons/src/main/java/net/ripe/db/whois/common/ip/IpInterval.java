@@ -15,7 +15,7 @@ public abstract class IpInterval<K extends Interval<K>> implements Interval<K> {
         return address;
     }
 
-    public abstract AttributeType getAttributeType();
+    public abstract int getVersion();
 
     public static IpInterval<?> parse(final CIString prefix) {
         return parse(prefix.toString());

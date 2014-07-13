@@ -3,7 +3,6 @@ package net.ripe.db.whois.common.ip;
 import com.google.common.net.InetAddresses;
 import com.google.common.primitives.Longs;
 import net.ripe.db.whois.common.utils.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,8 +170,8 @@ public class Ipv6Resource extends IpInterval<Ipv6Resource> implements Comparable
     }
 
     @Override
-    public final AttributeType getAttributeType() {
-        return AttributeType.INET6NUM;
+    public int getVersion() {
+        return 6;
     }
 
     public BigInteger begin() {
