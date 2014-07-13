@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.jdbc;
+package net.ripe.db.whois.common.source;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.Assert;

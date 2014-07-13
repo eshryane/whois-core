@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.jdbc;
+package net.ripe.db.whois.common.source;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Function;
