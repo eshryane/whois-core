@@ -1,6 +1,7 @@
 package net.ripe.db.whois.common.dao;
 
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
+import net.ripe.db.whois.common.grs.ResourceDataDao;
 import net.ripe.db.whois.common.support.AbstractDaoTest;
 import org.junit.Test;
 import org.slf4j.Logger;

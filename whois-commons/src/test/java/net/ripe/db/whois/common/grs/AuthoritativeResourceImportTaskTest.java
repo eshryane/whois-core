@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.grs;
 
-import net.ripe.db.whois.common.dao.ResourceDataDao;
+import net.ripe.db.whois.common.grs.ResourceDataDao;
 import net.ripe.db.whois.common.domain.io.Downloader;
 import org.junit.Before;
 import org.junit.Rule;

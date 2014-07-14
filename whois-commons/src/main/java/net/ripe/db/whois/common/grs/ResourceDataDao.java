@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.dao;
+package net.ripe.db.whois.common.grs;
 
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.aspects.RetryFor;

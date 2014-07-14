@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.dao.ResourceDataDao;
+import net.ripe.db.whois.common.grs.ResourceDataDao;
 import net.ripe.db.whois.common.domain.io.Downloader;
 import net.ripe.db.whois.common.scheduler.DailyScheduledTask;
 import org.apache.commons.lang.StringUtils;
