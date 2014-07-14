@@ -232,9 +232,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -338,9 +341,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -411,9 +417,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-routes:\" not authenticated by: EXACT-MR-MNT"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -485,9 +494,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-routes:\" not authenticated by: EXACT-MR-MNT"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -522,9 +534,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-routes:\" not authenticated by: EXACT-MR-MNT"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -669,9 +684,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-lower:\" not authenticated by: PARENT-ML-MNT"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -704,9 +722,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-lower:\" not authenticated by: PARENT-ML-MNT"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -777,9 +798,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-routes:\" not authenticated by: PARENT-MR-MNT"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -851,9 +875,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-routes:\" not authenticated by: PARENT-MR-MNT"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -888,9 +915,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-routes:\" not authenticated by: PARENT-MR-MNT"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -1046,9 +1076,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -1085,9 +1118,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -1124,9 +1160,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-by:\" not authenticated by: EXACT-MB-MNT"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
@@ -1204,9 +1243,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-by:\" not authenticated by: PARENT-MB-MNT"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -1243,9 +1285,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.130.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.130.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.128.0.0/9AS1000 failed using \"mnt-by:\" not authenticated by: PARENT-MB-MNT"]
 
         queryObjectNotFound("-rGBT route 20.130.0.0/16", "route", "20.130.0.0/16")
     }
@@ -1318,9 +1363,12 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 0, 0, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(0, 0, 0, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 21.130.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 21.130.0.0/16AS2000") ==
+                ["Authorisation for [inetnum] 21.130.0.0 - 21.130.255.255 failed using \"mnt-by:\" not authenticated by: EXACT-INETNUM-MB-MNT"]
 
         queryObjectNotFound("-rGBT route 21.130.0.0/16", "route", "21.130.0.0/16")
     }
@@ -1486,10 +1534,13 @@ class RouteAuthIPSpec extends BaseQueryUpdateSpec {
         def ack = ackFor message
 
         ack.summary.nrFound == 2
-        ack.summary.assertSuccess(2, 0, 1, 0, 1)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 2)
+        ack.summary.assertSuccess(1, 0, 1, 0, 0)
+        ack.summary.assertErrors(1, 1, 0, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
         ack.successes.any { it.operation == "Modify" && it.key == "[route] 20.13.0.0/16AS3000" }
+        ack.errors.any { it.operation == "Create" && it.key == "[route] 20.13.0.0/16AS2000" }
+        ack.errorMessagesFor("Create", "[route] 20.13.0.0/16AS2000") ==
+                ["Authorisation for [route] 20.13.0.0/16AS3000 failed using \"mnt-routes:\" no valid maintainer found"]
 
         query_object_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS3000")
         query_object_not_matches("-rGBT route 20.13.0.0/16", "route", "20.13.0.0/16", "AS2000")
