@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.dao;
 
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.query.VersionDateTime;
 

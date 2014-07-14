@@ -4,7 +4,7 @@ import net.ripe.db.whois.common.dao.VersionDao;
 import net.ripe.db.whois.common.dao.VersionInfo;
 import net.ripe.db.whois.common.dao.VersionLookupResult;
 import net.ripe.db.whois.common.query.VersionDateTime;
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.support.AbstractDaoTest;

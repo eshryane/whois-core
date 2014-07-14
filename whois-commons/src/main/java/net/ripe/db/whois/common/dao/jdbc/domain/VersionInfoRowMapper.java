@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.dao.jdbc.domain;
 
 import net.ripe.db.whois.common.dao.VersionInfo;
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

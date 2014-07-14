@@ -1,7 +1,7 @@
 package net.ripe.db.whois.nrtm;
 
 import net.ripe.db.whois.common.dao.SerialDao;
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import net.ripe.db.whois.common.domain.serials.SerialEntry;
 import net.ripe.db.whois.common.domain.serials.SerialRange;
 import net.ripe.db.whois.common.rpsl.DummifierLegacy;

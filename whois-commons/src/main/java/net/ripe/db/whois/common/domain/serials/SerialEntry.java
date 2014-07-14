@@ -1,6 +1,7 @@
 package net.ripe.db.whois.common.domain.serials;
 
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.domain.Operation;
 
 public class SerialEntry {
     final private Operation operation;

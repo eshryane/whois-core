@@ -7,7 +7,7 @@ import net.ripe.db.whois.common.aspects.RetryFor;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.dao.SerialDao;
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceContext;

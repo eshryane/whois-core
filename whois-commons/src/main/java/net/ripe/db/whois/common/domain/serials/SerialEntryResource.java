@@ -1,5 +1,7 @@
 package net.ripe.db.whois.common.domain.serials;
 
+import net.ripe.db.whois.common.domain.Operation;
+
 public class SerialEntryResource<T> {
     private final Operation operation;
     private final T resource;

@@ -5,7 +5,7 @@ import net.ripe.db.whois.api.rest.domain.WhoisObject;
 import net.ripe.db.whois.api.rest.domain.WhoisTag;
 import net.ripe.db.whois.api.rest.domain.WhoisVersion;
 import net.ripe.db.whois.common.domain.Tag;
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.query.domain.DeletedVersionResponseObject;
 import net.ripe.db.whois.common.query.domain.TagResponseObject;

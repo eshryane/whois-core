@@ -10,7 +10,7 @@ import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategy;
 import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.Identifiable;
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import net.ripe.db.whois.common.domain.serials.SerialEntry;
 import net.ripe.db.whois.common.domain.serials.SerialRange;
 import net.ripe.db.whois.common.rpsl.AttributeTemplate;

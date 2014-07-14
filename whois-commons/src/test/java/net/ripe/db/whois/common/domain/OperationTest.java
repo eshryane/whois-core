@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.domain.serials;
+package net.ripe.db.whois.common.domain;
 
 import org.junit.Test;
 

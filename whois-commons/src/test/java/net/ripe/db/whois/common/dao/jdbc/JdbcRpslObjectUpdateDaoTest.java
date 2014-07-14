@@ -8,7 +8,7 @@ import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;

@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.query.domain;
 
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.domain.Operation;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.query.VersionDateTime;
 
