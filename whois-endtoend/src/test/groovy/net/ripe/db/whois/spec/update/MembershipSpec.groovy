@@ -29,7 +29,6 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 admin-c:        TP1-TEST
                 tech-c:         TP1-TEST
                 member-of:      AS-TEST
-                status:         ASSIGNED
                 mnt-by:         RIPE-NCC-HM-MNT
                 mnt-by:         LIR-MNT
                 mnt-lower:      owner2-mnt
@@ -45,7 +44,6 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 tech-c:         TP1-TEST
                 member-of:      AS-TEST
                 member-of:      AS-TEST2
-                status:         ASSIGNED
                 mnt-by:         RIPE-NCC-HM-MNT
                 mnt-by:         LIR-MNT
                 mnt-lower:      owner2-mnt
@@ -379,7 +377,6 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 admin-c:        TP1-TEST
                 tech-c:         TP1-TEST
                 member-of:      AS-TEST
-                status:         ASSIGNED
                 mnt-by:         RIPE-NCC-HM-MNT
                 mnt-lower:      owner2-mnt
                 changed:        dbtest@ripe.net 20120101
@@ -395,7 +392,7 @@ class MembershipSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(0, 0, 0, 0, 0)
         ack.summary.assertErrors(1, 0, 1, 0)
 
-        ack.countErrorWarnInfo(1, 1, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
         ack.errors.any {it.operation == "Modify" && it.key == "[aut-num] AS352"}
         ack.errorMessagesFor("Modify", "[aut-num] AS352") == [
                 "Membership claim is not supported by mbrs-by-ref: attribute of the referenced set [AS-TEST]"]
@@ -534,7 +531,6 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 admin-c:        TP1-TEST
                 tech-c:         TP1-TEST
                 member-of:      AS-TEST
-                status:         ASSIGNED
                 mnt-by:         RIPE-NCC-HM-MNT
                 mnt-by:         LIR-MNT
                 mnt-lower:      owner2-mnt
@@ -553,7 +549,7 @@ class MembershipSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 1, 0, 0)
         ack.summary.assertErrors(1, 0, 1, 0)
 
-        ack.countErrorWarnInfo(1, 1, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
         ack.successes.any {it.operation == "Modify" && it.key == "[as-set] AS-TEST"}
         ack.errors.any {it.operation == "Modify" && it.key == "[aut-num] AS352"}
         ack.errorMessagesFor("Modify", "[aut-num] AS352") == [
@@ -595,7 +591,6 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 org:            ORG-OTO1-TEST
                 admin-c:        TP1-TEST
                 tech-c:         TP1-TEST
-                status:         ASSIGNED
                 mnt-by:         RIPE-NCC-HM-MNT
                 mnt-by:         LIR-MNT
                 mnt-lower:      owner2-mnt
@@ -615,7 +610,7 @@ class MembershipSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(2, 0, 2, 0, 0)
         ack.summary.assertErrors(0, 0, 0, 0)
 
-        ack.countErrorWarnInfo(0, 1, 0)
+        ack.countErrorWarnInfo(0, 0, 0)
         ack.successes.any {it.operation == "Modify" && it.key == "[as-set] AS-TEST"}
         ack.successes.any {it.operation == "Modify" && it.key == "[aut-num] AS352"}
 
@@ -655,7 +650,6 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 org:            ORG-OTO1-TEST
                 admin-c:        TP1-TEST
                 tech-c:         TP1-TEST
-                status:         ASSIGNED
                 mnt-by:         RIPE-NCC-HM-MNT
                 mnt-by:         LIR-MNT
                 mnt-lower:      owner2-mnt
@@ -669,7 +663,7 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 mnt-by:       OWNER2-MNT
                 mnt-lower:    LIR2-MNT
                 changed:      dbtest@ripe.net 20120101
-                source:  TEST
+                source:       TEST
                 delete:       testing
 
                 password: owner2
@@ -685,7 +679,7 @@ class MembershipSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(3, 0, 2, 1, 0)
         ack.summary.assertErrors(0, 0, 0, 0)
 
-        ack.countErrorWarnInfo(0, 1, 0)
+        ack.countErrorWarnInfo(0, 0, 0)
         ack.successes.any {it.operation == "Modify" && it.key == "[as-set] AS-TEST"}
         ack.successes.any {it.operation == "Modify" && it.key == "[aut-num] AS352"}
         ack.successes.any {it.operation == "Delete" && it.key == "[as-set] AS-TEST"}
@@ -938,7 +932,6 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 admin-c:        TP1-TEST
                 tech-c:         TP1-TEST
                 member-of:      AS-TEST
-                status:         ASSIGNED
                 mnt-by:         RIPE-NCC-HM-MNT
                 mnt-by:         LIR-MNT
                 mnt-lower:      owner2-mnt
@@ -958,7 +951,7 @@ class MembershipSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(2, 0, 2, 0, 0)
         ack.summary.assertErrors(0, 0, 0, 0)
 
-        ack.countErrorWarnInfo(0, 1, 0)
+        ack.countErrorWarnInfo(0, 0, 0)
         ack.successes.any {it.operation == "Modify" && it.key == "[as-set] AS-TEST"}
         ack.successes.any {it.operation == "Modify" && it.key == "[aut-num] AS352"}
 
@@ -1052,7 +1045,6 @@ class MembershipSpec extends BaseQueryUpdateSpec {
                 tech-c:         TP1-TEST
                 member-of:      AS-TEST
                 member-of:      AS-TEST2
-                status:         ASSIGNED
                 mnt-by:         RIPE-NCC-HM-MNT
                 mnt-by:         LIR-MNT
                 mnt-lower:      owner2-mnt
@@ -1072,7 +1064,7 @@ class MembershipSpec extends BaseQueryUpdateSpec {
         ack.summary.assertSuccess(1, 0, 1, 0, 0)
         ack.summary.assertErrors(1, 0, 1, 0)
 
-        ack.countErrorWarnInfo(1, 1, 0)
+        ack.countErrorWarnInfo(1, 0, 0)
         ack.successes.any {it.operation == "Modify" && it.key == "[as-set] AS-TEST"}
         ack.errors.any {it.operation == "Modify" && it.key == "[aut-num] AS1309"}
         ack.errorMessagesFor("Modify", "[aut-num] AS1309") == [
