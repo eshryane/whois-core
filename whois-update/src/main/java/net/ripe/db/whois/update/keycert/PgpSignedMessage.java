@@ -1,6 +1,6 @@
 package net.ripe.db.whois.update.keycert;
 
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import org.bouncycastle.bcpg.ArmoredInputStream;
 import org.bouncycastle.openpgp.PGPObjectFactory;
 import org.bouncycastle.openpgp.PGPPublicKey;

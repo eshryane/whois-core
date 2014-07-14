@@ -5,7 +5,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.dao.DailySchedulerDao;
 import net.ripe.db.whois.common.grs.ResourceDataDao;
 import net.ripe.db.whois.common.utils.CIString;

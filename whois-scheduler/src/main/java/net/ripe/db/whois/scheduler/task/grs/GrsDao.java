@@ -1,6 +1,6 @@
 package net.ripe.db.whois.scheduler.task.grs;
 
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.collect.CollectionHelper;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;

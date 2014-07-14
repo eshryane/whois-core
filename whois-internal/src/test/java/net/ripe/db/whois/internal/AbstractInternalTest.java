@@ -2,7 +2,7 @@ package net.ripe.db.whois.internal;
 
 import net.ripe.db.whois.api.httpserver.JettyBootstrap;
 import net.ripe.db.whois.common.Slf4JLogConfiguration;
-import net.ripe.db.whois.common.TestDateTimeProvider;
+import net.ripe.db.whois.common.datetime.TestDateTimeProvider;
 import net.ripe.db.whois.common.dao.jdbc.DatabaseHelper;
 import net.ripe.db.whois.common.dao.jdbc.JdbcRpslObjectUpdateDao;
 import net.ripe.db.whois.common.profiles.WhoisProfile;

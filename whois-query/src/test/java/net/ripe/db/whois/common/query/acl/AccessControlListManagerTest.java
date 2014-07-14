@@ -2,7 +2,7 @@ package net.ripe.db.whois.common.query.acl;
 
 import net.ripe.db.whois.common.query.ipresource.IpResourceConfiguration;
 import com.google.common.net.InetAddresses;
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.domain.BlockEvent;
 import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.ip.IpInterval;

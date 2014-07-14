@@ -1,7 +1,7 @@
 package net.ripe.db.whois.update.handler.response;
 
 import com.google.common.base.Splitter;
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.FormatHelper;
 import net.ripe.db.whois.common.domain.Hosts;
 import net.ripe.db.whois.update.domain.Ack;

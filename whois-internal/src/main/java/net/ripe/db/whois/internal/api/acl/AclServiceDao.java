@@ -1,6 +1,6 @@
 package net.ripe.db.whois.internal.api.acl;
 
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.ip.IpInterval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

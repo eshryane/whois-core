@@ -2,7 +2,7 @@ package net.ripe.db.whois.common.query.integration;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.IntegrationTest;
-import net.ripe.db.whois.common.TestDateTimeProvider;
+import net.ripe.db.whois.common.datetime.TestDateTimeProvider;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.iptree.IpTreeUpdater;

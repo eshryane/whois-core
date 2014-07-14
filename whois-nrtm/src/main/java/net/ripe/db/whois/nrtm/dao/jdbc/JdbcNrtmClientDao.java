@@ -1,6 +1,6 @@
 package net.ripe.db.whois.nrtm.dao.jdbc;
 
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.nrtm.dao.NrtmClientDao;

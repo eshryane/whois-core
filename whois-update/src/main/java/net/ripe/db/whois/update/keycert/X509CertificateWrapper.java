@@ -3,7 +3,7 @@ package net.ripe.db.whois.update.keycert;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectFilter;
 import org.bouncycastle.jce.provider.X509CertParser;

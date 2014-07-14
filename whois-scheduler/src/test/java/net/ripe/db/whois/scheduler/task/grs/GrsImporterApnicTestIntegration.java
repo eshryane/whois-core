@@ -1,7 +1,7 @@
 package net.ripe.db.whois.scheduler.task.grs;
 
 import com.google.common.io.Files;
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.dao.DailySchedulerDao;
 import net.ripe.db.whois.common.dao.jdbc.DatabaseHelper;

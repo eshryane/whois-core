@@ -1,5 +1,6 @@
-package net.ripe.db.whois.common;
+package net.ripe.db.whois.common.datetime;
 
+import net.ripe.db.whois.common.Stub;
 import net.ripe.db.whois.common.profiles.WhoisProfile;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;

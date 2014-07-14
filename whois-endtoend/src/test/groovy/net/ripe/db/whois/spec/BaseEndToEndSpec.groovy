@@ -1,7 +1,7 @@
 package net.ripe.db.whois.spec
 
 import net.ripe.db.whois.WhoisFixture
-import net.ripe.db.whois.common.TestDateTimeProvider
+import net.ripe.db.whois.common.datetime.TestDateTimeProvider
 import net.ripe.db.whois.common.rpsl.AttributeType
 import net.ripe.db.whois.common.rpsl.ObjectType
 import net.ripe.db.whois.common.rpsl.RpslAttribute

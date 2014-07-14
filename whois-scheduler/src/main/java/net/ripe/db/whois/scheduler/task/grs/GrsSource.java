@@ -1,7 +1,7 @@
 package net.ripe.db.whois.scheduler.task.grs;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
 import net.ripe.db.whois.common.grs.AuthoritativeResourceData;

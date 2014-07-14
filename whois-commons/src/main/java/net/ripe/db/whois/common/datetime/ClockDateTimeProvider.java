@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common;
+package net.ripe.db.whois.common.datetime;
 
 import net.ripe.db.whois.common.profiles.DeployedProfile;
 import org.joda.time.LocalDate;

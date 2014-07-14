@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.grs;
 
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.dao.DailySchedulerDao;
 import net.ripe.db.whois.common.grs.ResourceDataDao;
 import net.ripe.db.whois.common.source.IllegalSourceException;

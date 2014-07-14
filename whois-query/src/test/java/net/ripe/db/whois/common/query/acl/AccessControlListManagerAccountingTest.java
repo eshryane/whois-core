@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.query.acl;
 
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.query.dao.AccessControlListDao;
 import net.ripe.db.whois.common.query.support.TestPersonalObjectAccounting;

@@ -1,6 +1,6 @@
 package net.ripe.db.whois.api.mail.dao;
 
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.domain.Hosts;
 import net.ripe.db.whois.update.domain.DequeueStatus;
 import org.springframework.beans.factory.annotation.Autowired;

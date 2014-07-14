@@ -1,6 +1,6 @@
 package net.ripe.db.whois.scheduler.task.acl;
 
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.query.dao.AccessControlListDao;
 import net.ripe.db.whois.common.scheduler.DailyScheduledTask;
 import org.joda.time.LocalDate;

@@ -2,7 +2,7 @@ package net.ripe.db.whois.api.rest;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.api.rest.mapper.WhoisObjectServerMapper;
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.rpsl.RpslObject;

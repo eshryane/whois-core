@@ -2,7 +2,7 @@ package net.ripe.db.whois.common.dao.jdbc;
 
 import net.ripe.db.whois.common.Slf4JLogConfiguration;
 import net.ripe.db.whois.common.Stub;
-import net.ripe.db.whois.common.TestDateTimeProvider;
+import net.ripe.db.whois.common.datetime.TestDateTimeProvider;
 import net.ripe.db.whois.common.profiles.WhoisProfile;
 import org.junit.AfterClass;
 import org.junit.Before;

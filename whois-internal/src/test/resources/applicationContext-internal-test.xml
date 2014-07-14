@@ -11,7 +11,7 @@
             location="classpath:internal.properties"
             system-properties-mode="OVERRIDE"/>
 
-    <bean class="net.ripe.db.whois.common.TestDateTimeProvider" />
+    <bean class="net.ripe.db.whois.common.datetime.TestDateTimeProvider" />
 
     <import resource="applicationContext-internal-base.xml"/>
 

@@ -5,7 +5,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.ripe.db.whois.common.DateTimeProvider;
+import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.domain.io.Downloader;
 import net.ripe.db.whois.common.grs.AuthoritativeResourceData;

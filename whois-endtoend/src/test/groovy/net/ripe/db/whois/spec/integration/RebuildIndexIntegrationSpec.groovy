@@ -1,6 +1,6 @@
 package net.ripe.db.whois.spec.integration
 
-import net.ripe.db.whois.common.ClockDateTimeProvider
+import net.ripe.db.whois.common.datetime.ClockDateTimeProvider
 import net.ripe.db.whois.common.IntegrationTest
 import net.ripe.db.whois.common.rpsl.RpslObject
 

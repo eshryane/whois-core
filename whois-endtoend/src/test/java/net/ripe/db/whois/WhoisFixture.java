@@ -7,7 +7,7 @@ import net.ripe.db.whois.api.rest.client.RestClient;
 import net.ripe.db.whois.api.syncupdate.SyncUpdateBuilder;
 import net.ripe.db.whois.common.Slf4JLogConfiguration;
 import net.ripe.db.whois.common.Stub;
-import net.ripe.db.whois.common.TestDateTimeProvider;
+import net.ripe.db.whois.common.datetime.TestDateTimeProvider;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
