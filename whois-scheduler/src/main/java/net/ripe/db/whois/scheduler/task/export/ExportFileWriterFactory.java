@@ -2,8 +2,8 @@ package net.ripe.db.whois.scheduler.task.export;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.rpsl.DummifierCurrent;
-import net.ripe.db.whois.common.rpsl.DummifierLegacy;
+import net.ripe.db.whois.common.dummifier.DummifierCurrent;
+import net.ripe.db.whois.common.dummifier.DummifierLegacy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

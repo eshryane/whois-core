@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.rpsl;
+package net.ripe.db.whois.common.dummifier;
 
 import com.google.common.collect.Lists;
 import org.junit.Test;
@@ -9,6 +9,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.RpslAttribute;
+import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.ObjectTemplate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

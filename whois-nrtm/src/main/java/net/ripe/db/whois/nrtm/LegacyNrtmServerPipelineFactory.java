@@ -2,7 +2,7 @@ package net.ripe.db.whois.nrtm;
 
 import net.ripe.db.whois.common.dao.SerialDao;
 import net.ripe.db.whois.common.pipeline.MaintenanceHandler;
-import net.ripe.db.whois.common.rpsl.Dummifier;
+import net.ripe.db.whois.common.dummifier.Dummifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
