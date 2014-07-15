@@ -1278,16 +1278,11 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         def ack = new AckResponse("", message)
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(0, 0, 0, 0, 0)
-        ack.summary.assertErrors(1, 1, 0, 0)
-        ack.countErrorWarnInfo(2, 0, 0)
-        ack.errors.any { it.operation == "Create" && it.key == "[domain] 1.99.in-addr.arpa" }
-        ack.errorMessagesFor("Create", "[domain] 1.99.in-addr.arpa") == [
-                "No name servers found at child. No name servers could be found at the child. This usually means that the child is not configured to answer queries about the zone.",
-                "Fatal error in delegation for zone 1.99.in-addr.arpa. No name servers found at child or at parent. No further testing can be performed."
-        ]
+        ack.summary.assertSuccess(1, 1, 0, 0, 0)
+        ack.summary.assertErrors(0, 0, 0, 0)
+        ack.countErrorWarnInfo(0, 0, 0)
 
-        queryObjectNotFound("-rGBT domain 1.99.in-addr.arpa", "domain", "1.99.in-addr.arpa")
+        queryObject("-rGBT domain 1.99.in-addr.arpa", "domain", "1.99.in-addr.arpa")
     }
 
     def "create reverse domain, dash in 4th octet"() {
@@ -2119,16 +2114,11 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         def ack = new AckResponse("", message)
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(0, 0, 0, 0, 0)
-        ack.summary.assertErrors(1, 1, 0, 0)
-        ack.countErrorWarnInfo(2, 0, 0)
-        ack.errors.any { it.operation == "Create" && it.key == "[domain] 193.in-addr.arpa" }
-        ack.errorMessagesFor("Create", "[domain] 193.in-addr.arpa") == [
-                "Too few name servers (1). Only one name server was found for the zone. You should always have at least two name servers for a zone to be able to handle transient connectivity problems.",
-                "Too few IPv4 name servers (1). Only one IPv4 name server was found for the zone. You should always have at least two IPv4 name servers for a zone to be able to handle transient connectivity problems."
-        ]
+        ack.summary.assertSuccess(1, 1, 0, 0, 0)
+        ack.summary.assertErrors(0, 0, 0, 0)
+        ack.countErrorWarnInfo(0, 0, 0)
 
-        queryObjectNotFound("-rGBT domain 193.in-addr.arpa", "domain", "193.in-addr.arpa")
+        queryObject("-rGBT domain 193.in-addr.arpa", "domain", "193.in-addr.arpa")
     }
 
     def "create reverse domain, ripe IPv6 space, less specific inet6num with mnt-domains, domains pw supplied"() {
