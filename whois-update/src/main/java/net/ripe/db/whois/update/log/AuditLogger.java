@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-class AuditLogger {
+public class AuditLogger {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuditLogger.class);
 
     private final DateTimeProvider dateTimeProvider;
@@ -50,7 +50,7 @@ class AuditLogger {
     private Map<Update, Element> updateElements = Maps.newHashMap();
     private final Element dbupdate;
 
-    AuditLogger(final DateTimeProvider dateTimeProvider, final OutputStream outputStream) {
+    public AuditLogger(final DateTimeProvider dateTimeProvider, final OutputStream outputStream) {
         this.dateTimeProvider = dateTimeProvider;
         this.outputStream = outputStream;
 

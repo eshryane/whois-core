@@ -14,7 +14,7 @@ import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.source.SourceContext;
 import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.handler.SingleUpdateHandler;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import net.ripe.db.whois.update.log.UpdateLog;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;

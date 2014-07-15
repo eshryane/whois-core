@@ -6,7 +6,7 @@ import net.ripe.db.whois.common.rpsl.PasswordHelper;
 import net.ripe.db.whois.update.domain.PasswordCredential;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

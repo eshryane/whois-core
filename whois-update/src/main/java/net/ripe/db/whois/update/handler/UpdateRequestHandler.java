@@ -13,7 +13,7 @@ import net.ripe.db.whois.update.domain.UpdateResponse;
 import net.ripe.db.whois.update.domain.UpdateStatus;
 import net.ripe.db.whois.update.handler.response.ResponseFactory;
 import net.ripe.db.whois.update.log.LogCallback;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import net.ripe.db.whois.update.log.UpdateLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

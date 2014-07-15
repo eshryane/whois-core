@@ -6,7 +6,7 @@ import net.ripe.db.whois.update.domain.Credentials;
 import net.ripe.db.whois.update.domain.PasswordCredential;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

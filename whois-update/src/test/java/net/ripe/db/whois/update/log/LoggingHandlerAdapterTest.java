@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.jdbc.driver.ResultInfo;
 import net.ripe.db.whois.common.jdbc.driver.StatementInfo;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

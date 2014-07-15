@@ -9,7 +9,7 @@ import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.domain.Origin;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.handler.UpdateRequestHandler;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import org.apache.log4j.helpers.NullEnumeration;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;

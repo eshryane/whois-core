@@ -21,7 +21,7 @@ import net.ripe.db.whois.common.source.SourceContext;
 import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.handler.SingleUpdateHandler;
 import net.ripe.db.whois.update.handler.UpdateFailedException;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import net.ripe.db.whois.update.log.UpdateLog;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;

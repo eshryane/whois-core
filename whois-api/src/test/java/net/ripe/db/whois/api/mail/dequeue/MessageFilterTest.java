@@ -1,7 +1,7 @@
 package net.ripe.db.whois.api.mail.dequeue;
 
 import net.ripe.db.whois.api.mail.MailMessage;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

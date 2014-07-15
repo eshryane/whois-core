@@ -8,6 +8,7 @@ import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.domain.Operation;
 import net.ripe.db.whois.update.domain.Paragraph;
 import net.ripe.db.whois.update.domain.Update;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Rule;

@@ -9,7 +9,7 @@ import net.ripe.db.whois.common.datetime.DateTimeProvider;
 import net.ripe.db.whois.common.MaintenanceMode;
 import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.handler.UpdateRequestHandler;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import net.ripe.db.whois.update.log.UpdateLog;
 import net.ripe.db.whois.update.mail.MailGateway;
 import net.ripe.db.whois.update.mail.MailMessageLogCallback;

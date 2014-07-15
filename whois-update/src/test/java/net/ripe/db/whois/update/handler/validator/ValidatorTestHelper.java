@@ -3,7 +3,7 @@ package net.ripe.db.whois.update.handler.validator;
 import net.ripe.db.whois.common.rpsl.ObjectMessages;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.domain.*;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 
 import static org.mockito.Mockito.mock;
 

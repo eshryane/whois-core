@@ -5,7 +5,7 @@ import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.ValidationMessages;
 import net.ripe.db.whois.update.dao.CountryCodeRepository;
 import net.ripe.db.whois.update.domain.*;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

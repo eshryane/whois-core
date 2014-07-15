@@ -3,6 +3,7 @@ package net.ripe.db.whois.update.log;
 import net.ripe.db.whois.common.jdbc.driver.LoggingHandler;
 import net.ripe.db.whois.common.jdbc.driver.ResultInfo;
 import net.ripe.db.whois.common.jdbc.driver.StatementInfo;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

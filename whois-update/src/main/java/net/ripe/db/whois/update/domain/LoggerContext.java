@@ -1,4 +1,4 @@
-package net.ripe.db.whois.update.log;
+package net.ripe.db.whois.update.domain;
 
 import com.google.common.base.Stopwatch;
 import net.ripe.db.whois.common.datetime.DateTimeProvider;
@@ -9,11 +9,8 @@ import net.ripe.db.whois.common.jdbc.driver.StatementInfo;
 import net.ripe.db.whois.common.rpsl.ObjectMessages;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.update.domain.Action;
-import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.Update;
-import net.ripe.db.whois.update.domain.UpdateContainer;
-import net.ripe.db.whois.update.domain.UpdateStatus;
+import net.ripe.db.whois.update.log.AuditLogger;
+import net.ripe.db.whois.update.log.LogCallback;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -84,7 +81,7 @@ public class LoggerContext {
         init(dir);
     }
 
-    void init(final File dir) {
+    public void init(final File dir) {
         if (context.get() != null) {
             throw new IllegalStateException("Context not empty");
         }

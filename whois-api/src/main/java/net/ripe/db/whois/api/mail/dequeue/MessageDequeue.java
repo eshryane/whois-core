@@ -13,7 +13,7 @@ import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.domain.UpdateRequest;
 import net.ripe.db.whois.update.domain.UpdateResponse;
 import net.ripe.db.whois.update.handler.UpdateRequestHandler;
-import net.ripe.db.whois.update.log.LoggerContext;
+import net.ripe.db.whois.update.domain.LoggerContext;
 import net.ripe.db.whois.update.mail.MailGateway;
 import net.ripe.db.whois.update.mail.MailMessageLogCallback;
 import org.slf4j.Logger;
