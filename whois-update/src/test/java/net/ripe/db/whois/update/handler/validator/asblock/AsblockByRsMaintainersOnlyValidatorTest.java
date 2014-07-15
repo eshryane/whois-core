@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.handler.validator.asblock;
 
 import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.update.authentication.Principal;
-import net.ripe.db.whois.update.authentication.Subject;
+import net.ripe.db.whois.update.authentication.data.Principal;
+import net.ripe.db.whois.update.authentication.data.Subject;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;

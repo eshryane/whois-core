@@ -1,4 +1,4 @@
-package net.ripe.db.whois.update.authentication;
+package net.ripe.db.whois.update.authentication.data;
 
 public enum Principal {
     RS_MAINTAINER, POWER_MAINTAINER, ENDUSER_MAINTAINER, ALLOC_MAINTAINER, ENUM_MAINTAINER, DBM_MAINTAINER, OVERRIDE_MAINTAINER

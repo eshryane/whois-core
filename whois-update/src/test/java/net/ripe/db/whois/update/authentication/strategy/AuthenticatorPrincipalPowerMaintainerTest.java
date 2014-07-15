@@ -7,7 +7,7 @@ import net.ripe.db.whois.common.domain.Maintainers;
 import net.ripe.db.whois.common.ip.Interval;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.update.authentication.Authenticator;
-import net.ripe.db.whois.update.authentication.Subject;
+import net.ripe.db.whois.update.authentication.data.Subject;
 import net.ripe.db.whois.update.domain.Credentials;
 import net.ripe.db.whois.update.domain.Origin;
 import net.ripe.db.whois.update.domain.PreparedUpdate;

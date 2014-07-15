@@ -10,7 +10,7 @@ import net.ripe.db.whois.common.utils.CIString;
 import net.ripe.db.whois.common.rpsl.ObjectMessages;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.update.authentication.Subject;
+import net.ripe.db.whois.update.authentication.data.Subject;
 import net.ripe.db.whois.update.log.LoggerContext;
 
 import javax.annotation.CheckForNull;

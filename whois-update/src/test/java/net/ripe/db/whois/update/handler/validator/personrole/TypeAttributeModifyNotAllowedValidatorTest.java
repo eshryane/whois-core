@@ -2,7 +2,7 @@ package net.ripe.db.whois.update.handler.validator.personrole;
 
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.update.authentication.Subject;
+import net.ripe.db.whois.update.authentication.data.Subject;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContainer;
 import net.ripe.db.whois.update.domain.UpdateContext;

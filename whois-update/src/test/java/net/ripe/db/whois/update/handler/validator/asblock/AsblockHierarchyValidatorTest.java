@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.jdbc.JdbcRpslObjectDao;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.update.authentication.Subject;
+import net.ripe.db.whois.update.authentication.data.Subject;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;

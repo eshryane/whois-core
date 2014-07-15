@@ -1,4 +1,4 @@
-package net.ripe.db.whois.update.authentication;
+package net.ripe.db.whois.update.authentication.data;
 
 import com.google.common.collect.Sets;
 
@@ -14,15 +14,15 @@ public class Subject {
     private final Set<String> passedAuthentications;
     private final Set<String> failedAuthentications;
 
-    static final Subject EMPTY = new Subject();
+    public static final Subject EMPTY = new Subject();
 
-    Subject(final Principal... principals) {
+    public Subject(final Principal... principals) {
         this(principals.length == 0 ? Collections.<Principal>emptySet() : Sets.newHashSet(principals),
                 Collections.<String>emptySet(),
                 Collections.<String>emptySet());
     }
 
-    Subject(final Set<Principal> principals, final Set<String> passedAuthentications, final Set<String> failedAuthentications) {
+    public Subject(final Set<Principal> principals, final Set<String> passedAuthentications, final Set<String> failedAuthentications) {
         this.principals = unmodifiableSet(principals);
         this.passedAuthentications = unmodifiableSet(passedAuthentications);
         this.failedAuthentications = unmodifiableSet(failedAuthentications);
