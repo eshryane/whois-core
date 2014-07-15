@@ -15,6 +15,8 @@
                         net.ripe.db.whois.api.rest.mapper">
         <context:exclude-filter type="regex"
                                 expression="net.ripe.db.whois.api.rest.mapper.*ServerAttributeMapper.*"/>
+        <context:exclude-filter type="regex"
+                                expression="net.ripe.db.whois.api.rest.mapper.ReferencedTypeResolver"/>
     </context:component-scan>
 
     <bean class="net.ripe.db.whois.common.domain.IpRanges"/>
