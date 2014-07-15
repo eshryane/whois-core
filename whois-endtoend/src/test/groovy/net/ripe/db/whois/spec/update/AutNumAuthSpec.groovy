@@ -825,7 +825,7 @@ class AutNumAuthSpec extends BaseQueryUpdateSpec {
         ack.summary.nrFound == 1
         ack.summary.assertSuccess(1, 1, 0, 0, 0)
         ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 1, 0)
+        ack.countErrorWarnInfo(0, 0, 0)
         ack.successes.any { it.operation == "Create" && it.key == "[aut-num] AS250" }
 
         queryObject("-rGBT aut-num AS250", "aut-num", "AS250")
