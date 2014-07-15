@@ -24,13 +24,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring.version>3.2.8.RELEASE</spring.version>
-        <aspectj.version>1.7.4</aspectj.version>
+        <spring.version>3.2.9.RELEASE</spring.version>
+        <aspectj.version>1.8.1</aspectj.version>
         <compiler.version>1.7</compiler.version>
         <java.version>1.7</java.version>
-        <jersey.version>2.7</jersey.version>
+        <jersey.version>2.10.1</jersey.version>
         <lucene.version>4.4.0</lucene.version>
-        <jetty.version>8.1.12.v20130726</jetty.version>
+        <jetty.version>8.1.15.v20140411</jetty.version>
         <whois.main>OVERRIDE</whois.main>
         <sonar.jdbc.url>jdbc:mysql://localhost:3306/sonar?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true</sonar.jdbc.url>
         <sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
@@ -163,7 +163,7 @@
             <dependency>
                 <groupId>de.jflex</groupId>
                 <artifactId>jflex</artifactId>
-                <version>1.4.3</version>
+                <version>1.6.0</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
@@ -260,7 +260,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty</artifactId>
-                <version>3.4.6.Final</version>
+                <version>3.9.2.Final</version>
             </dependency>
 
             <dependency>
@@ -272,30 +272,30 @@
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
-                <version>2.6.7</version>
+                <version>3.2.3</version>
             </dependency>
 
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.1</version>
+                <version>2.3</version>
             </dependency>
 
             <!-- bouncy castle -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpg-jdk15on</artifactId>
-                <version>1.47</version>
+                <version>1.50</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcmail-jdk15on</artifactId>
-                <version>1.47</version>
+                <version>1.50</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
-                <version>1.47</version>
+                <version>1.50</version>
             </dependency>
 
             <!-- apache commons -->

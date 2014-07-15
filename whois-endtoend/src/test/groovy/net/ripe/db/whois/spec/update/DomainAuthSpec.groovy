@@ -1278,16 +1278,11 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         def ack = new AckResponse("", message)
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(0, 0, 0, 0, 0)
-        ack.summary.assertErrors(1, 1, 0, 0)
-        ack.countErrorWarnInfo(2, 0, 0)
-        ack.errors.any { it.operation == "Create" && it.key == "[domain] 1.99.in-addr.arpa" }
-        ack.errorMessagesFor("Create", "[domain] 1.99.in-addr.arpa") == [
-                "No name servers found at child. No name servers could be found at the child. This usually means that the child is not configured to answer queries about the zone.",
-                "Fatal error in delegation for zone 1.99.in-addr.arpa. No name servers found at child or at parent. No further testing can be performed."
-        ]
+        ack.summary.assertSuccess(1, 1, 0, 0, 0)
+        ack.summary.assertErrors(0, 0, 0, 0)
+        ack.countErrorWarnInfo(0, 0, 0)
 
-        queryObjectNotFound("-rGBT domain 1.99.in-addr.arpa", "domain", "1.99.in-addr.arpa")
+        queryObject("-rGBT domain 1.99.in-addr.arpa", "domain", "1.99.in-addr.arpa")
     }
 
     def "create reverse domain, dash in 4th octet"() {
@@ -2119,16 +2114,11 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
         def ack = new AckResponse("", message)
 
         ack.summary.nrFound == 1
-        ack.summary.assertSuccess(0, 0, 0, 0, 0)
-        ack.summary.assertErrors(1, 1, 0, 0)
-        ack.countErrorWarnInfo(2, 0, 0)
-        ack.errors.any { it.operation == "Create" && it.key == "[domain] 193.in-addr.arpa" }
-        ack.errorMessagesFor("Create", "[domain] 193.in-addr.arpa") == [
-                "Too few name servers (1). Only one name server was found for the zone. You should always have at least two name servers for a zone to be able to handle transient connectivity problems.",
-                "Too few IPv4 name servers (1). Only one IPv4 name server was found for the zone. You should always have at least two IPv4 name servers for a zone to be able to handle transient connectivity problems."
-        ]
+        ack.summary.assertSuccess(1, 1, 0, 0, 0)
+        ack.summary.assertErrors(0, 0, 0, 0)
+        ack.countErrorWarnInfo(0, 0, 0)
 
-        queryObjectNotFound("-rGBT domain 193.in-addr.arpa", "domain", "193.in-addr.arpa")
+        queryObject("-rGBT domain 193.in-addr.arpa", "domain", "193.in-addr.arpa")
     }
 
     def "create reverse domain, ripe IPv6 space, less specific inet6num with mnt-domains, domains pw supplied"() {
@@ -2363,88 +2353,6 @@ class DomainAuthSpec extends BaseQueryUpdateSpec {
                 "Authorisation override used"]
 
         queryObject("-rGBT domain 0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.2.ip6.arpa", "domain", "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.2.ip6.arpa")
-    }
-
-    def "create reverse domain, dnssec errors"() {
-      given:
-        syncUpdate(getTransient("ALLOC-PA-LOW-DOM-R") + "password: hm\npassword: owner3")
-        queryObject("-r -T inetnum 193.0.0.0 - 193.255.255.255", "inetnum", "193.0.0.0 - 193.255.255.255")
-
-      expect:
-        queryObjectNotFound("-rGBT domain 193.in-addr.arpa", "domain", "193.in-addr.arpa")
-
-      when:
-        def message = syncUpdate("""\
-                domain:         0.0.193.in-addr.arpa
-                descr:          reverse domain
-                admin-c:        TP1-TEST
-                tech-c:         TP1-TEST
-                zone-c:         TP1-TEST
-                nserver:        pri.authdns.ripe.net
-                nserver:        ns3.nic.fr
-                ds-rdata:       52151  1  1  13ee60f7499a70e5aadaf05828e7fc59e8e70bc1
-                mnt-by:         owner-MNT
-                changed:        noreply@ripe.net 20120101
-                source:         TEST
-
-                password:   lir2
-                password:   owner
-                """.stripIndent()
-        )
-
-      then:
-        def ack = new AckResponse("", message)
-
-        ack.summary.nrFound == 1
-        ack.summary.assertSuccess(0, 0, 0, 0, 0)
-        ack.summary.assertErrors(1, 1, 0, 0)
-        ack.countErrorWarnInfo(1, 0, 0)
-        ack.errors.any { it.operation == "Create" && it.key == "[domain] 0.0.193.in-addr.arpa" }
-        ack.errorMessagesFor("Create", "[domain] 0.0.193.in-addr.arpa") == [
-                "The zone 0.0.193.in-addr.arpa has published DS records, but none of them work."
-        ]
-
-        queryObjectNotFound("-rGBT domain 0.0.193.in-addr.arpa", "domain", "0.0.193.in-addr.arpa")
-    }
-
-    def "create reverse domain, dnssec"() {
-      given:
-        syncUpdate(getTransient("ALLOC-PA-LOW-DOM-R") + "password: hm\npassword: owner3")
-        queryObject("-r -T inetnum 193.0.0.0 - 193.255.255.255", "inetnum", "193.0.0.0 - 193.255.255.255")
-
-      expect:
-        queryObjectNotFound("-rGBT domain 193.in-addr.arpa", "domain", "193.in-addr.arpa")
-
-      when:
-        def message = syncUpdate("""\
-                domain:         0.0.193.in-addr.arpa
-                descr:          reverse domain
-                admin-c:        TP1-TEST
-                tech-c:         TP1-TEST
-                zone-c:         TP1-TEST
-                nserver:        pri.authdns.ripe.net
-                nserver:        ns3.nic.fr
-                ds-rdata:       17881 5 1 2e58131e5fe28ec965a7b8e4efb52d0a028d7a78
-                ds-rdata:       17881 5 2 8c6265733a73e5588bfac516a4fcfbe1103a544b95f254cb67a21e474079547e
-                mnt-by:         owner-MNT
-                changed:        noreply@ripe.net 20120101
-                source:         TEST
-
-                password:   lir2
-                password:   owner
-                """.stripIndent()
-        )
-
-      then:
-        def ack = new AckResponse("", message)
-
-        ack.summary.nrFound == 1
-        ack.summary.assertSuccess(1, 1, 0, 0, 0)
-        ack.summary.assertErrors(0, 0, 0, 0)
-        ack.countErrorWarnInfo(0, 0, 0)
-        ack.successes.any { it.operation == "Create" && it.key == "[domain] 0.0.193.in-addr.arpa" }
-
-        queryObject("-rGBT domain 0.0.193.in-addr.arpa", "domain", "0.0.193.in-addr.arpa")
     }
 
     def "create reverse domain, dnssec with cont lines"() {
