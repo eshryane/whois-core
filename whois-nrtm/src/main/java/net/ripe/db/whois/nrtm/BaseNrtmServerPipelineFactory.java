@@ -3,7 +3,7 @@ package net.ripe.db.whois.nrtm;
 import com.google.common.base.Charsets;
 import net.ripe.db.whois.common.dao.SerialDao;
 import net.ripe.db.whois.common.pipeline.MaintenanceHandler;
-import net.ripe.db.whois.common.rpsl.Dummifier;
+import net.ripe.db.whois.common.dummifier.Dummifier;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelPipeline;

@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common;
+package net.ripe.db.whois.common.dummifier;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -7,7 +7,7 @@ import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.jdbc.SimpleDataSourceFactory;
 import net.ripe.db.whois.common.jmx.JmxBase;
 import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.DummifierCurrent;
+import net.ripe.db.whois.common.dummifier.DummifierCurrent;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.PasswordHelper;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;

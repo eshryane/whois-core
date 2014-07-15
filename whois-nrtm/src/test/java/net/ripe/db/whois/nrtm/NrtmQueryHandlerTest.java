@@ -4,7 +4,7 @@ import net.ripe.db.whois.common.dao.SerialDao;
 import net.ripe.db.whois.common.domain.serials.Operation;
 import net.ripe.db.whois.common.domain.serials.SerialEntry;
 import net.ripe.db.whois.common.domain.serials.SerialRange;
-import net.ripe.db.whois.common.rpsl.DummifierLegacy;
+import net.ripe.db.whois.common.dummifier.DummifierLegacy;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.jboss.netty.channel.*;
 import org.junit.Before;

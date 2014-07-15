@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common;
+package net.ripe.db.whois.common.dummifier;
 
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.PasswordHelper;
