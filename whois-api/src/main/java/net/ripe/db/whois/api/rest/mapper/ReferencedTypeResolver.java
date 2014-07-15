@@ -1,4 +1,4 @@
-package net.ripe.db.whois.api.rest;
+package net.ripe.db.whois.api.rest.mapper;
 
 import com.google.common.base.Splitter;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
