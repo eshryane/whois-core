@@ -1,6 +1,4 @@
-package net.ripe.db.whois.common.dummifier;
-
-import net.ripe.db.whois.common.rpsl.RpslObject;
+package net.ripe.db.whois.common.rpsl;
 
 public interface Dummifier {
     RpslObject dummify(int version, RpslObject rpslObject);

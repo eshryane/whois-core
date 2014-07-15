@@ -1,8 +1,8 @@
 package net.ripe.db.whois.scheduler.task.export;
 
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.dummifier.DummifierLegacy;
-import net.ripe.db.whois.common.dummifier.DummifierCurrent;
+import net.ripe.db.whois.common.rpsl.DummifierLegacy;
+import net.ripe.db.whois.common.rpsl.DummifierCurrent;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 

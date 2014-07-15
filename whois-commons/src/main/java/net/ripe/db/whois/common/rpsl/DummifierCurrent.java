@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.dummifier;
+package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -12,10 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
 import static net.ripe.db.whois.common.rpsl.AttributeType.ABUSE_MAILBOX;
 import static net.ripe.db.whois.common.rpsl.AttributeType.ADDRESS;
 import static net.ripe.db.whois.common.rpsl.AttributeType.AUTH;
