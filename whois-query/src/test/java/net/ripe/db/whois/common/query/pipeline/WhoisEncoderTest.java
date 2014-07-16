@@ -29,6 +29,7 @@ public class WhoisEncoderTest {
     @Mock private ChannelHandlerContext contextMock;
     @Mock private Channel channelMock;
     @Mock private ResponseObject objectMock;
+    @Mock private QueryMessages queryMessages;
     @InjectMocks private WhoisEncoder subject;
 
     private ChannelBuffer encode(Object input) throws IOException {
@@ -54,7 +55,7 @@ public class WhoisEncoderTest {
 
     @Test
     public void encode_Message() throws IOException {
-        Message message = QueryMessages.inputTooLong();
+        Message message = queryMessages.inputTooLong();
         ChannelBuffer result = encode(message);
 
         assertThat(toString(result), is(message.toString() + "\n"));

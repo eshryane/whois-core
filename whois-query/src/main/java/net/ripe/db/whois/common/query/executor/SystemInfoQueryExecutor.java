@@ -29,10 +29,12 @@ public class SystemInfoQueryExecutor implements QueryExecutor {
     private String version;
 
     private final SourceContext sourceContext;
+    private final QueryMessages queryMessages;
 
     @Autowired
-    public SystemInfoQueryExecutor(SourceContext sourceContext) {
+    public SystemInfoQueryExecutor(final SourceContext sourceContext, final QueryMessages queryMessages) {
         this.sourceContext = sourceContext;
+        this.queryMessages = queryMessages;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class SystemInfoQueryExecutor implements QueryExecutor {
                 break;
             }
             default:
-                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery());
+                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.malformedQuery());
         }
 
         responseHandler.handle(new MessageObject(responseString));

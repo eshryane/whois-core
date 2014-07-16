@@ -27,15 +27,17 @@ public class ConnectionPerIpLimitHandler extends SimpleChannelUpstreamHandler {
 
     private final IpResourceConfiguration ipResourceConfiguration;
     private final WhoisLog whoisLog;
+    private final QueryMessages queryMessages;
     private final ConcurrentHashMap<InetAddress, Integer> connections = new ConcurrentHashMap<>();
 
     @Value("${whois.limit.connectionsPerIp:3}") private volatile int maxConnectionsPerIp;
     @Value("${application.version}") private volatile String version;
 
     @Autowired
-    public ConnectionPerIpLimitHandler(final IpResourceConfiguration ipResourceConfiguration, final WhoisLog whoisLog) {
+    public ConnectionPerIpLimitHandler(final IpResourceConfiguration ipResourceConfiguration, final WhoisLog whoisLog, final QueryMessages queryMessages) {
         this.ipResourceConfiguration = ipResourceConfiguration;
         this.whoisLog = whoisLog;
+        this.queryMessages = queryMessages;
     }
 
     void setMaxConnectionsPerIp(final int maxConnectionsPerIp) {
@@ -52,9 +54,9 @@ public class ConnectionPerIpLimitHandler extends SimpleChannelUpstreamHandler {
         if (limitConnections(remoteIp)) {
             if (count != null && count >= maxConnectionsPerIp) {
                 whoisLog.logQueryResult("QRY", 0, 0, QueryCompletionInfo.REJECTED, 0, remoteAddress, channel.getId(), "");
-                channel.write(QueryMessages.termsAndConditions());
-                channel.write(QueryMessages.connectionsExceeded(maxConnectionsPerIp));
-                channel.write(QueryMessages.servedByNotice(version)).addListener(ChannelFutureListener.CLOSE);
+                channel.write(queryMessages.termsAndConditions());
+                channel.write(queryMessages.connectionsExceeded(maxConnectionsPerIp));
+                channel.write(queryMessages.servedByNotice(version)).addListener(ChannelFutureListener.CLOSE);
                 return;
             }
         }

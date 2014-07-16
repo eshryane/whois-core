@@ -3,6 +3,7 @@ package net.ripe.db.whois.common.query.pipeline;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.query.acl.AccessControlListManager;
 import net.ripe.db.whois.common.query.query.Query;
+import net.ripe.db.whois.common.query.query.QueryComponent;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandler;
 import org.jboss.netty.channel.ChannelHandlerContext;
@@ -17,15 +18,17 @@ import java.net.InetSocketAddress;
 public class QueryDecoder extends OneToOneDecoder {
 
     private final AccessControlListManager accessControlListManager;
+    private final QueryComponent queryComponent;
 
     @Autowired
-    public QueryDecoder(final AccessControlListManager accessControlListManager) {
+    public QueryDecoder(final AccessControlListManager accessControlListManager, final QueryComponent queryComponent) {
         this.accessControlListManager = accessControlListManager;
+        this.queryComponent = queryComponent;
     }
 
     @Override
     protected Object decode(final ChannelHandlerContext ctx, final Channel channel, final Object msg) {
-        final Query query = Query.parse((String) msg, Query.Origin.LEGACY, isTrusted(channel));
+        final Query query = queryComponent.parse((String) msg, Query.Origin.LEGACY, isTrusted(channel));
 
         for (final Message warning : query.getWarnings()) {
             channel.write(warning);

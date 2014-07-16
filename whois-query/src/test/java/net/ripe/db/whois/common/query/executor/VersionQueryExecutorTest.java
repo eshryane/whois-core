@@ -45,7 +45,7 @@ public class VersionQueryExecutorTest {
     @Mock VersionInfo versionInfo3;
     @Mock VersionInfo versionInfo4;
     @Mock SourceContext sourceContext;
-
+    @Mock QueryMessages queryMessages;
     @Mock VersionDao versionDao;
     @InjectMocks VersionQueryExecutor subject;
 
@@ -56,9 +56,9 @@ public class VersionQueryExecutorTest {
 
     @Test
     public void supportTest() {
-        assertThat(subject.supports(Query.parse("10.0.0.0")), is(false));
-        assertThat(subject.supports(Query.parse("--list-versions 10.0.0.0")), is(true));
-        assertThat(subject.supports(Query.parse("--show-version 2 10.0.0.0")), is(true));
+        assertThat(subject.supports(new Query("10.0.0.0", Query.Origin.LEGACY, false, queryMessages)), is(false));
+        assertThat(subject.supports(new Query("--list-versions 10.0.0.0", Query.Origin.LEGACY, false, queryMessages)), is(true));
+        assertThat(subject.supports(new Query("--show-version 2 10.0.0.0", Query.Origin.LEGACY, false, queryMessages)), is(true));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class VersionQueryExecutorTest {
         when(versionDao.findByKey(ObjectType.IRT, "IRT-THISONE")).thenReturn(null);
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("--list-versions IRT-THISONE"), responseHandler);
+        subject.execute(new Query("--list-versions IRT-THISONE", Query.Origin.LEGACY, false, queryMessages), responseHandler);
 
         assertThat(responseHandler.getResponseObjects(), hasSize(1));
     }
@@ -82,10 +82,10 @@ public class VersionQueryExecutorTest {
         when(versionDao.getObjectType("AS2050")).thenReturn(ImmutableSet.of(ObjectType.AUT_NUM));
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("--list-versions AS2050"), responseHandler);
+        subject.execute(new Query("--list-versions AS2050", Query.Origin.LEGACY, false, queryMessages), responseHandler);
 
         Iterator<? extends ResponseObject> result = responseHandler.getResponseObjects().iterator();
-        assertThat(result.next().toString(), containsString(QueryMessages.versionListStart("AUT-NUM", "AS2050").toString()));
+        assertThat(result.next().toString(), containsString(queryMessages.versionListStart("AUT-NUM", "AS2050").toString()));
 
         assertThat(result.next().toString(), matchesPattern("rev#\\s+Date\\s+Op.*"));
 
@@ -109,11 +109,11 @@ public class VersionQueryExecutorTest {
         when(versionDao.getObjectType("AS2050")).thenReturn(Collections.singleton(ObjectType.AUT_NUM));
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("--list-versions AS2050"), responseHandler);
+        subject.execute(new Query("--list-versions AS2050", Query.Origin.LEGACY, false, queryMessages), responseHandler);
 
         final List<ResponseObject> responseObjects = responseHandler.getResponseObjects();
-        assertThat(new String(responseObjects.get(0).toByteArray()), is(QueryMessages.versionListStart(ObjectType.AUT_NUM.getName().toUpperCase(), "AS2050").toString()));
-        assertThat(new String(responseObjects.get(1).toByteArray()), is(QueryMessages.versionDeleted("2012-04-25 06:55").toString()));
+        assertThat(new String(responseObjects.get(0).toByteArray()), is(queryMessages.versionListStart(ObjectType.AUT_NUM.getName().toUpperCase(), "AS2050").toString()));
+        assertThat(new String(responseObjects.get(1).toByteArray()), is(queryMessages.versionDeleted("2012-04-25 06:55").toString()));
     }
 
     @Test
@@ -128,11 +128,11 @@ public class VersionQueryExecutorTest {
         when(versionDao.findByKey(ObjectType.AUT_NUM, "AS2050")).thenReturn(as2050);
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("--show-version 1 AS2050"), responseHandler);
+        subject.execute(new Query("--show-version 1 AS2050", Query.Origin.LEGACY, false, queryMessages), responseHandler);
 
         final List<ResponseObject> responseObjects = responseHandler.getResponseObjects();
-        assertThat(new String(responseObjects.get(0).toByteArray()), is(QueryMessages.versionListStart(ObjectType.AUT_NUM.getName().toUpperCase(), "AS2050").toString()));
-        assertThat(new String(responseObjects.get(1).toByteArray()), is(QueryMessages.versionDeleted("2012-04-10 13:58").toString()));
+        assertThat(new String(responseObjects.get(0).toByteArray()), is(queryMessages.versionListStart(ObjectType.AUT_NUM.getName().toUpperCase(), "AS2050").toString()));
+        assertThat(new String(responseObjects.get(1).toByteArray()), is(queryMessages.versionDeleted("2012-04-10 13:58").toString()));
     }
 
     @Test
@@ -143,17 +143,17 @@ public class VersionQueryExecutorTest {
         when(versionDao.findByKey(ObjectType.AUT_NUM, "AS2050")).thenReturn(as2050);
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("--show-version 2 AS2050"), responseHandler);
+        subject.execute(new Query("--show-version 2 AS2050", Query.Origin.LEGACY, false, queryMessages), responseHandler);
 
         final Iterator<? extends ResponseObject> iterator = responseHandler.getResponseObjects().iterator();
         assertThat(iterator.hasNext(), is(true));
-        assertThat(new String(iterator.next().toByteArray()), is(QueryMessages.versionOutOfRange(1).toString()));
+        assertThat(new String(iterator.next().toByteArray()), is(queryMessages.versionOutOfRange(1).toString()));
     }
 
     @Test
     public void showInfo_version_too_low() {
         try {
-            final Query response = Query.parse("--show-version 0 AS2050");
+            final Query response = new Query("--show-version 0 AS2050", Query.Origin.LEGACY, false, queryMessages);
             response.getObjectVersion();
             fail("expected query exception as --show-version 0 is not allowed");
         } catch (QueryException e) {
@@ -171,11 +171,11 @@ public class VersionQueryExecutorTest {
         when(versionDao.findByKey(ObjectType.ROLE, "TP1-TEST")).thenReturn(tp1);
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("--list-versions TP1-TEST"), responseHandler);
+        subject.execute(new Query("--list-versions TP1-TEST", Query.Origin.LEGACY, false, queryMessages), responseHandler);
 
         final Iterator<ResponseObject> iterator = responseHandler.getResponseObjects().iterator();
         assertThat(iterator.hasNext(), is(true));
-        assertThat(new String(iterator.next().toByteArray()), is(QueryMessages.versionPersonRole("ROLE", "TP1-TEST").toString()));
+        assertThat(new String(iterator.next().toByteArray()), is(queryMessages.versionPersonRole("ROLE", "TP1-TEST").toString()));
     }
 
     @Test
@@ -190,13 +190,13 @@ public class VersionQueryExecutorTest {
         when(versionDao.findByKey(ObjectType.MNTNER, "TP1-TEST")).thenReturn(versionLookupResultMntner);
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("--list-versions TP1-TEST"), responseHandler);
+        subject.execute(new Query("--list-versions TP1-TEST", Query.Origin.LEGACY, false, queryMessages), responseHandler);
 
         final List<ResponseObject> responseObjects = responseHandler.getResponseObjects();
 
         assertThat(responseObjects, hasSize(4));
         assertThat(new String(responseObjects.get(0).toByteArray()),
-                is(QueryMessages.versionListStart(ObjectType.MNTNER.getName().toUpperCase(), "TP1-TEST").toString()));
+                is(queryMessages.versionListStart(ObjectType.MNTNER.getName().toUpperCase(), "TP1-TEST").toString()));
     }
 
     @Test
@@ -214,11 +214,11 @@ public class VersionQueryExecutorTest {
         when(versionDao.getRpslObject(any(VersionInfo.class))).thenReturn(rpslObject);
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("--show-version 1 TP1-TEST"), responseHandler);
+        subject.execute(new Query("--show-version 1 TP1-TEST", Query.Origin.LEGACY, false, queryMessages), responseHandler);
 
         final Iterator<ResponseObject> iterator = responseHandler.getResponseObjects().iterator();
         assertThat(iterator.hasNext(), is(true));
-        assertThat(new String(iterator.next().toByteArray()), is(QueryMessages.versionPersonRole("PERSON", "TP1-TEST").toString()));
+        assertThat(new String(iterator.next().toByteArray()), is(queryMessages.versionPersonRole("PERSON", "TP1-TEST").toString()));
     }
 
     private void setupVersionMock(VersionInfo mock, int objectId, long timestamp) {

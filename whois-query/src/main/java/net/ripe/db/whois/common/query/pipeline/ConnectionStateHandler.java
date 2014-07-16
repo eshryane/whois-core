@@ -10,8 +10,14 @@ public class ConnectionStateHandler extends SimpleChannelUpstreamHandler impleme
 
     static final ChannelBuffer NEWLINE = ChannelBuffers.wrappedBuffer(new byte[]{'\n'});
 
+    private final QueryMessages queryMessages;
+
     private boolean keepAlive;
     private boolean closed;
+
+    public ConnectionStateHandler(final QueryMessages queryMessages) {
+        this.queryMessages = queryMessages;
+    }
 
     @Override
     public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent e) {
@@ -47,7 +53,7 @@ public class ConnectionStateHandler extends SimpleChannelUpstreamHandler impleme
             final Channel channel = e.getChannel();
             if (keepAlive && !((QueryCompletedEvent) e).isForceClose()) {
                 channel.write(NEWLINE);
-                channel.write(QueryMessages.termsAndConditions());
+                channel.write(queryMessages.termsAndConditions());
             } else {
                 closed = true;
                 channel.write(NEWLINE).addListener(ChannelFutureListener.CLOSE);

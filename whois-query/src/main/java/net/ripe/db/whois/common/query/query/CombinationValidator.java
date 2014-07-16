@@ -6,6 +6,8 @@ import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.query.QueryFlag;
 import net.ripe.db.whois.common.query.QueryMessages;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Set;
 
 import static net.ripe.db.whois.common.query.QueryFlag.*;
 
+@Component
 class CombinationValidator implements QueryValidator {
     private static final Map<QueryFlag, List<QueryFlag>> INVALID_COMBINATIONS = Maps.newLinkedHashMap();
 
@@ -42,6 +45,13 @@ class CombinationValidator implements QueryValidator {
         }
     }
 
+    private final QueryMessages queryMessages;
+
+    @Autowired
+    public CombinationValidator(final QueryMessages queryMessages) {
+        this.queryMessages = queryMessages;
+    }
+
     @Override
     public void validate(final Query query, final Messages messages) {
         final Set<BigInteger> combinationMasks = Sets.newHashSet();
@@ -52,7 +62,7 @@ class CombinationValidator implements QueryValidator {
                 for (final QueryFlag otherOption : combinationEntry.getValue()) {
                     if (query.hasOption(otherOption)) {
                         if (combinationMasks.add(BigInteger.ONE.shiftLeft(option.ordinal()).and(BigInteger.ONE.shiftLeft(otherOption.ordinal())))) {
-                            messages.add(QueryMessages.invalidCombinationOfFlags(option.toString(), otherOption.toString()));
+                            messages.add(queryMessages.invalidCombinationOfFlags(option.toString(), otherOption.toString()));
                         }
                     }
                 }

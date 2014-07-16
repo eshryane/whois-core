@@ -21,11 +21,12 @@ public class ServedByHandlerTest {
     @Mock private QueryCompletedEvent queryCompletedEventMock;
     @Mock private Channel channelMock;
     @Mock private ChannelHandlerContext ctxMock;
+    @Mock private QueryMessages queryMessages;
     private ServedByHandler subject;
 
     @Before
     public void setup() {
-        subject = new ServedByHandler("");
+        subject = new ServedByHandler("", queryMessages);
 
         when(queryCompletedEventMock.getChannel()).thenReturn(channelMock);
         when(channelMock.isOpen()).thenReturn(true);
@@ -39,6 +40,6 @@ public class ServedByHandlerTest {
 
         subject.handleDownstream(ctxMock, queryCompletedEventMock);
         verify(ctxMock, times(1)).sendDownstream(queryCompletedEventMock);
-        verify(channelMock, times(1)).write(QueryMessages.servedByNotice(anyString()));
+        verify(channelMock, times(1)).write(queryMessages.servedByNotice(anyString()));
     }
 }

@@ -25,10 +25,12 @@ Tagging, merged in one class to avoid multiple DAO lookups for tags, keeping it 
 @Component
 public class FilterTagsDecorator implements ResponseDecorator {
     private final TagsDao tagsDao;
+    private final QueryMessages queryMessages;
 
     @Autowired
-    public FilterTagsDecorator(TagsDao tagsDao) {
+    public FilterTagsDecorator(final TagsDao tagsDao, final QueryMessages queryMessages) {
         this.tagsDao = tagsDao;
+        this.queryMessages = queryMessages;
     }
 
     public Iterable<? extends ResponseObject> decorate(final Query query, final Iterable<? extends ResponseObject> input) {
@@ -65,13 +67,13 @@ public class FilterTagsDecorator implements ResponseDecorator {
                 result.add(object);
 
                 if (showTagInfo && !tags.isEmpty()) {
-                    result.add(new TagResponseObject(object.getKey(), tags));
+                    result.add(new TagResponseObject(object.getKey(), tags, queryMessages));
                 }
             }
         };
 
         if (hasInclude || hasExclude) {
-            responseObjects.setHeader(new MessageObject(QueryMessages.filterTagNote(includeArguments, excludeArguments)));
+            responseObjects.setHeader(new MessageObject(queryMessages.filterTagNote(includeArguments, excludeArguments)));
         }
 
         return responseObjects;

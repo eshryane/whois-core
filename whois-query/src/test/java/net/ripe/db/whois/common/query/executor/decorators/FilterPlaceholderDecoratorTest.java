@@ -36,6 +36,8 @@ public class FilterPlaceholderDecoratorTest {
     AuthoritativeResourceData authoritativeResourceData;
     @Mock
     AuthoritativeResource authoritativeResource;
+    @Mock
+    QueryMessages queryMessages;
 
     Source source;
 
@@ -61,7 +63,7 @@ public class FilterPlaceholderDecoratorTest {
 
         when(authoritativeResource.isMaintainedInRirSpace(any(RpslObject.class))).thenReturn(false, true, true);
 
-        Iterator<? extends ResponseObject> result = subject.decorate(Query.parse("--resource 10.10.10.10"), toFilter).iterator();
+        Iterator<? extends ResponseObject> result = subject.decorate(new Query("--resource 10.10.10.10", Query.Origin.LEGACY, false, queryMessages), toFilter).iterator();
 
         assertSame(result.next(), toFilter.get(1));
         assertSame(result.next(), toFilter.get(2));
@@ -72,14 +74,14 @@ public class FilterPlaceholderDecoratorTest {
     public void messagesAreLeftAlone() {
         when(sourceContext.isVirtual()).thenReturn(true);
         List<? extends ResponseObject> toFilter = Lists.newArrayList(
-                new MessageObject(QueryMessages.duplicateIpFlagsPassed()),
+                new MessageObject(queryMessages.duplicateIpFlagsPassed()),
                 RpslObject.parse("inetnum: 10.0.0.0 - 10.255.255.255"),
                 RpslObject.parse("inetnum: 10.0.0.0 - 10.0.255.255"),
                 RpslObject.parse("inetnum: 10.0.0.0 - 10.0.0.255"));
 
         when(authoritativeResource.isMaintainedInRirSpace(any(RpslObject.class))).thenReturn(false, false, true);
 
-        Iterator<? extends ResponseObject> result = subject.decorate(Query.parse("--resource 10.10.10.10"), toFilter).iterator();
+        Iterator<? extends ResponseObject> result = subject.decorate(new Query("--resource 10.10.10.10", Query.Origin.LEGACY, false, queryMessages), toFilter).iterator();
 
         assertSame(result.next(), toFilter.get(0));
         assertSame(result.next(), toFilter.get(3));
@@ -91,7 +93,7 @@ public class FilterPlaceholderDecoratorTest {
         when(sourceContext.isVirtual()).thenReturn(true);
         List<? extends ResponseObject> toFilter = Collections.emptyList();
 
-        Iterable<? extends ResponseObject> result = subject.decorate(Query.parse("10.10.10.10"), toFilter);
+        Iterable<? extends ResponseObject> result = subject.decorate(new Query("10.10.10.10", Query.Origin.LEGACY, false, queryMessages), toFilter);
 
         assertNotSame(result, toFilter);
     }
@@ -101,7 +103,7 @@ public class FilterPlaceholderDecoratorTest {
         when(sourceContext.isVirtual()).thenReturn(false);
         List<? extends ResponseObject> toFilter = Collections.emptyList();
 
-        Iterable<? extends ResponseObject> result = subject.decorate(Query.parse("--resource 10.10.10.10"), toFilter);
+        Iterable<? extends ResponseObject> result = subject.decorate(new Query("--resource 10.10.10.10", Query.Origin.LEGACY, false, queryMessages), toFilter);
 
         assertSame(result, toFilter);
     }

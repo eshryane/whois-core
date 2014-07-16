@@ -27,6 +27,7 @@ import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.ResponseObject;
+import net.ripe.db.whois.common.query.query.QueryComponent;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.source.SourceContext;
@@ -157,6 +158,8 @@ public class WhoisRestService {
     private final WhoisObjectServerMapper whoisObjectServerMapper;
     private final InternalUpdatePerformer updatePerformer;
     private final WhoisService whoisService;
+    private final QueryMessages queryMessages;
+    private final QueryComponent queryComponent;    // TODO: [ES] refactor
 
     @Autowired
     public WhoisRestService(final RpslObjectDao rpslObjectDao,
@@ -166,7 +169,9 @@ public class WhoisRestService {
                             final WhoisObjectMapper whoisObjectMapper,
                             final WhoisObjectServerMapper whoisObjectServerMapper,
                             final InternalUpdatePerformer updatePerformer,
-                            final WhoisService whoisService) {
+                            final WhoisService whoisService,
+                            final QueryMessages queryMessages,
+                            final QueryComponent queryComponent) {
         this.rpslObjectDao = rpslObjectDao;
         this.sourceContext = sourceContext;
         this.queryHandler = queryHandler;
@@ -175,6 +180,8 @@ public class WhoisRestService {
         this.whoisObjectServerMapper = whoisObjectServerMapper;
         this.updatePerformer = updatePerformer;
         this.whoisService = whoisService;
+        this.queryMessages = queryMessages;
+        this.queryComponent = queryComponent;
     }
 
     @DELETE
@@ -301,7 +308,7 @@ public class WhoisRestService {
         }
 
         try {
-            final Query query = Query.parse(queryBuilder.build(key), passwords, isTrusted(request)).setMatchPrimaryKeyOnly(true);
+            final Query query = queryComponent.parse(queryBuilder.build(key), passwords, isTrusted(request)).setMatchPrimaryKeyOnly(true);
             return handleQueryAndStreamResponse(query, request, InetAddresses.forString(request.getRemoteAddr()), null, null);
         } catch (QueryException e) {
             throw getWebApplicationException(e, request, Lists.<Message>newArrayList());
@@ -323,7 +330,7 @@ public class WhoisRestService {
                 .addCommaList(QueryFlag.SELECT_TYPES, ObjectType.getByName(objectType).getName())
                 .addFlag(QueryFlag.LIST_VERSIONS);
 
-        final Query query = Query.parse(queryBuilder.build(key), Query.Origin.REST, isTrusted(request));
+        final Query query = queryComponent.parse(queryBuilder.build(key), Query.Origin.REST, isTrusted(request));
 
         final VersionsResponseHandler versionsResponseHandler = new VersionsResponseHandler();
         final int contextId = System.identityHashCode(Thread.currentThread());
@@ -363,7 +370,7 @@ public class WhoisRestService {
                 .addCommaList(QueryFlag.SELECT_TYPES, ObjectType.getByName(objectType).getName())
                 .addCommaList(QueryFlag.SHOW_VERSION, String.valueOf(version));
 
-        final Query query = Query.parse(queryBuilder.build(key), Query.Origin.REST, isTrusted(request));
+        final Query query = queryComponent.parse(queryBuilder.build(key), Query.Origin.REST, isTrusted(request));
 
         final VersionsResponseHandler versionsResponseHandler = new VersionsResponseHandler();
         final int contextId = System.identityHashCode(Thread.currentThread());
@@ -421,7 +428,7 @@ public class WhoisRestService {
             queryBuilder.addFlag(separateFlag);
         }
 
-        final Query query = Query.parse(queryBuilder.build(searchKey), Query.Origin.REST, isTrusted(request));
+        final Query query = queryComponent.parse(queryBuilder.build(searchKey), Query.Origin.REST, isTrusted(request));
 
         final Parameters parameters = new Parameters(
                 new InverseAttributes(inverseAttributes),
@@ -442,7 +449,7 @@ public class WhoisRestService {
         }
 
         try {
-            if (QueryParser.hasFlags(searchKey)) {
+            if ( (new QueryParser(searchKey, queryMessages).hasFlags()) ) {
                 throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity(whoisService.createErrorEntity(request, RestMessages.flagsNotAllowedInQueryString())).build());
             }
         } catch (IllegalArgumentException e) {
@@ -578,7 +585,7 @@ public class WhoisRestService {
             LOGGER.error(exception.getMessage(), exception);
             responseBuilder = Response.status(Response.Status.INTERNAL_SERVER_ERROR);
 
-            messages.add(QueryMessages.internalErroroccurred());
+            messages.add(queryMessages.internalErroroccurred());
         }
 
         if (!messages.isEmpty()) {

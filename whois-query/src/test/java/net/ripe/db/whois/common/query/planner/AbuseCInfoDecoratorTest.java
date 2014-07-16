@@ -25,13 +25,14 @@ import static org.mockito.Mockito.when;
 public class AbuseCInfoDecoratorTest {
     @Mock private AbuseCFinder abuseCFinder;
     @Mock private SourceContext sourceContext;
+    @Mock private QueryMessages queryMessages;
     @InjectMocks AbuseCInfoDecorator subject;
 
     @Test
     public void notApplicable() {
         final RpslObject object = RpslObject.parse("person: Someone\nnic-hdl: NIC-TEST");
 
-        final Iterator<? extends ResponseObject> iterator = subject.decorate(Query.parse("--abuse-contact AS3333"), Collections.singletonList(object)).iterator();
+        final Iterator<? extends ResponseObject> iterator = subject.decorate(new Query("--abuse-contact AS3333", Query.Origin.LEGACY, false, queryMessages), Collections.singletonList(object)).iterator();
         final ResponseObject result = iterator.next();
 
         assertThat(result, is((ResponseObject) object));
@@ -44,7 +45,7 @@ public class AbuseCInfoDecoratorTest {
         when(abuseCFinder.getAbuseContact(object)).thenReturn("abuse@ripe.net");
         when(sourceContext.isMain()).thenReturn(true);
 
-        final Iterator<? extends ResponseObject> iterator = subject.decorate(Query.parse("AS3333"), Collections.singletonList(object)).iterator();
+        final Iterator<? extends ResponseObject> iterator = subject.decorate(new Query("AS3333", Query.Origin.LEGACY, false, queryMessages), Collections.singletonList(object)).iterator();
 
         final MessageObject result = (MessageObject) iterator.next();
         assertThat(result.toString(), is("% Abuse contact for 'ffc::0/64' is 'abuse@ripe.net'\n"));
@@ -60,10 +61,10 @@ public class AbuseCInfoDecoratorTest {
         when(abuseCFinder.getAbuseContact(autnum)).thenReturn(null);
         when(sourceContext.isMain()).thenReturn(true);
 
-        final Iterator<? extends ResponseObject> iterator = subject.decorate(Query.parse("AS3333"), Collections.singletonList(autnum)).iterator();
+        final Iterator<? extends ResponseObject> iterator = subject.decorate(new Query("AS3333", Query.Origin.LEGACY, false, queryMessages), Collections.singletonList(autnum)).iterator();
 
         final MessageObject result = (MessageObject) iterator.next();
 
-        assertThat(result.toString(), is(QueryMessages.abuseCNotRegistered("AS333").getFormattedText()));
+        assertThat(result.toString(), is(queryMessages.abuseCNotRegistered("AS333").getFormattedText()));
     }
 }

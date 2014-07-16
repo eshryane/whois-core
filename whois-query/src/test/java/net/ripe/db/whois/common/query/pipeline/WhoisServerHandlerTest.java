@@ -2,6 +2,7 @@ package net.ripe.db.whois.common.query.pipeline;
 
 import com.google.common.net.InetAddresses;
 import net.ripe.db.whois.common.domain.ResponseObject;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.query.domain.QueryCompletionInfo;
@@ -37,6 +38,7 @@ public class WhoisServerHandlerTest {
     @Mock ChannelPipeline pipeline;
     @Mock ChannelStateEvent channelStateEvent;
     @Mock MessageEvent messageEvent;
+    @Mock QueryMessages queryMessages;
 
     @Mock QueryHandler queryHandler;
     @InjectMocks WhoisServerHandler subject;
@@ -68,7 +70,7 @@ public class WhoisServerHandlerTest {
 
     @Test
     public void messageReceived_no_proxy_no_personal_object() throws Exception {
-        final Query query = Query.parse("10.0.0.0");
+        final Query query = new Query("10.0.0.0", Query.Origin.LEGACY, false, queryMessages);
         when(messageEvent.getMessage()).thenReturn(query);
 
         subject.messageReceived(ctx, messageEvent);
@@ -82,7 +84,7 @@ public class WhoisServerHandlerTest {
 
     @Test
     public void messageReceived_closed() throws Exception {
-        final Query query = Query.parse("-V test,10.0.0.0 10.0.0.0");
+        final Query query = new Query("-V test,10.0.0.0 10.0.0.0", Query.Origin.LEGACY, false, queryMessages);
 
         final RpslObject responseObject = mock(RpslObject.class);
         when(responseObject.getType()).thenReturn(ObjectType.INETNUM);

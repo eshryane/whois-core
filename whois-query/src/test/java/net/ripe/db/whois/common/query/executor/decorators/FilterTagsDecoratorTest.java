@@ -7,6 +7,7 @@ import net.ripe.db.whois.common.dao.TagsDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.domain.Tag;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.query.query.Query;
 import org.junit.Test;
@@ -27,6 +28,7 @@ public class FilterTagsDecoratorTest {
 
     @Mock TagsDao tagsDao;
     @Mock RpslObjectDao objectDao;
+    @Mock QueryMessages queryMessages;
 
     @InjectMocks
     FilterTagsDecorator subject;
@@ -35,7 +37,7 @@ public class FilterTagsDecoratorTest {
     public void unrefInfo_for_unreferenced_role() {
         when(tagsDao.getTags(1)).thenReturn(Lists.newArrayList(new Tag(CIString.ciString("unref"), 1, "34")));
         final RpslObject role = RpslObject.parse(1, "role: Test Role\nnic-hdl: TR1-TEST");
-        final Query query = Query.parse("--show-tag-info TR1-TEST");
+        final Query query = new Query("--show-tag-info TR1-TEST", Query.Origin.LEGACY, false, queryMessages);
 
         final Iterable<? extends ResponseObject> result = subject.decorate(query, ImmutableList.of(role));
 
@@ -49,7 +51,7 @@ public class FilterTagsDecoratorTest {
     @Test
     public void no_unrefInfo_for_referenced_mntner() {
         when(tagsDao.getTags(1)).thenReturn(Lists.<Tag>newArrayList());
-        final Query query = Query.parse("--show-tag-info TEST-MNT");
+        final Query query = new Query("--show-tag-info TEST-MNT", Query.Origin.LEGACY, false, queryMessages);
 
         final RpslObject mntner = RpslObject.parse(1, "mntner: TEST-MNT");
         final Iterable<? extends ResponseObject> result = subject.decorate(query, ImmutableList.of(mntner));

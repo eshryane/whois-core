@@ -2,6 +2,7 @@ package net.ripe.db.whois.common.query.pipeline;
 
 import com.google.common.base.Charsets;
 import net.ripe.db.whois.common.pipeline.MaintenanceHandler;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.handler.QueryHandler;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -58,6 +59,7 @@ public class WhoisServerPipelineFactory implements ChannelPipelineFactory {
     private final WhoisEncoder whoisEncoder;
     private final QueryDecoder queryDecoder;
     private final QueryHandler queryHandler;
+    private final QueryMessages queryMessages;
 
     @Autowired
     public WhoisServerPipelineFactory(final MaintenanceHandler maintenanceHandler,
@@ -66,7 +68,8 @@ public class WhoisServerPipelineFactory implements ChannelPipelineFactory {
                                       final QueryDecoder queryDecoder,
                                       final WhoisEncoder whoisEncoder,
                                       final ConnectionPerIpLimitHandler connectionPerIpLimitHandler,
-                                      final QueryHandler queryHandler) {
+                                      final QueryHandler queryHandler,
+                                      final QueryMessages queryMessages) {
         this.maintenanceHandler = maintenanceHandler;
         this.queryChannelsRegistry = queryChannelsRegistry;
         this.termsAndConditionsHandler = termsAndConditionsHandler;
@@ -74,6 +77,7 @@ public class WhoisServerPipelineFactory implements ChannelPipelineFactory {
         this.whoisEncoder = whoisEncoder;
         this.connectionPerIpLimitHandler = connectionPerIpLimitHandler;
         this.queryHandler = queryHandler;
+        this.queryMessages = queryMessages;
     }
 
     @PreDestroy
@@ -100,11 +104,11 @@ public class WhoisServerPipelineFactory implements ChannelPipelineFactory {
 
         pipeline.addLast("execution", executionHandler);
 
-        pipeline.addLast("exception", new ExceptionHandler());
+        pipeline.addLast("exception", new ExceptionHandler(queryMessages));
         pipeline.addLast("query-decoder", queryDecoder);
-        pipeline.addLast("connection-state", new ConnectionStateHandler());
+        pipeline.addLast("connection-state", new ConnectionStateHandler(queryMessages));
 
-        pipeline.addLast("served-by", new ServedByHandler(version));
+        pipeline.addLast("served-by", new ServedByHandler(version, queryMessages));
         pipeline.addLast("whois", new WhoisServerHandler(queryHandler));
 
         return pipeline;

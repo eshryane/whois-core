@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.ResponseObject;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.query.domain.MessageObject;
@@ -29,12 +30,13 @@ public class GroupObjectTypesFunctionTest {
 
     @Mock private PrimaryObjectDecorator decorator;
     @Mock private RpslObjectDao rpslObjectDao;
+    @Mock private QueryMessages queryMessages;
 
     private GroupObjectTypesFunction subject;
 
     @Before
     public void setUp() {
-        query = Query.parse("foo");
+        query = new Query("foo", Query.Origin.LEGACY, false, queryMessages);
         subject = new GroupObjectTypesFunction(rpslObjectDao, query, Sets.newHashSet(decorator));
     }
 

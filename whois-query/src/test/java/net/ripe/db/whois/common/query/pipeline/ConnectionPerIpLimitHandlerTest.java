@@ -33,6 +33,7 @@ public class ConnectionPerIpLimitHandlerTest {
     @Mock private ChannelFuture channelFuture;
     @Mock private IpResourceConfiguration ipResourceConfiguration;
     @Mock private WhoisLog whoisLog;
+    @Mock private QueryMessages queryMessages;
 
     @InjectMocks private ConnectionPerIpLimitHandler subject;
 
@@ -76,7 +77,7 @@ public class ConnectionPerIpLimitHandlerTest {
         verify(channel, times(1)).write(argThat(new ArgumentMatcher<Object>() {
             @Override
             public boolean matches(Object argument) {
-                return QueryMessages.connectionsExceeded(MAX_CONNECTIONS_PER_IP).equals(argument);
+                return queryMessages.connectionsExceeded(MAX_CONNECTIONS_PER_IP).equals(argument);
             }
         }));
         verify(channelFuture, times(1)).addListener(ChannelFutureListener.CLOSE);

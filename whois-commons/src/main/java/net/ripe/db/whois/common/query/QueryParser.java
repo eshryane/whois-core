@@ -26,16 +26,18 @@ public class QueryParser {
     private static final Splitter COMMA_SPLITTER = Splitter.on(',').omitEmptyStrings();
     private static final Splitter SPACE_SPLITTER = Splitter.on(' ').omitEmptyStrings();
 
-    private static final QueryFlagParser PARSER = new QueryFlagParser();
-
     private final String originalStringQuery;
     private final String searchKey;
     private final OptionSet options;
+    private final QueryMessages queryMessages;
+    private final QueryFlagParser parser;       // TODO: [ES] refactor
 
-    public QueryParser(final String query) {
-        originalStringQuery = query;
-        options = PARSER.parse(Iterables.toArray(SPACE_SPLITTER.split(query), String.class));
-        searchKey = SPACE_JOINER.join(options.nonOptionArguments());
+    public QueryParser(final String query, final QueryMessages queryMessages) {
+        this.originalStringQuery = query;
+        this.queryMessages = queryMessages;
+        this.parser = new QueryFlagParser();
+        this.options = parser.parse(Iterables.toArray(SPACE_SPLITTER.split(query), String.class));
+        this.searchKey = SPACE_JOINER.join(options.nonOptionArguments());
     }
 
     public String getSearchKey() {
@@ -61,7 +63,7 @@ public class QueryParser {
         try {
             return options.valuesOf(flag);
         } catch (OptionException e) {   // Undocumented; thrown on integer conversion failure
-            throw new IllegalArgumentExceptionMessage(QueryMessages.malformedQuery());
+            throw new IllegalArgumentExceptionMessage(queryMessages.malformedQuery());
         }
     }
 
@@ -73,7 +75,7 @@ public class QueryParser {
                     if (optionValue == null) {
                         optionValue = optionArgument.toString();
                     } else {
-                        throw new IllegalArgumentExceptionMessage(QueryMessages.invalidMultipleFlags((flag.length() == 1 ? "-" : "--") + flag));
+                        throw new IllegalArgumentExceptionMessage(queryMessages.invalidMultipleFlags((flag.length() == 1 ? "-" : "--") + flag));
                     }
                 }
             }
@@ -136,11 +138,11 @@ public class QueryParser {
         return options.specs().size() == 1 && queryFlag.getFlags().contains(options.specs().get(0).options().iterator().next());
     }
 
-    public static boolean hasFlags(final String queryString) {
-        return !PARSER.parse(Iterables.toArray(SPACE_SPLITTER.split(queryString), String.class)).specs().isEmpty();
+    public boolean hasFlags() {
+        return !parser.parse(Iterables.toArray(SPACE_SPLITTER.split(originalStringQuery), String.class)).specs().isEmpty();
     }
 
-    static class QueryFlagParser extends OptionParser {
+    private class QueryFlagParser extends OptionParser {
         {
             for (final QueryFlag queryFlag : QueryFlag.values()) {
                 for (final String flag : queryFlag.getFlags()) {
@@ -157,14 +159,15 @@ public class QueryParser {
             for (final String argument : arguments) {
                 final Matcher matcher = FLAG_PATTERN.matcher(argument);
                 if (matcher.matches() && !isValidOption(matcher)) {
-                    throw new IllegalArgumentExceptionMessage(QueryMessages.malformedQuery("Invalid option: " + argument));
+                    throw new IllegalArgumentExceptionMessage(queryMessages.malformedQuery("Invalid option: " + argument));
                 }
             }
 
             try {
                 return super.parse(arguments);
             } catch (OptionException e) {
-                throw new IllegalArgumentExceptionMessage(QueryMessages.malformedQuery());
+                e.printStackTrace();
+                throw new IllegalArgumentExceptionMessage(queryMessages.malformedQuery());
             }
         }
 

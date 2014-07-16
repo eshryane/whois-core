@@ -14,10 +14,12 @@ import java.util.Arrays;
 import java.util.Collections;
 
 class SyntaxFilterFunction implements Function<ResponseObject, Iterable<? extends ResponseObject>> {
+    private final QueryMessages queryMessages;
     private final boolean isValidSyntaxQuery;
 
-    SyntaxFilterFunction(final boolean validSyntaxQuery) {
-        isValidSyntaxQuery = validSyntaxQuery;
+    SyntaxFilterFunction(final QueryMessages queryMessages, final boolean validSyntaxQuery) {
+        this.queryMessages = queryMessages;
+        this.isValidSyntaxQuery = validSyntaxQuery;
     }
 
     @Override
@@ -26,10 +28,10 @@ class SyntaxFilterFunction implements Function<ResponseObject, Iterable<? extend
             final RpslObject object = (RpslObject) input;
 
             if (!validSyntax(object) && isValidSyntaxQuery) {
-                return Arrays.asList(new MessageObject(QueryMessages.invalidSyntax(object.getKey())));
+                return Arrays.asList(new MessageObject(queryMessages.invalidSyntax(object.getKey())));
             }
             else if (validSyntax(object) && !isValidSyntaxQuery) {
-                return Arrays.asList(new MessageObject(QueryMessages.validSyntax(object.getKey())));
+                return Arrays.asList(new MessageObject(queryMessages.validSyntax(object.getKey())));
             }
         }
         return Collections.singletonList(input);

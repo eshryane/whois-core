@@ -22,11 +22,13 @@ class AbuseCInfoDecorator implements ResponseDecorator {
 
     private final AbuseCFinder abuseCFinder;
     private final SourceContext sourceContext;
+    private final QueryMessages queryMessages;
 
     @Autowired
-    public AbuseCInfoDecorator(final AbuseCFinder abuseCFinder, SourceContext sourceContext) {
+    public AbuseCInfoDecorator(final AbuseCFinder abuseCFinder, SourceContext sourceContext, final QueryMessages queryMessages) {
         this.abuseCFinder = abuseCFinder;
         this.sourceContext = sourceContext;
+        this.queryMessages = queryMessages;
     }
 
     @Override
@@ -53,9 +55,9 @@ class AbuseCInfoDecorator implements ResponseDecorator {
                 final String abuseContact = abuseCFinder.getAbuseContact(object);
 
                 if (abuseContact != null) {
-                    result.add(new MessageObject(QueryMessages.abuseCShown(object.getKey(), abuseContact)));
+                    result.add(new MessageObject(queryMessages.abuseCShown(object.getKey(), abuseContact)));
                 } else {
-                    result.add(new MessageObject(QueryMessages.abuseCNotRegistered(object.getKey())));
+                    result.add(new MessageObject(queryMessages.abuseCNotRegistered(object.getKey())));
                 }
 
                 result.add(input);

@@ -1,7 +1,5 @@
 package net.ripe.db.whois.spec.query
-
 import net.ripe.db.whois.common.IntegrationTest
-import net.ripe.db.whois.common.query.QueryMessages
 import net.ripe.db.whois.spec.BaseQueryUpdateSpec
 
 @org.junit.experimental.categories.Category(IntegrationTest.class)
@@ -21,7 +19,7 @@ class HierarchicalSpec extends BaseQueryUpdateSpec {
 
       then:
         everything =~ header
-        everything.contains(QueryMessages.illegalRange().toString())
+        everything.contains(queryMessages.illegalRange().toString())
     }
 
     def "-m 0::/0"() {
@@ -30,7 +28,7 @@ class HierarchicalSpec extends BaseQueryUpdateSpec {
 
       then:
         everything =~ header
-        everything.contains(QueryMessages.illegalRange().toString())
+        everything.contains(queryMessages.illegalRange().toString())
     }
 
     def "-m ::0/0"() {
@@ -39,7 +37,7 @@ class HierarchicalSpec extends BaseQueryUpdateSpec {
 
       then:
         everything =~ header
-        everything.contains(QueryMessages.illegalRange().toString())
+        everything.contains(queryMessages.illegalRange().toString())
     }
 
     def "-m 0::0/0"() {
@@ -48,6 +46,6 @@ class HierarchicalSpec extends BaseQueryUpdateSpec {
 
       then:
         everything =~ header
-        everything.contains(QueryMessages.uselessIpFlagPassed().toString())
+        everything.contains(queryMessages.uselessIpFlagPassed().toString())
     }
 }

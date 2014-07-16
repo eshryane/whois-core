@@ -42,6 +42,7 @@ import static org.mockito.Mockito.*;
 public class SimpleWhoisServerTestIntegration extends AbstractQueryIntegrationTest {
     @Autowired @ReplaceWithMock private QueryHandler queryHandler;
     @Autowired @ReplaceWithMock private AccessControlListManager accessControlListManager;
+    @Autowired QueryMessages queryMessages;
 
     @Before
     public void setUp() throws Exception {
@@ -59,7 +60,7 @@ public class SimpleWhoisServerTestIntegration extends AbstractQueryIntegrationTe
     public void performIncorrectQuery() throws IOException {
         String response = new DummyWhoisClient(QueryServer.port).sendQuery("-W test");
 
-        assertThat(stripHeader(response), containsString(trim(QueryMessages.malformedQuery())));
+        assertThat(stripHeader(response), containsString(trim(queryMessages.malformedQuery())));
     }
 
     @Test
@@ -88,7 +89,7 @@ public class SimpleWhoisServerTestIntegration extends AbstractQueryIntegrationTe
         String response = new DummyWhoisClient(QueryServer.port).sendQuery("-rBGxTinetnum 10.0.0.0");
 
         assertThat(stripHeader(response), Matchers.containsString("% This query was served by the RIPE Database Query"));
-        assertThat(stripHeader(response), Matchers.containsString(trim(QueryMessages.internalErroroccurred())));
+        assertThat(stripHeader(response), Matchers.containsString(trim(queryMessages.internalErroroccurred())));
     }
 
     @Test
@@ -112,7 +113,7 @@ public class SimpleWhoisServerTestIntegration extends AbstractQueryIntegrationTe
     @Test
     public void onConnectionShouldAlwaysGetHeaderMessage() throws IOException {
         String response = new DummyWhoisClient(QueryServer.port).sendQuery("-rBGxTinetnum 10.0.0.0");
-        assertTrue(response.startsWith(trim(QueryMessages.termsAndConditions())));
+        assertTrue(response.startsWith(trim(queryMessages.termsAndConditions())));
     }
 
     @Test
@@ -121,7 +122,7 @@ public class SimpleWhoisServerTestIntegration extends AbstractQueryIntegrationTe
 
         String response = new DummyWhoisClient(QueryServer.port).sendQuery(bigString);
 
-        assertThat(response, containsString(trim(QueryMessages.inputTooLong())));
+        assertThat(response, containsString(trim(queryMessages.inputTooLong())));
     }
 
     private String trim(Message message) {

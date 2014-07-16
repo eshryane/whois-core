@@ -18,7 +18,12 @@ import java.util.Collections;
 public class ExceptionHandler extends SimpleChannelUpstreamHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandler.class);
 
+    private QueryMessages queryMessages;
     private String query;
+
+    public ExceptionHandler(final QueryMessages queryMessages) {
+        this.queryMessages = queryMessages;
+    }
 
     @Override
     public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent e) {
@@ -38,9 +43,9 @@ public class ExceptionHandler extends SimpleChannelUpstreamHandler {
         } else if (cause instanceof QueryException) {
             handleException(channel, ((QueryException) cause).getMessages(), ((QueryException) cause).getCompletionInfo());
         } else if (cause instanceof TimeoutException) {
-            handleException(channel, Collections.singletonList(QueryMessages.timeout()), QueryCompletionInfo.EXCEPTION);
+            handleException(channel, Collections.singletonList(queryMessages.timeout()), QueryCompletionInfo.EXCEPTION);
         } else if (cause instanceof TooLongFrameException) {
-            handleException(channel, Collections.singletonList(QueryMessages.inputTooLong()), QueryCompletionInfo.EXCEPTION);
+            handleException(channel, Collections.singletonList(queryMessages.inputTooLong()), QueryCompletionInfo.EXCEPTION);
         } else if (cause instanceof IOException) {
             handleException(channel, Collections.<Message>emptyList(), QueryCompletionInfo.EXCEPTION);
         } else {
@@ -50,7 +55,7 @@ public class ExceptionHandler extends SimpleChannelUpstreamHandler {
                     query,
                     cause);
 
-            handleException(channel, Collections.singletonList(QueryMessages.internalErroroccurred()), QueryCompletionInfo.EXCEPTION);
+            handleException(channel, Collections.singletonList(queryMessages.internalErroroccurred()), QueryCompletionInfo.EXCEPTION);
         }
     }
 

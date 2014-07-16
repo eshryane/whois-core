@@ -13,10 +13,12 @@ import java.util.List;
 public final class TagResponseObject implements ResponseObject {
     private final CIString objectKey;
     private final List<Tag> tags;
+    private QueryMessages queryMessages;
 
-    public TagResponseObject(final CIString objectKey, final List<Tag> tags) {
+    public TagResponseObject(final CIString objectKey, final List<Tag> tags, final QueryMessages queryMessages) {
         this.objectKey = objectKey;
         this.tags = tags;
+        this.queryMessages = queryMessages;
     }
 
     public List<Tag> getTags() {
@@ -28,13 +30,13 @@ public final class TagResponseObject implements ResponseObject {
         if (tags.isEmpty()) return "";
 
         final StringBuilder builder = new StringBuilder(128);
-        builder.append(QueryMessages.tagInfoStart(objectKey));
+        builder.append(queryMessages.tagInfoStart(objectKey));
 
         for (Tag tag : tags) {
             if (tag.getType().equals("unref")) {
-                builder.append(QueryMessages.unreferencedTagInfo(objectKey, tag.getValue()));
+                builder.append(queryMessages.unreferencedTagInfo(objectKey, tag.getValue()));
             } else {
-                builder.append(QueryMessages.tagInfo(tag.getType(), tag.getValue()));
+                builder.append(queryMessages.tagInfo(tag.getType(), tag.getValue()));
             }
         }
 

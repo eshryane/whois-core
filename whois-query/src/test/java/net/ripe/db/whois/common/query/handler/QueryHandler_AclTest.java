@@ -3,14 +3,17 @@ package net.ripe.db.whois.common.query.handler;
 import com.google.common.collect.Sets;
 import com.google.common.net.InetAddresses;
 import net.ripe.db.whois.common.domain.ResponseObject;
+import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.query.acl.AccessControlListManager;
+import net.ripe.db.whois.common.query.domain.MessageObject;
+import net.ripe.db.whois.common.query.domain.QueryCompletionInfo;
+import net.ripe.db.whois.common.query.domain.QueryException;
+import net.ripe.db.whois.common.query.domain.ResponseHandler;
+import net.ripe.db.whois.common.query.executor.QueryExecutor;
+import net.ripe.db.whois.common.query.query.Query;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.common.query.QueryMessages;
-import net.ripe.db.whois.common.query.acl.AccessControlListManager;
-import net.ripe.db.whois.common.query.domain.*;
-import net.ripe.db.whois.common.query.executor.QueryExecutor;
-import net.ripe.db.whois.common.query.query.Query;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,11 +26,20 @@ import org.mockito.stubbing.Answer;
 import java.net.InetAddress;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QueryHandler_AclTest {
@@ -35,6 +47,7 @@ public class QueryHandler_AclTest {
     @Mock AccessControlListManager accessControlListManager;
     @Mock SourceContext sourceContext;
     @Mock QueryExecutor queryExecutor;
+    @Mock QueryMessages queryMessages;
     QueryHandler subject;
 
     int contextId = 1;
@@ -44,7 +57,7 @@ public class QueryHandler_AclTest {
 
     @Before
     public void setUp() throws Exception {
-        subject = new QueryHandler(whoisLog, accessControlListManager, sourceContext, queryExecutor);
+        subject = new QueryHandler(whoisLog, accessControlListManager, sourceContext, queryMessages, queryExecutor);
 
         message = new MessageObject("test");
         maintainer = RpslObject.parse("mntner: DEV-MNT");
@@ -85,7 +98,7 @@ public class QueryHandler_AclTest {
     public void source_without_acl() {
         when(accessControlListManager.requiresAcl(any(RpslObject.class), any(Source.class))).thenReturn(false);
 
-        final Query query = Query.parse("DEV-MNT");
+        final Query query = new Query("DEV-MNT", Query.Origin.LEGACY, false, queryMessages);
         subject.streamResults(query, remoteAddress, contextId, responseHandler);
         verify(accessControlListManager, never()).accountPersonalObjects(any(InetAddress.class), anyInt());
         verifyLog(query, null, 0, 4);
@@ -95,7 +108,7 @@ public class QueryHandler_AclTest {
     public void acl_with_unlimited() {
         when(accessControlListManager.isUnlimited(remoteAddress)).thenReturn(true);
 
-        final Query query = Query.parse("DEV-MNT");
+        final Query query = new Query("DEV-MNT", Query.Origin.LEGACY, false, queryMessages);
         subject.streamResults(query, remoteAddress, contextId, responseHandler);
         verify(accessControlListManager, never()).requiresAcl(any(RpslObject.class), any(Source.class));
         verify(accessControlListManager, never()).accountPersonalObjects(any(InetAddress.class), anyInt());
@@ -106,7 +119,7 @@ public class QueryHandler_AclTest {
     public void acl_without_hitting_limit() {
         when(accessControlListManager.getPersonalObjects(remoteAddress)).thenReturn(10);
 
-        final Query query = Query.parse("DEV-MNT");
+        final Query query = new Query("DEV-MNT", Query.Origin.LEGACY, false, queryMessages);
         subject.streamResults(query, remoteAddress, contextId, responseHandler);
 
         final ArgumentCaptor<ResponseObject> responseCaptor = ArgumentCaptor.forClass(ResponseObject.class);
@@ -122,13 +135,13 @@ public class QueryHandler_AclTest {
     public void acl_hitting_limit() {
         when(accessControlListManager.getPersonalObjects(remoteAddress)).thenReturn(1);
 
-        final Query query = Query.parse("DEV-MNT");
+        final Query query = new Query("DEV-MNT", Query.Origin.LEGACY, false, queryMessages);
         try {
             subject.streamResults(query, remoteAddress, contextId, responseHandler);
             fail("Expected failure");
         } catch (QueryException e) {
             assertThat(e.getCompletionInfo(), is(QueryCompletionInfo.BLOCKED));
-            assertThat(e.getMessages(), containsInAnyOrder(QueryMessages.accessDeniedTemporarily(remoteAddress)));
+            assertThat(e.getMessages(), containsInAnyOrder(queryMessages.accessDeniedTemporarily(remoteAddress)));
 
             final ArgumentCaptor<ResponseObject> responseCaptor = ArgumentCaptor.forClass(ResponseObject.class);
             verify(responseHandler, times(3)).handle(responseCaptor.capture());
@@ -148,7 +161,7 @@ public class QueryHandler_AclTest {
         when(accessControlListManager.canQueryPersonalObjects(clientAddress)).thenReturn(true);
         when(accessControlListManager.getPersonalObjects(clientAddress)).thenReturn(10);
 
-        final Query query = Query.parse("-VclientId,10.0.0.0 DEV-MNT");
+        final Query query = new Query("-VclientId,10.0.0.0 DEV-MNT", Query.Origin.LEGACY, false, queryMessages);
         subject.streamResults(query, remoteAddress, contextId, responseHandler);
 
         final ArgumentCaptor<ResponseObject> responseCaptor = ArgumentCaptor.forClass(ResponseObject.class);

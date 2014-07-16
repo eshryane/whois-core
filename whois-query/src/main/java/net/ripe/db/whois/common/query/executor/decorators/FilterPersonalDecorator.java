@@ -9,6 +9,7 @@ import net.ripe.db.whois.common.query.QueryFlag;
 import net.ripe.db.whois.common.query.domain.MessageObject;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Deque;
@@ -17,6 +18,13 @@ import java.util.Set;
 @Component
 public class FilterPersonalDecorator implements ResponseDecorator {
     private static final Set<ObjectType> PERSONAL = Sets.newEnumSet(Sets.newHashSet(ObjectType.PERSON, ObjectType.ROLE), ObjectType.class);
+
+    private final QueryMessages queryMessages;
+
+    @Autowired
+    public FilterPersonalDecorator(final QueryMessages queryMessages) {
+        this.queryMessages = queryMessages;
+    }
 
     @Override
     public Iterable<? extends ResponseObject> decorate(final Query query, final Iterable<? extends ResponseObject> input) {
@@ -31,6 +39,6 @@ public class FilterPersonalDecorator implements ResponseDecorator {
                     result.add(input);
                 }
             }
-        }.setHeader(new MessageObject(QueryMessages.noPersonal()));
+        }.setHeader(new MessageObject(queryMessages.noPersonal()));
     }
 }

@@ -2,14 +2,14 @@ package net.ripe.db.whois.common.query.integration;
 
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
+import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.VersionDateTime;
+import net.ripe.db.whois.common.query.support.AbstractQueryIntegrationTest;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.transform.FilterAuthFunction;
 import net.ripe.db.whois.common.rpsl.transform.FilterEmailFunction;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
-import net.ripe.db.whois.common.query.QueryServer;
-import net.ripe.db.whois.common.query.QueryMessages;
-import net.ripe.db.whois.common.query.VersionDateTime;
-import net.ripe.db.whois.common.query.support.AbstractQueryIntegrationTest;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static net.ripe.db.whois.common.dao.jdbc.JdbcRpslObjectOperations.loadScripts;
 import static net.ripe.db.whois.common.query.integration.VersionTestIntegration.VersionMatcher.containsFilteredVersion;
@@ -28,6 +29,8 @@ import static org.hamcrest.Matchers.not;
 
 @Category(IntegrationTest.class)
 public class VersionTestIntegration extends AbstractQueryIntegrationTest {
+
+    @Autowired QueryMessages queryMessages;
 
     @Before
     public void startup() {
@@ -50,7 +53,7 @@ public class VersionTestIntegration extends AbstractQueryIntegrationTest {
     @Test
     public void noObject() {
         final String response = stripHeader(DummyWhoisClient.query(QueryServer.port, "--list-versions AS-FOO"));
-        assertThat(response, containsString(QueryMessages.noResults("TEST").toString()));
+        assertThat(response, containsString(queryMessages.noResults("TEST").toString()));
     }
 
     @Test
@@ -92,7 +95,7 @@ public class VersionTestIntegration extends AbstractQueryIntegrationTest {
     @Test
     public void personTest() {
         final String response = stripHeader(DummyWhoisClient.query(QueryServer.port, "--list-versions TU1-TEST"));
-        assertThat(response, containsString(QueryMessages.versionPersonRole("PERSON", "TU1-TEST").toString()));
+        assertThat(response, containsString(queryMessages.versionPersonRole("PERSON", "TU1-TEST").toString()));
     }
 
     @Test
@@ -100,7 +103,7 @@ public class VersionTestIntegration extends AbstractQueryIntegrationTest {
         databaseHelper.addObject(RpslObject.parse("role: Some User\nnic-hdl: SU1-TEST\nsource: TEST"));
 
         final String response = stripHeader(DummyWhoisClient.query(QueryServer.port, "--list-versions SU1-TEST"));
-        assertThat(response, containsString(QueryMessages.versionPersonRole("ROLE", "SU1-TEST").toString()));
+        assertThat(response, containsString(queryMessages.versionPersonRole("ROLE", "SU1-TEST").toString()));
     }
 
     @Test
@@ -141,7 +144,7 @@ public class VersionTestIntegration extends AbstractQueryIntegrationTest {
         assertThat(response, containsString("(current version)"));
 
         response = stripHeader(DummyWhoisClient.query(QueryServer.port, "--show-version 140 AS20507"));
-        assertThat(response, containsString(QueryMessages.versionOutOfRange(4).toString()));
+        assertThat(response, containsString(queryMessages.versionOutOfRange(4).toString()));
     }
 
     @Test

@@ -27,31 +27,32 @@ public class SystemInfoQueryExecutorTest {
     private SystemInfoQueryExecutor subject;
 
     @Mock private SourceContext sourceContext;
+    @Mock private QueryMessages queryMessages;
 
     @Before
     public void setUp() throws Exception {
-        subject = new SystemInfoQueryExecutor(sourceContext);
+        subject = new SystemInfoQueryExecutor(sourceContext, queryMessages);
     }
 
     @Test
     public void supports_version_ignore_case() {
-        assertThat(subject.supports(Query.parse("-q Version")), is(true));
+        assertThat(subject.supports(new Query("-q Version", Query.Origin.LEGACY, false, queryMessages)), is(true));
     }
 
     @Test
     public void supports_types_ignore_case() {
-        assertThat(subject.supports(Query.parse("-q Types")), is(true));
+        assertThat(subject.supports(new Query("-q Types", Query.Origin.LEGACY, false, queryMessages)), is(true));
     }
 
     @Test
     public void supports_sources_ignore_case() {
-        assertThat(subject.supports(Query.parse("-q Sources")), is(true));
+        assertThat(subject.supports(new Query("-q Sources", Query.Origin.LEGACY, false, queryMessages)), is(true));
     }
 
     @Test
     public void types_query() {
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("-q types"), responseHandler);
+        subject.execute(new Query("-q types", Query.Origin.LEGACY, false, queryMessages), responseHandler);
         Iterator<? extends ResponseObject> iterator = responseHandler.getResponseObjects().iterator();
         String responseString = iterator.next().toString();
 
@@ -65,17 +66,17 @@ public class SystemInfoQueryExecutorTest {
     @Test
     public void types_query_invalid_argument() {
         try {
-            subject.execute(Query.parse("-q invalid"), new CaptureResponseHandler());
+            subject.execute(new Query("-q invalid", Query.Origin.LEGACY, false, queryMessages), new CaptureResponseHandler());
             fail("expected QueryException to be thrown");
         } catch (QueryException qe) {
-            assertThat(qe.getMessage(), containsString(QueryMessages.malformedQuery().toString()));
+            assertThat(qe.getMessage(), containsString(queryMessages.malformedQuery().toString()));
         }
     }
 
     @Test
     public void version_query() {
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("-q version"), responseHandler);
+        subject.execute(new Query("-q version", Query.Origin.LEGACY, false, queryMessages), responseHandler);
         Iterator<? extends ResponseObject> iterator = responseHandler.getResponseObjects().iterator();
         String responseString = iterator.next().toString();
 
@@ -88,7 +89,7 @@ public class SystemInfoQueryExecutorTest {
         when(sourceContext.getAllSourceNames()).thenReturn(ciSet("RIPE"));
 
         final CaptureResponseHandler responseHandler = new CaptureResponseHandler();
-        subject.execute(Query.parse("-q sources"), responseHandler);
+        subject.execute(new Query("-q sources", Query.Origin.LEGACY, false, queryMessages), responseHandler);
         Iterator<? extends ResponseObject> iterator = responseHandler.getResponseObjects().iterator();
         String responseString = iterator.next().toString();
 

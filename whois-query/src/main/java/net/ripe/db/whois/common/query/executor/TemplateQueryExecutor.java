@@ -6,10 +6,18 @@ import net.ripe.db.whois.common.query.domain.MessageObject;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.domain.ResponseHandler;
 import net.ripe.db.whois.common.query.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TemplateQueryExecutor implements QueryExecutor {
+
+    private final QueryMessages queryMessages;
+
+    @Autowired
+    public TemplateQueryExecutor(final QueryMessages queryMessages) {
+        this.queryMessages = queryMessages;
+    }
 
     @Override
     public boolean isAclSupported() {
@@ -28,7 +36,7 @@ public class TemplateQueryExecutor implements QueryExecutor {
 
         final MessageObject messageObject;
         if (objectType == null) {
-            messageObject = new MessageObject(QueryMessages.invalidObjectType(objectTypeString));
+            messageObject = new MessageObject(queryMessages.invalidObjectType(objectTypeString));
         } else {
             messageObject = new MessageObject(query.isTemplate() ? getTemplate(objectType) : getVerbose(objectType));
         }

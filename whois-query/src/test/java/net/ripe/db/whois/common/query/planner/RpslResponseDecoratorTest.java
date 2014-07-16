@@ -57,13 +57,16 @@ public class RpslResponseDecoratorTest {
     @Mock DummifyDecorator dummifyDecorator;
     @Mock FilterTagsDecorator filterTagsDecorator;
     @Mock FilterPlaceholdersDecorator filterPlaceholdersDecorator;
+    @Mock QueryMessages queryMessages;
     @InjectMocks AbuseCInfoDecorator abuseCInfoDecorator;
 
     RpslResponseDecorator subject;
 
     @Before
     public void setup() {
-        subject = new RpslResponseDecorator(rpslObjectDaoMock,
+        subject = new RpslResponseDecorator(
+                queryMessages,
+                rpslObjectDaoMock,
                 filterPersonalDecorator,
                 dummifyDecorator,
                 sourceContext,
@@ -104,7 +107,7 @@ public class RpslResponseDecoratorTest {
         when(sourceContext.isMain()).thenReturn(false);
         final String response = execute("-r -B -T mntner FOO-MNT", RpslObject.parse(1, "mntner: FOO-MNT\n"));
         assertThat(response, is("" +
-                QueryMessages.relatedTo("FOO-MNT") + "\n" +
+                queryMessages.relatedTo("FOO-MNT") + "\n" +
                 "mntner:         FOO-MNT\n\n"));
     }
 
@@ -139,13 +142,13 @@ public class RpslResponseDecoratorTest {
                 "origin:         AS3333\n" +
                 "mnt-by:         RIPE-NCC-MNT\n" +
                 "source:         RIPE # Filtered"));
-        assertThat(response, is(QueryMessages.primaryKeysOnlyNotice() + "\nroute:          193.0.0.0/21\norigin:         AS3333\n\n"));
+        assertThat(response, is(queryMessages.primaryKeysOnlyNotice() + "\nroute:          193.0.0.0/21\norigin:         AS3333\n\n"));
     }
 
     @Test
     public void keys_no_results() {
         final String response = execute("-K 193.0.0.0/21");
-        assertThat(response, is(QueryMessages.primaryKeysOnlyNotice() + "\n"));
+        assertThat(response, is(queryMessages.primaryKeysOnlyNotice() + "\n"));
     }
 
     @Test
@@ -163,7 +166,7 @@ public class RpslResponseDecoratorTest {
                 RpslObject.parse(1, "organisation: BAR-ORG\nsource: RIPE\n"));
 
         assertEquals("" +
-                QueryMessages.outputFilterNotice() +
+                queryMessages.outputFilterNotice() +
                 "\n" +
                 "organisation:   FOO-ORG\n" +
                 "source:         RIPE\n" +
@@ -364,7 +367,7 @@ public class RpslResponseDecoratorTest {
         String result = execute("-B -T inetnum 10.0.0.0", object1, object2);
 
         assertThat(result, is("" +
-                QueryMessages.relatedTo("10.0.0.1") + "\n" +
+                queryMessages.relatedTo("10.0.0.1") + "\n" +
                 "% Abuse contact for '10.0.0.1' is 'abuse@ripe.net'\n\n" +
                 "inetnum:        10.0.0.1\n" +
                 "tech-c:         NICHDL\n" +
@@ -376,7 +379,7 @@ public class RpslResponseDecoratorTest {
                 "\n" +
                 "mntner:         test1\n" +
                 "\n" +
-                QueryMessages.relatedTo("10.0.0.2") + "\n" +
+                queryMessages.relatedTo("10.0.0.2") + "\n" +
                 "% Abuse contact for '10.0.0.2' is 'abuse@ripe.net'\n\n" +
                 "inetnum:        10.0.0.2\n" +
                 "tech-c:         NICHDL\n" +
@@ -392,7 +395,7 @@ public class RpslResponseDecoratorTest {
     }
 
     private String execute(final String query, final ResponseObject... responseObjects) {
-        return getResponseTextAsString(subject.getResponse(Query.parse(query), Lists.newArrayList(responseObjects)));
+        return getResponseTextAsString(subject.getResponse(new Query(query, Query.Origin.LEGACY, false, queryMessages), Lists.newArrayList(responseObjects)));
     }
 
     private String getResponseTextAsString(final Iterable<? extends ResponseObject> responseObjects) {

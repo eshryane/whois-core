@@ -16,6 +16,10 @@
 
     <context:component-scan base-package="net.ripe.db.whois.common"/>
 
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages"/>
+    </bean>
+
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="sourceAwareDataSource"/>
     </bean>

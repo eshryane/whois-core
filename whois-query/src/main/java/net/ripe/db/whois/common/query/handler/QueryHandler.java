@@ -27,16 +27,19 @@ public class QueryHandler {
     private final AccessControlListManager accessControlListManager;
     private final BasicSourceContext sourceContext;
     private final List<QueryExecutor> queryExecutors;
+    private final QueryMessages queryMessages;
 
     @Autowired
     public QueryHandler(final WhoisLog whoisLog,
                         final AccessControlListManager accessControlListManager,
                         final BasicSourceContext sourceContext,
+                        final QueryMessages queryMessages,
                         final QueryExecutor... queryExecutors) {
         this.whoisLog = whoisLog;
         this.accessControlListManager = accessControlListManager;
         this.sourceContext = sourceContext;
         this.queryExecutors = Lists.newArrayList(queryExecutors);
+        this.queryMessages = queryMessages;
     }
 
     public void streamResults(final Query query, final InetAddress remoteAddress, final int contextId, final ResponseHandler responseHandler) {
@@ -76,7 +79,7 @@ public class QueryHandler {
                     }
                 }
 
-                throw new QueryException(QueryCompletionInfo.UNSUPPORTED_QUERY, QueryMessages.unsupportedQuery());
+                throw new QueryException(QueryCompletionInfo.UNSUPPORTED_QUERY, queryMessages.unsupportedQuery());
             }
 
             private void initAcl(final QueryExecutor queryExecutor) {
@@ -85,7 +88,7 @@ public class QueryHandler {
 
                     if (query.hasProxyWithIp()) {
                         if (!accessControlListManager.isAllowedToProxy(remoteAddress)) {
-                            throw new QueryException(QueryCompletionInfo.PROXY_NOT_ALLOWED, QueryMessages.notAllowedToProxy());
+                            throw new QueryException(QueryCompletionInfo.PROXY_NOT_ALLOWED, queryMessages.notAllowedToProxy());
                         }
 
                         accountingAddress = InetAddresses.forString(query.getProxyIp());
@@ -100,9 +103,9 @@ public class QueryHandler {
 
             private void checkBlocked(final InetAddress inetAddress) {
                 if (accessControlListManager.isDenied(inetAddress)) {
-                    throw new QueryException(QueryCompletionInfo.BLOCKED, QueryMessages.accessDeniedPermanently(inetAddress));
+                    throw new QueryException(QueryCompletionInfo.BLOCKED, queryMessages.accessDeniedPermanently(inetAddress));
                 } else if (!accessControlListManager.canQueryPersonalObjects(inetAddress)) {
-                    throw new QueryException(QueryCompletionInfo.BLOCKED, QueryMessages.accessDeniedTemporarily(inetAddress));
+                    throw new QueryException(QueryCompletionInfo.BLOCKED, queryMessages.accessDeniedTemporarily(inetAddress));
                 }
             }
 
@@ -122,7 +125,7 @@ public class QueryHandler {
                                 }
 
                                 if (++accountedObjects > accountingLimit) {
-                                    throw new QueryException(QueryCompletionInfo.BLOCKED, QueryMessages.accessDeniedTemporarily(accountingAddress));
+                                    throw new QueryException(QueryCompletionInfo.BLOCKED, queryMessages.accessDeniedTemporarily(accountingAddress));
                                 }
                             } else {
                                 notAccountedObjects++;

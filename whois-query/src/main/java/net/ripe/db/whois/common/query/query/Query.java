@@ -1,23 +1,21 @@
 package net.ripe.db.whois.common.query.query;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.net.InetAddresses;
-import joptsimple.OptionException;
 import net.ripe.db.whois.common.IllegalArgumentExceptionMessage;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.ip.IpInterval;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.attrs.AsBlockRange;
 import net.ripe.db.whois.common.query.QueryFlag;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.QueryParser;
 import net.ripe.db.whois.common.query.domain.QueryCompletionInfo;
 import net.ripe.db.whois.common.query.domain.QueryException;
+import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.ObjectTemplate;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attrs.AsBlockRange;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
@@ -37,16 +35,6 @@ public class Query {
     private static final EnumSet<ObjectType> DEFAULT_TYPES_LOOKUP_IN_BOTH_DIRECTIONS = EnumSet.of(ObjectType.INETNUM, ObjectType.INET6NUM, ObjectType.ROUTE, ObjectType.ROUTE6, ObjectType.DOMAIN);
     private static final EnumSet<ObjectType> DEFAULT_TYPES_ALL = EnumSet.allOf(ObjectType.class);
 
-    private static final List<QueryValidator> QUERY_VALIDATORS = Lists.newArrayList(
-            new MatchOperationValidator(),
-            new ProxyValidator(),
-            new AbuseContactValidator(),
-            new CombinationValidator(),
-            new SearchKeyValidator(),
-            new TagValidator(),
-            new VersionValidator(),
-            new InverseValidator());
-
     private final QueryParser queryParser;
     private final Messages messages = new Messages();
 
@@ -57,6 +45,8 @@ public class Query {
     private final MatchOperation matchOperation;
     private final SearchKey searchKey;
 
+    private final QueryMessages queryMessages;
+
     // TODO: [AH] these fields should be part of QueryContext, not Query
     private List<String> passwords;
     private Origin origin;
@@ -64,9 +54,15 @@ public class Query {
     // TODO: [AH] we should use -x flag for direct match for all object types instead of this hack
     private boolean matchPrimaryKeyOnly;
 
-    private Query(final String query, final Origin origin, final boolean trusted) {
+    // TODO: [ES] make private / protected - must use parse()
+    public Query(final String query, final Origin origin, final boolean trusted, final QueryMessages queryMessages) {
+
+        this.origin = origin;
+        this.trusted = trusted;
+        this.queryMessages = queryMessages;
+
         try {
-            queryParser = new QueryParser(query);
+            queryParser = new QueryParser(query.trim(), queryMessages);                 // TODO: [ES] remove trim(), use parse() instead
         } catch (IllegalArgumentExceptionMessage e) {
             throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, e.getExceptionMessage());
         }
@@ -77,38 +73,38 @@ public class Query {
         objectTypeFilter = generateAndFilterObjectTypes();
         attributeTypeFilter = parseAttributeTypes();
         matchOperation = parseMatchOperations();
-        this.origin = origin;
-        this.trusted = trusted;
     }
 
-    public static Query parse(final String args) {
-        return parse(args, Origin.LEGACY, false);
-    }
+    // TODO: [ES] refactor
 
-    public static Query parse(final String args, final Origin origin, final boolean trusted) {
-        try {
-            final Query query = new Query(args.trim(), origin, trusted);
+//    public static Query parse(final String args) {
+//        return parse(args, Origin.LEGACY, false);
+//    }
 
-            for (final QueryValidator queryValidator : QUERY_VALIDATORS) {
-                queryValidator.validate(query, query.messages);
-            }
-
-            final Collection<Message> errors = query.messages.getMessages(Messages.Type.ERROR);
-            if (!errors.isEmpty()) {
-                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, errors);
-            }
-
-            return query;
-        } catch (OptionException e) {
-            throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery());
-        }
-    }
-
-    public static Query parse(final String args, final List<String> passwords, final boolean trusted) {
-        final Query query = parse(args, Origin.REST, trusted);
-        query.passwords = passwords;
-        return query;
-    }
+//    public static Query parse(final String args, final Origin origin, final boolean trusted) {
+//        try {
+//            final Query query = new Query(args.trim(), origin, trusted);
+//
+//            for (final QueryValidator queryValidator : QUERY_VALIDATORS) {
+//                queryValidator.validate(query, query.messages);
+//            }
+//
+//            final Collection<Message> errors = query.messages.getMessages(Messages.Type.ERROR);
+//            if (!errors.isEmpty()) {
+//                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, errors);
+//            }
+//
+//            return query;
+//        } catch (OptionException e) {
+//            throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery());
+//        }
+//    }
+//
+//    public static Query parse(final String args, final List<String> passwords, final boolean trusted) {
+//        final Query query = parse(args, Origin.REST, trusted);
+//        query.passwords = passwords;
+//        return query;
+//    }
 
     public List<String> getPasswords() {
         return passwords;
@@ -120,6 +116,16 @@ public class Query {
 
     public boolean via(Origin origin) {
         return this.origin == origin;
+    }
+
+    // TODO: [ES] refactor
+    protected Messages getMessages() {
+        return messages;
+    }
+
+    // TODO: [ES] refactor
+    protected void setPasswords(final List<String> passwords) {
+        this.passwords = passwords;
     }
 
     public Collection<Message> getWarnings() {
@@ -201,7 +207,7 @@ public class Query {
         if (queryParser.hasOption(QueryFlag.SHOW_VERSION)) {
             final int version = Integer.parseInt(getOnlyValue(QueryFlag.SHOW_VERSION));
             if (version < 1) {
-                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery("version flag number must be greater than 0"));
+                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.malformedQuery("version flag number must be greater than 0"));
             }
             return version;
         }
@@ -212,15 +218,15 @@ public class Query {
         if (queryParser.hasOption(QueryFlag.DIFF_VERSIONS)) {
             final String[] values = StringUtils.split(getOnlyValue(QueryFlag.DIFF_VERSIONS), ':');
             if (values.length != 2) {
-                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery("diff versions must be in the format a:b"));
+                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.malformedQuery("diff versions must be in the format a:b"));
             }
             final int firstValue = Integer.parseInt(values[0]);
             final int secondValue = Integer.parseInt(values[1]);
             if (firstValue < 1 || secondValue < 1) {
-                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery("diff version number must be greater than 0"));
+                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.malformedQuery("diff version number must be greater than 0"));
             }
             if (secondValue == firstValue) {
-                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery("diff versions are the same"));
+                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.malformedQuery("diff versions are the same"));
             }
             return new int[]{firstValue, secondValue};
         }
@@ -249,7 +255,7 @@ public class Query {
             try {
                 return SystemInfoOption.valueOf(optionValue.toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery("Invalid option: " + optionValue));
+                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.malformedQuery("Invalid option: " + optionValue));
             }
         }
 
@@ -265,7 +271,7 @@ public class Query {
             return SystemInfoOption.TYPES;
         }
 
-        throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.malformedQuery());
+        throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.malformedQuery());
     }
 
     public String getVerboseOption() {
@@ -439,7 +445,7 @@ public class Query {
                 try {
                     objectTypes.add(ObjectType.getByName(objectType));
                 } catch (IllegalArgumentException e) {
-                    throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.invalidObjectType(objectType));
+                    throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.invalidObjectType(objectType));
                 }
             }
         }
@@ -518,7 +524,7 @@ public class Query {
                     ret.add(type);
                 }
             } catch (IllegalArgumentException e) {
-                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.invalidAttributeType(attributeType));
+                throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.invalidAttributeType(attributeType));
             }
         }
 
@@ -533,7 +539,7 @@ public class Query {
                 if (result == null) {
                     result = matchOperation;
                 } else {
-                    throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, QueryMessages.duplicateIpFlagsPassed());
+                    throw new QueryException(QueryCompletionInfo.PARAMETER_ERROR, queryMessages.duplicateIpFlagsPassed());
                 }
             }
         }

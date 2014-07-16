@@ -12,11 +12,13 @@ public class DeletedVersionResponseObject implements ResponseObject {
     private final VersionDateTime deletedDate;
     private final ObjectType type;
     private final String key;
+    private final QueryMessages queryMessages;
 
-    public DeletedVersionResponseObject(final VersionDateTime deletedDate, final ObjectType type, final String key) {
+    public DeletedVersionResponseObject(final VersionDateTime deletedDate, final ObjectType type, final String key, final QueryMessages queryMessages) {
         this.deletedDate = deletedDate;
         this.type = type;
         this.key = key;
+        this.queryMessages = queryMessages;
     }
 
     public VersionDateTime getDeletedDate() {
@@ -38,6 +40,6 @@ public class DeletedVersionResponseObject implements ResponseObject {
 
     @Override
     public byte[] toByteArray() {
-        return QueryMessages.versionDeleted(deletedDate.toString()).toString().getBytes();
+        return queryMessages.versionDeleted(deletedDate.toString()).toString().getBytes();
     }
 }

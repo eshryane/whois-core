@@ -27,6 +27,7 @@ public class ExceptionHandlerTest {
     @Mock private ChannelPipeline channelPipelineMock;
     @Mock private ChannelHandlerContext channelHandlerContextMock;
     @Mock private ChannelFuture channelFutureMock;
+    @Mock private QueryMessages queryMessages;
     @InjectMocks private ExceptionHandler subject;
 
     private static final String QUERY = "query";
@@ -53,7 +54,7 @@ public class ExceptionHandlerTest {
     public void handle_unknown_exceptions() throws Exception {
         subject.exceptionCaught(channelHandlerContextMock, exceptionEventMock);
 
-        verify(channelMock, times(1)).write(QueryMessages.internalErroroccurred());
+        verify(channelMock, times(1)).write(queryMessages.internalErroroccurred());
     }
 
     @Test
@@ -62,7 +63,7 @@ public class ExceptionHandlerTest {
 
         subject.exceptionCaught(null, exceptionEventMock);
 
-        verify(channelMock, times(1)).write(QueryMessages.timeout());
+        verify(channelMock, times(1)).write(queryMessages.timeout());
     }
 
     @Test
@@ -71,7 +72,7 @@ public class ExceptionHandlerTest {
 
         subject.exceptionCaught(null, exceptionEventMock);
 
-        verify(channelMock, times(1)).write(QueryMessages.inputTooLong());
+        verify(channelMock, times(1)).write(queryMessages.inputTooLong());
     }
 
     @Test
@@ -90,6 +91,6 @@ public class ExceptionHandlerTest {
 
         subject.exceptionCaught(null, exceptionEventMock);
 
-        verify(channelMock, times(0)).write(QueryMessages.timeout());
+        verify(channelMock, times(0)).write(queryMessages.timeout());
     }
 }

@@ -15,6 +15,7 @@ public abstract class AbstractQueryIntegrationTest extends AbstractDaoTest {
 
     @Autowired protected QueryServer queryServer;
     @Autowired protected IpResourceConfiguration ipResourceConfiguration;
+    @Autowired protected QueryMessages queryMessages;
 
     // TODO: [AH] not do this for each test, but reinit context only where needed
     @Before
@@ -25,10 +26,10 @@ public abstract class AbstractQueryIntegrationTest extends AbstractDaoTest {
         ipResourceConfiguration.reload();
     }
 
-    public static String stripHeader(final String response) {
+    public String stripHeader(final String response) {
         String result = response;
 
-        result = stripHeader(result, QueryMessages.termsAndConditions().toString());
+        result = stripHeader(result, queryMessages.termsAndConditions().toString());
 
         return result;
     }

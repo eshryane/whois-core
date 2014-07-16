@@ -26,12 +26,14 @@ class ExportFileWriter {
     private final File baseDir;
     private final FilenameStrategy filenameStrategy;
     private final DecorationStrategy decorationStrategy;
+    private final QueryMessages queryMessages;
     private final Map<String, Writer> writerMap = Maps.newHashMap();
 
-    protected ExportFileWriter(final File baseDir, final FilenameStrategy filenameStrategy, final DecorationStrategy decorationStrategy) {
+    protected ExportFileWriter(final File baseDir, final FilenameStrategy filenameStrategy, final DecorationStrategy decorationStrategy, final QueryMessages queryMessages) {
         this.baseDir = baseDir;
         this.filenameStrategy = filenameStrategy;
         this.decorationStrategy = decorationStrategy;
+        this.queryMessages = queryMessages;
 
         for (final ObjectType objectType : ObjectType.values()) {
             final String filename = filenameStrategy.getFilename(objectType);
@@ -78,7 +80,7 @@ class ExportFileWriter {
             final FileOutputStream fileOutputStream = new FileOutputStream(file);
             try {
                 writer = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(fileOutputStream), Charsets.ISO_8859_1));
-                writer.write(QueryMessages.termsAndConditionsDump().toString());
+                writer.write(queryMessages.termsAndConditionsDump().toString());
                 writerMap.put(filename, writer);
             } catch (IOException e) {
                 fileOutputStream.close();

@@ -42,6 +42,7 @@ public class RpslResponseDecorator {
     private static final FilterEmailFunction FILTER_EMAIL_FUNCTION = new FilterEmailFunction();
     private static final FilterAuthFunction FILTER_AUTH_FUNCTION = new FilterAuthFunction();
 
+    private final QueryMessages queryMessages;
     private final RpslObjectDao rpslObjectDao;
     private final FilterPersonalDecorator filterPersonalDecorator;
     private final DummifyDecorator dummifyDecorator;
@@ -55,7 +56,8 @@ public class RpslResponseDecorator {
     private final Set<PrimaryObjectDecorator> decorators;
 
     @Autowired
-    public RpslResponseDecorator(final RpslObjectDao rpslObjectDao,
+    public RpslResponseDecorator(final QueryMessages queryMessages,
+                                 final RpslObjectDao rpslObjectDao,
                                  final FilterPersonalDecorator filterPersonalDecorator,
                                  final DummifyDecorator dummifyDecorator,
                                  final SourceContext sourceContext,
@@ -64,13 +66,14 @@ public class RpslResponseDecorator {
                                  final FilterPlaceholdersDecorator filterPlaceholdersDecorator,
                                  final AbuseCInfoDecorator abuseCInfoDecorator,
                                  final PrimaryObjectDecorator... decorators) {
+        this.queryMessages = queryMessages;
         this.rpslObjectDao = rpslObjectDao;
         this.filterPersonalDecorator = filterPersonalDecorator;
         this.dummifyDecorator = dummifyDecorator;
         this.sourceContext = sourceContext;
         this.abuseCInfoDecorator = abuseCInfoDecorator;
-        this.validSyntaxFilterFunction = new SyntaxFilterFunction(true);
-        this.invalidSyntaxFilterFunction = new SyntaxFilterFunction(false);
+        this.validSyntaxFilterFunction = new SyntaxFilterFunction(queryMessages, true);
+        this.invalidSyntaxFilterFunction = new SyntaxFilterFunction(queryMessages, false);
         this.filterTagsDecorator = filterTagsDecorator;
         this.filterPlaceholdersDecorator = filterPlaceholdersDecorator;
         this.briefAbuseCFunction = new BriefAbuseCFunction(abuseCFinder);
@@ -126,7 +129,7 @@ public class RpslResponseDecorator {
         }
 
         if (query.isGrouping()) {
-            return new GroupRelatedFunction(rpslObjectDao, query, decorators);
+            return new GroupRelatedFunction(rpslObjectDao, query, decorators, queryMessages);
         }
 
         return new GroupObjectTypesFunction(rpslObjectDao, query, decorators);
@@ -168,7 +171,7 @@ public class RpslResponseDecorator {
                 }
 
             }
-        }.setHeader(new MessageObject(QueryMessages.outputFilterNotice()));
+        }.setHeader(new MessageObject(queryMessages.outputFilterNotice()));
     }
 
     private Iterable<? extends ResponseObject> applyOutputFilters(final Query query, final Iterable<? extends ResponseObject> objects) {
@@ -182,7 +185,7 @@ public class RpslResponseDecorator {
 
         if (query.isKeysOnly()) {
             return Iterables.concat(
-                    Collections.singletonList(new MessageObject(QueryMessages.primaryKeysOnlyNotice())),
+                    Collections.singletonList(new MessageObject(queryMessages.primaryKeysOnlyNotice())),
                     Iterables.transform(objects, new ToKeysFunction()));
         }
 

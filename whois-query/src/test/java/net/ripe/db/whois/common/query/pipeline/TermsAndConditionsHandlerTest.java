@@ -19,6 +19,7 @@ public class TermsAndConditionsHandlerTest {
     @Mock private ChannelStateEvent channelStateEventMock;
     @Mock private Channel channelMock;
     @Mock private ChannelHandlerContext ctxMock;
+    @Mock private QueryMessages queryMessages;
     @InjectMocks private TermsAndConditionsHandler subject;
 
     @Before
@@ -31,6 +32,6 @@ public class TermsAndConditionsHandlerTest {
         subject.channelConnected(ctxMock, channelStateEventMock);
 
         verify(ctxMock, times(1)).sendUpstream(channelStateEventMock);
-        verify(channelMock, times(1)).write(QueryMessages.termsAndConditions());
+        verify(channelMock, times(1)).write(queryMessages.termsAndConditions());
     }
 }

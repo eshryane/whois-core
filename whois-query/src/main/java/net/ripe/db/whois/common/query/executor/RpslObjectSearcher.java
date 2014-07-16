@@ -59,6 +59,7 @@ class RpslObjectSearcher {
     private final Ipv6RouteTree route6Tree;
     private final Ipv4DomainTree ipv4DomainTree;
     private final Ipv6DomainTree ipv6DomainTree;
+    private final QueryMessages queryMessages;
 
     @Autowired
     public RpslObjectSearcher(
@@ -70,7 +71,8 @@ class RpslObjectSearcher {
             final Ipv4RouteTree route4Tree,
             final Ipv6RouteTree route6Tree,
             final Ipv4DomainTree ipv4DomainTree,
-            final Ipv6DomainTree ipv6DomainTree) {
+            final Ipv6DomainTree ipv6DomainTree,
+            final QueryMessages queryMessages) {
         this.rpslObjectDao = rpslObjectDao;
         this.inetnumDao = inetnumDao;
         this.inet6numDao = inet6numDao;
@@ -80,6 +82,7 @@ class RpslObjectSearcher {
         this.route6Tree = route6Tree;
         this.ipv4DomainTree = ipv4DomainTree;
         this.ipv6DomainTree = ipv6DomainTree;
+        this.queryMessages = queryMessages;
     }
 
     public Iterable<? extends ResponseObject> search(final Query query) {
@@ -261,7 +264,7 @@ class RpslObjectSearcher {
         final List<ResponseObject> errors = Lists.newArrayList();
         for (final AttributeType attributeType : query.getAttributeTypes()) {
             if (!INVERSE_ATTRIBUTE_TYPES.contains(attributeType)) {
-                errors.add(new MessageObject(QueryMessages.attributeNotSearchable(attributeType.getName())));
+                errors.add(new MessageObject(queryMessages.attributeNotSearchable(attributeType.getName())));
             }
         }
 

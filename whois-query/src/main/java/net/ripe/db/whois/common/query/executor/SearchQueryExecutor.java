@@ -24,14 +24,17 @@ public class SearchQueryExecutor implements QueryExecutor {
     private final SourceContext sourceContext;
     private final RpslObjectSearcher rpslObjectSearcher;
     private final RpslResponseDecorator rpslResponseDecorator;
+    private final QueryMessages queryMessages;
 
     @Autowired
     public SearchQueryExecutor(final SourceContext sourceContext,
                                final RpslObjectSearcher rpslObjectSearcher,
-                               final RpslResponseDecorator rpslResponseDecorator) {
+                               final RpslResponseDecorator rpslResponseDecorator,
+                               final QueryMessages queryMessages) {
         this.sourceContext = sourceContext;
         this.rpslObjectSearcher = rpslObjectSearcher;
         this.rpslResponseDecorator = rpslResponseDecorator;
+        this.queryMessages = queryMessages;
     }
 
     @Override
@@ -74,7 +77,7 @@ public class SearchQueryExecutor implements QueryExecutor {
                     }
                 }
             } catch (IllegalSourceException e) {
-                responseHandler.handle(new MessageObject(QueryMessages.unknownSource(source.getName())));
+                responseHandler.handle(new MessageObject(queryMessages.unknownSource(source.getName())));
                 noResults = false;
             } finally {
                 sourceContext.removeCurrentSource();
@@ -82,7 +85,7 @@ public class SearchQueryExecutor implements QueryExecutor {
         }
 
         if (noResults) {
-            responseHandler.handle(new MessageObject(QueryMessages.noResults(Joiner.on(',').join(Iterables.transform(sources, new Function<Source, String>() {
+            responseHandler.handle(new MessageObject(queryMessages.noResults(Joiner.on(',').join(Iterables.transform(sources, new Function<Source, String>() {
                 @Override
                 public String apply(final Source input) {
                     return input.getName().toUpperCase();

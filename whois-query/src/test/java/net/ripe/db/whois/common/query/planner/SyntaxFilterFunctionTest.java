@@ -2,20 +2,31 @@ package net.ripe.db.whois.common.query.planner;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.domain.MessageObject;
+import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SyntaxFilterFunctionTest {
-    private final SyntaxFilterFunction validSyntaxFilterFunction = new SyntaxFilterFunction(true);
-    private final SyntaxFilterFunction novalidSyntaxFilterFunction = new SyntaxFilterFunction(false);
+    private final QueryMessages queryMessages = mock(QueryMessages.class);
+    private final SyntaxFilterFunction validSyntaxFilterFunction = new SyntaxFilterFunction(queryMessages, true);
+    private final SyntaxFilterFunction novalidSyntaxFilterFunction = new SyntaxFilterFunction(queryMessages, false);
 
     @Test
     public void validSyntax_valid_flag() {
@@ -43,6 +54,8 @@ public class SyntaxFilterFunctionTest {
 
     @Test
     public void invalidSyntax_valid_flag() {
+        when(queryMessages.invalidSyntax(any(CharSequence.class))).thenAnswer(answer(Messages.Type.INFO, "'%s' invalid syntax", "tst-ripe"));
+
         final RpslObject object = RpslObject.parse("" +
                 "person:  Admin Person\n" +
                 "address: Admin Road\n" +
@@ -57,11 +70,13 @@ public class SyntaxFilterFunctionTest {
         final Iterable<? extends ResponseObject> result = validSyntaxFilterFunction.apply(object);
 
         assertThat(Iterables.size(result), is(1));
-        assertThat(Iterables.getFirst(result, null), is((ResponseObject)new MessageObject(QueryMessages.invalidSyntax("tst-ripe"))));
+        assertThat(Iterables.getFirst(result, null), is((ResponseObject)new MessageObject(queryMessages.invalidSyntax("tst-ripe"))));
     }
 
     @Test
     public void validSyntax_novalid_flag() {
+        when(queryMessages.validSyntax(any(CharSequence.class))).thenAnswer(answer(Messages.Type.INFO, "'%s' has valid syntax", "TST-MNT"));
+
         final RpslObject object = RpslObject.parse("" +
                 "mntner:  TST-MNT\n" +
                 "descr:   description\n" +
@@ -76,7 +91,7 @@ public class SyntaxFilterFunctionTest {
         final Iterable<? extends ResponseObject> result = novalidSyntaxFilterFunction.apply(object);
 
         assertThat(Iterables.size(result), is(1));
-        assertThat(Iterables.getFirst(result, null), is((ResponseObject)new MessageObject(QueryMessages.validSyntax("TST-MNT"))));
+        assertThat(Iterables.getFirst(result, null), is((ResponseObject)new MessageObject(queryMessages.validSyntax("TST-MNT"))));
     }
 
     @Test
@@ -101,5 +116,14 @@ public class SyntaxFilterFunctionTest {
             }
         });
         assertThat(responseObject, is(not(nullValue())));
+    }
+
+    private Answer<Message> answer(final Messages.Type type, final String text, final Object ... args) {
+        return new Answer<Message>() {
+                    @Override
+                    public Message answer(InvocationOnMock invocation) throws Throwable {
+                        return new Message(type, text, args);
+                    }
+                };
     }
 }

@@ -30,16 +30,17 @@ public class GroupRelatedFunctionTest {
     private ResponseObject relatedToMessage;
 
     @Mock private PrimaryObjectDecorator decorator;
-
     @Mock private RpslObjectDao rpslObjectDao;
+    @Mock private QueryMessages queryMessages;
+
     private GroupRelatedFunction subject;
 
     @Before
     public void setUp() {
-        query = Query.parse("foo");
-        relatedToMessage = new MessageObject(QueryMessages.relatedTo("10.0.0.0"));
+        query = new Query("foo", Query.Origin.LEGACY, false, queryMessages);
+        relatedToMessage = new MessageObject(queryMessages.relatedTo("10.0.0.0"));
 
-        subject = new GroupRelatedFunction(rpslObjectDao, query, Sets.newHashSet(decorator));
+        subject = new GroupRelatedFunction(rpslObjectDao, query, Sets.newHashSet(decorator), queryMessages);
     }
 
     @Test

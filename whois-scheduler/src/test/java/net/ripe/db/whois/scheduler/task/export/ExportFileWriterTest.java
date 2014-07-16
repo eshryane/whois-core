@@ -36,6 +36,7 @@ public class ExportFileWriterTest {
 
     @Mock FilenameStrategy filenameStrategy;
     @Mock DecorationStrategy decorationStrategy;
+    @Mock QueryMessages queryMessages;
 
     ExportFileWriter subject;
 
@@ -55,7 +56,7 @@ public class ExportFileWriterTest {
             }
         });
 
-        subject = new ExportFileWriter(folder.getRoot(), filenameStrategy, decorationStrategy);
+        subject = new ExportFileWriter(folder.getRoot(), filenameStrategy, decorationStrategy, queryMessages);
     }
 
     @SuppressWarnings("unchecked")
@@ -91,19 +92,19 @@ public class ExportFileWriterTest {
                 checkFile(file, "" +
                         "route:          193.0.0.0 - 193.0.0.10\n" +
                         "origin:         AS12\n\n" +
-                        QueryMessages.tagInfoStart("193.0.0.0 - 193.0.0.10AS12") +
-                        QueryMessages.tagInfo("foo", "bar"));
+                        "Tags relating to '193.0.0.0 - 193.0.0.10AS12'\n" +
+                        "foo # bar");
             }
         }
     }
 
     private void checkFile(final File file, final String expectedContents) throws IOException {
         final String content = FileCopyUtils.copyToString(new InputStreamReader(new GZIPInputStream(new FileInputStream(file)), Charsets.ISO_8859_1));
-        Assert.assertThat(content, Matchers.is(QueryMessages.termsAndConditionsDump() + "\n" + expectedContents));
+        Assert.assertThat(content, Matchers.is(queryMessages.termsAndConditionsDump() + "\n" + expectedContents));
     }
 
     @Test(expected = RuntimeException.class)
     public void unexisting_folder() throws IOException {
-        new ExportFileWriter(new File(folder.getRoot().getAbsolutePath() + "does not exist"), filenameStrategy, decorationStrategy);
+        new ExportFileWriter(new File(folder.getRoot().getAbsolutePath() + "does not exist"), filenameStrategy, decorationStrategy, queryMessages);
     }
 }

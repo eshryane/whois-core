@@ -2,6 +2,7 @@ package net.ripe.db.whois.scheduler.task.export;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.rpsl.DummifierCurrent;
 import net.ripe.db.whois.common.rpsl.DummifierLegacy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ class ExportFileWriterFactory {
 
     private final DummifierLegacy dummifierLegacy;
     private final DummifierCurrent dummifierCurrent;
+    private final QueryMessages queryMessages;
 
     private final String legacyExternalExportDir;
     private final String externalExportDir;
@@ -27,11 +29,13 @@ class ExportFileWriterFactory {
 
     @Autowired
     ExportFileWriterFactory(final DummifierLegacy dummifierLegacy, final DummifierCurrent dummifierCurrent,
+                            final QueryMessages queryMessages,
                             @Value("${dir.rpsl.export.internal}") String internalExportDir,
                             @Value("${dir.rpsl.export.external}") String externalExportDir,
                             @Value("${dir.rpsl.export.external.legacy}") String legacyExternalExportDir) {
         this.dummifierLegacy = dummifierLegacy;
         this.dummifierCurrent = dummifierCurrent;
+        this.queryMessages = queryMessages;
         this.internalExportDir = internalExportDir;
         this.externalExportDir = externalExportDir;
         this.legacyExternalExportDir = legacyExternalExportDir;

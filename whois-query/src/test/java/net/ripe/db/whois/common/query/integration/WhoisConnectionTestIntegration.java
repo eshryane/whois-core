@@ -2,6 +2,7 @@ package net.ripe.db.whois.common.query.integration;
 
 import com.google.common.base.Charsets;
 import net.ripe.db.whois.common.IntegrationTest;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
 import net.ripe.db.whois.common.query.QueryServer;
@@ -46,6 +47,7 @@ import static org.mockito.Mockito.*;
 public class WhoisConnectionTestIntegration extends AbstractQueryIntegrationTest {
     @Autowired @ReplaceWithMock WhoisServerPipelineFactory whoisServerPipelineFactory;
     @Autowired @ReplaceWithMock QueryHandler queryHandler;
+    @Autowired QueryMessages queryMessages;
     @Autowired @WrapWithSpy QueryChannelsRegistry queryChannelsRegistry;
 
     private String queryString = "-rBGxTinetnum 10.0.0.0";
@@ -62,9 +64,9 @@ public class WhoisConnectionTestIntegration extends AbstractQueryIntegrationTest
         pipeline.addLast("delimiter", new DelimiterBasedFrameDecoder(1024, true, ChannelBuffers.wrappedBuffer(new byte[]{'\n'})));
         pipeline.addLast("string-decoder", new StringDecoder(Charsets.UTF_8));
         pipeline.addLast("whois-encoder", applicationContext.getBean(WhoisEncoder.class));
-        pipeline.addLast("exception", new ExceptionHandler());
+        pipeline.addLast("exception", new ExceptionHandler(queryMessages));
         pipeline.addLast("query-decoder", applicationContext.getBean(QueryDecoder.class));
-        pipeline.addLast("connection-state", new ConnectionStateHandler());
+        pipeline.addLast("connection-state", new ConnectionStateHandler(queryMessages));
         pipeline.addLast("upstreamMock", upstreamMock);
 
         when(whoisServerPipelineFactory.getPipeline()).thenReturn(pipeline);

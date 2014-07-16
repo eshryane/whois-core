@@ -18,13 +18,14 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class InverseValidatorTest {
     @Mock Query query;
+    @Mock QueryMessages queryMessages;
     Messages messages;
 
     InverseValidator subject;
 
     @Before
     public void setup() {
-        subject = new InverseValidator();
+        subject = new InverseValidator(queryMessages);
         messages = new Messages();
     }
 
@@ -44,6 +45,6 @@ public class InverseValidatorTest {
 
         subject.validate(query, messages);
 
-        assertThat(messages.getErrors(), contains(QueryMessages.inverseSearchNotAllowed()));
+        assertThat(messages.getErrors(), contains(queryMessages.inverseSearchNotAllowed()));
     }
 }

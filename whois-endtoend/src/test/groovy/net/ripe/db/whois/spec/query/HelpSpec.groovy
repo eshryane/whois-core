@@ -1,7 +1,5 @@
 package net.ripe.db.whois.spec.query
-
 import net.ripe.db.whois.common.IntegrationTest
-import net.ripe.db.whois.common.query.QueryMessages
 import net.ripe.db.whois.spec.BaseQueryUpdateSpec
 
 @org.junit.experimental.categories.Category(IntegrationTest.class)
@@ -56,7 +54,7 @@ class HelpSpec extends BaseQueryUpdateSpec {
 
       then:
         help =~ header
-        help.contains(QueryMessages.noResults("TEST").toString())
+        help.contains(queryMessages.noResults("TEST").toString())
     }
 
     def "help MNTNER"() {
@@ -65,7 +63,7 @@ class HelpSpec extends BaseQueryUpdateSpec {
 
       then:
         help =~ header
-        help.contains(QueryMessages.noResults("TEST").toString())
+        help.contains(queryMessages.noResults("TEST").toString())
     }
 
     def "query help"() {
@@ -74,6 +72,6 @@ class HelpSpec extends BaseQueryUpdateSpec {
 
       then:
         help =~ header
-        help.contains(QueryMessages.noResults("TEST").toString())
+        help.contains(queryMessages.noResults("TEST").toString())
     }
 }

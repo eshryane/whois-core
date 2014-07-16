@@ -2,6 +2,7 @@ package net.ripe.db.whois.common.query.pipeline;
 
 import com.google.common.collect.Lists;
 import com.google.common.net.InetAddresses;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.acl.AccessControlListManager;
 import net.ripe.db.whois.common.query.domain.QueryCompletionInfo;
 import net.ripe.db.whois.common.query.domain.QueryException;
@@ -39,6 +40,7 @@ public class QueryDecoderTest {
     @Mock private ChannelPipeline channelPipelineMock;
     @Mock private ChannelHandlerContext channelHandlerContextMock;
     @Mock private AccessControlListManager accessControlListManager;
+    @Mock private QueryMessages queryMessages;
     @InjectMocks private QueryDecoder subject;
 
     private List<Object> writtenBuffer = Lists.newArrayList();
@@ -60,13 +62,13 @@ public class QueryDecoderTest {
 
     @Test(expected = QueryException.class)
     public void invalidProxyShouldThrowException() {
-        Query.parse("-Vone,two,three -Tperson DW-RIPE");
+        new Query("-Vone,two,three -Tperson DW-RIPE", Query.Origin.LEGACY, false, queryMessages);
     }
 
     @Test
     public void validDecodedStringShouldReturnQuery() throws Exception {
         String queryString = "-Tperson DW-RIPE";
-        Query expectedQuery = Query.parse(queryString);
+        Query expectedQuery = new Query(queryString, Query.Origin.LEGACY, false, queryMessages);
 
         when(channelMock.getRemoteAddress()).thenReturn(new InetSocketAddress(InetAddresses.forString("10.0.0.1"), 80));
 

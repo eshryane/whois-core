@@ -19,6 +19,9 @@ import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.domain.User;
 import net.ripe.db.whois.common.iptree.IpTreeUpdater;
 import net.ripe.db.whois.common.profiles.WhoisProfile;
+import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.query.QueryServer;
+import net.ripe.db.whois.common.query.support.TestWhoisLog;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.source.SourceAwareDataSource;
@@ -27,8 +30,6 @@ import net.ripe.db.whois.common.support.DummyWhoisClient;
 import net.ripe.db.whois.common.support.NettyWhoisClientFactory;
 import net.ripe.db.whois.common.support.WhoisClientHandler;
 import net.ripe.db.whois.db.WhoisServer;
-import net.ripe.db.whois.common.query.QueryServer;
-import net.ripe.db.whois.common.query.support.TestWhoisLog;
 import net.ripe.db.whois.scheduler.task.unref.UnrefCleanup;
 import net.ripe.db.whois.update.mail.MailGateway;
 import net.ripe.db.whois.update.mail.MailSenderStub;
@@ -76,6 +77,7 @@ public class WhoisFixture {
     protected WhoisServer whoisServer;
     protected RestClient restClient;
     protected TestWhoisLog testWhoisLog;
+    protected QueryMessages queryMessages;
 
     static {
         Slf4JLogConfiguration.init();
@@ -118,6 +120,7 @@ public class WhoisFixture {
         indexDao = applicationContext.getBean(IndexDao.class);
         restClient = applicationContext.getBean(RestClient.class);
         testWhoisLog = applicationContext.getBean(TestWhoisLog.class);
+        queryMessages = applicationContext.getBean(QueryMessages.class);
 
         databaseHelper.setup();
         whoisServer.start();
@@ -294,5 +297,9 @@ public class WhoisFixture {
 
     public MailSenderStub getMailSender() {
         return mailSender;
+    }
+
+    public QueryMessages getQueryMessages() {
+        return queryMessages;
     }
 }

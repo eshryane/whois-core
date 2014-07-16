@@ -2,6 +2,7 @@ package net.ripe.db.whois.common.query.handler;
 
 import com.google.common.net.InetAddresses;
 import net.ripe.db.whois.common.domain.ResponseObject;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceContext;
 import net.ripe.db.whois.common.query.acl.AccessControlListManager;
@@ -27,6 +28,7 @@ public class QueryHandler_ExceptionTest {
     @Mock AccessControlListManager accessControlListManager;
     @Mock SourceContext sourceContext;
     @Mock QueryExecutor queryExecutor;
+    @Mock QueryMessages queryMessages;
     QueryHandler subject;
 
     int contextId = 1;
@@ -35,7 +37,7 @@ public class QueryHandler_ExceptionTest {
 
     @Before
     public void setUp() throws Exception {
-        subject = new QueryHandler(whoisLog, accessControlListManager, sourceContext, queryExecutor);
+        subject = new QueryHandler(whoisLog, accessControlListManager, sourceContext, queryMessages, queryExecutor);
 
         when(queryExecutor.supports(any(Query.class))).thenReturn(true);
         when(accessControlListManager.canQueryPersonalObjects(remoteAddress)).thenReturn(true);
@@ -43,7 +45,7 @@ public class QueryHandler_ExceptionTest {
 
     @Test
     public void query_no_source_specified() {
-        final Query query = Query.parse("10.0.0.0");
+        final Query query = new Query("10.0.0.0", Query.Origin.LEGACY, false, queryMessages);
         when(sourceContext.getWhoisSlaveSource()).thenReturn(Source.slave("RIPE"));
         doThrow(IllegalStateException.class).when(queryExecutor).execute(any(Query.class), any(ResponseHandler.class));
 
