@@ -53,6 +53,8 @@
         <module>whois-db</module>
         <module>whois-endtoend</module>
         <module>whois-internal</module>
+        <module>whois-object-xp</module>
+        <module>whois-object-xp-afrinic</module>
     </modules>
 
     <dependencyManagement>
