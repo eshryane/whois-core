@@ -21,11 +21,6 @@ public class KeyCert extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      A key-cert object is a database public key certificate \n" +

@@ -21,11 +21,6 @@ public class Mntner extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      Objects in the AFRINIC Database may be protected using mntner\n" +

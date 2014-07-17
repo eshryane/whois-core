@@ -21,11 +21,6 @@ public class InetRtr extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      Routers are specified using the inet-rtr class.  The \"inet-rtr:\"\n" +

@@ -21,11 +21,6 @@ public class Organisation extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      The organisation class provides information identifying \n" +

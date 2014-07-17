@@ -9,4 +9,5 @@ public interface IObjectType {
     public boolean isSet();
     public String getDocumentation();
     public int getId();
+    public boolean isResource();
 }

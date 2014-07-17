@@ -27,4 +27,14 @@ public abstract class AbstractObjectType implements IObjectType {
         result = 31 * result + getName().hashCode();
         return result;
     }
+
+    @Override
+    public boolean isSet() {
+        return false;
+    }
+
+    @Override
+    public boolean isResource() {
+        return false;
+    }
 }

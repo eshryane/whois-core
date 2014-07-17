@@ -21,11 +21,6 @@ public class InetNum extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      An inetnum object contains information on allocations and\n" +
@@ -35,5 +30,10 @@ public class InetNum extends AbstractObjectType {
     @Override
     public int getId() {
         return 6;
+    }
+
+    @Override
+    public boolean isResource() {
+        return true;
     }
 }

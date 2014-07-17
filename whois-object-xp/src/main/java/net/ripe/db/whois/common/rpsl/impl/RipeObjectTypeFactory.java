@@ -19,48 +19,60 @@ public class RipeObjectTypeFactory implements IObjectTypeFactory {
 
     protected final Map<String, IObjectType> TYPE_NAMES;
     protected final Set<IObjectType> SET_OBJECTS;
+    protected final Set<IObjectType> RESOURCE_TYPES;
     protected final Map<Integer, IObjectType> BY_TYPE_ID;
-    protected final Map<Class<? extends IObjectType>, IObjectType> TYPE_CLASSES = Maps.newHashMap();
+    protected final Map<Class<? extends IObjectType>, IObjectType> TYPE_CLASSES;
 
     @Autowired
     public RipeObjectTypeFactory(final List<IObjectType> objectTypes) {
-        TYPE_NAMES = new HashMap<>(objectTypes.size() * 2, 1);
-        SET_OBJECTS = Sets.newHashSet();
-
-        BY_TYPE_ID = Maps.newHashMap();
+        Map<String, IObjectType> typeNames = new HashMap<>(objectTypes.size() * 2, 1);
+        Set<IObjectType> setObjects = Sets.newHashSet();
+        Set<IObjectType> resourceTypes = Sets.newHashSet();
+        Map<Integer, IObjectType> byTypeId = Maps.newHashMap();
+        Map<Class<? extends IObjectType>, IObjectType> typeClasses = Maps.newHashMap();
 
         for (final IObjectType type : objectTypes) {
-            insertInTypeClasses(type);
-            insertInTypeNames(type);
-            insertInByTypeIds(type);
+            insertInTypeClasses(type, typeClasses);
+            insertInTypeNames(type, typeNames, setObjects, resourceTypes);
+            insertInByTypeIds(type, byTypeId);
         }
+
+        TYPE_NAMES = Collections.unmodifiableMap(typeNames);
+        SET_OBJECTS = Collections.unmodifiableSet(setObjects);
+        RESOURCE_TYPES = Collections.unmodifiableSet(resourceTypes);
+        BY_TYPE_ID = Collections.unmodifiableMap(byTypeId);
+        TYPE_CLASSES = Collections.unmodifiableMap(typeClasses);
     }
 
-    private void insertInTypeClasses(IObjectType type) {
+    private void insertInTypeClasses(IObjectType type, Map<Class<? extends IObjectType>, IObjectType> typeClasses) {
         Class typeClass = type.getClass();
-        IObjectType existingType = TYPE_CLASSES.get(typeClass);
-        if(existingType != null) {
+        IObjectType existingType = typeClasses.get(typeClass);
+        if (existingType != null) {
             throw new RuntimeException("The type " + typeClass + " already exists.");
         }
-        TYPE_CLASSES.put(typeClass, type);
+        typeClasses.put(typeClass, type);
     }
 
-    private void insertInTypeNames(IObjectType type) {
-        TYPE_NAMES.put(type.getName(), type);
-        TYPE_NAMES.put(type.getShortName(), type);
+    private void insertInTypeNames(IObjectType type, Map<String, IObjectType> typeNames, Set<IObjectType> setObjects, Set<IObjectType> resourceTypes) {
+        typeNames.put(type.getName(), type);
+        typeNames.put(type.getShortName(), type);
 
         if (type.isSet()) {
-            SET_OBJECTS.add(type);
+            setObjects.add(type);
+        }
+
+        if (type.isResource()) {
+            resourceTypes.add(type);
         }
     }
 
-    private void insertInByTypeIds(IObjectType type) {
+    private void insertInByTypeIds(IObjectType type, Map<Integer, IObjectType> byTypeId) {
         int typeId = type.getId();
-        IObjectType existingType = BY_TYPE_ID.get(typeId);
-        if(existingType != null) {
+        IObjectType existingType = byTypeId.get(typeId);
+        if (existingType != null) {
             throw new RuntimeException("A type of id " + typeId + " already exists : " + existingType.getName());
         }
-        BY_TYPE_ID.put(type.getId(), type);
+        byTypeId.put(type.getId(), type);
     }
 
     @Override
@@ -102,5 +114,10 @@ public class RipeObjectTypeFactory implements IObjectTypeFactory {
     @Override
     public Collection<IObjectType> values() {
         return Collections.unmodifiableCollection(TYPE_CLASSES.values());
+    }
+
+    @Override
+    public Set<IObjectType> getResources() {
+        return RESOURCE_TYPES;
     }
 }

@@ -22,7 +22,7 @@ public class ASSet extends AbstractObjectType {
 
     @Override
     public boolean isSet() {
-        return false;
+        return true;
     }
 
     @Override

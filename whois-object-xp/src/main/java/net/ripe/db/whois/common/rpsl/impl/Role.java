@@ -21,11 +21,6 @@ public class Role extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      The role class is similar to the person class.  However, instead\n" +

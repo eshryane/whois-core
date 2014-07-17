@@ -21,11 +21,6 @@ public class ASBlock extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
         "      An as-block object is needed to delegate a range of AS numbers \n" +

@@ -21,11 +21,6 @@ public class Irt extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      An irt object is used to define a Computer Security Incident\n" +

@@ -21,11 +21,6 @@ public class AutNum extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      An object of the aut-num class is a database representation of \n" +
@@ -37,5 +32,10 @@ public class AutNum extends AbstractObjectType {
     @Override
     public int getId() {
         return 2;
+    }
+
+    @Override
+    public boolean isResource() {
+        return true;
     }
 }

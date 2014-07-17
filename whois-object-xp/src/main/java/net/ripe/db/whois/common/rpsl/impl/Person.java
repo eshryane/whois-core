@@ -21,11 +21,6 @@ public class Person extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      A person object contains information about technical or\n" +

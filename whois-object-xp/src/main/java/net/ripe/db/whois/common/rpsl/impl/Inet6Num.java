@@ -21,11 +21,6 @@ public class Inet6Num extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      An inet6num object contains information on allocations\n" +
@@ -35,5 +30,10 @@ public class Inet6Num extends AbstractObjectType {
     @Override
     public int getId() {
         return 5;
+    }
+
+    @Override
+    public boolean isResource() {
+        return true;
     }
 }

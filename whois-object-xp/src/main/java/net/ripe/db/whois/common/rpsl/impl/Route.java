@@ -21,11 +21,6 @@ public class Route extends AbstractObjectType {
     }
 
     @Override
-    public boolean isSet() {
-        return false;
-    }
-
-    @Override
     public String getDocumentation() {
         return "" +
                 "      Each interAS route (also referred to as an interdomain route) \n" +
