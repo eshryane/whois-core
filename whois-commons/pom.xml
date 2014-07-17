@@ -11,6 +11,10 @@
     <artifactId>whois-commons</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <project.basedir.escaped>xxx</project.basedir.escaped>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -141,6 +145,28 @@
             </resource>
         </resources>
         <plugins>
+            <!-- project.basedir path - backslashes need escaping for windows -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>set-system-properties</goal>
+                        </goals>
+                        <configuration>
+                            <properties>
+                                <property>
+                                    <name>project.basedir.property</name>
+                                    <value>${project.basedir}</value>
+                                </property>
+                            </properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -157,6 +183,9 @@
                                 <evaluateBeanshell>
                                     <condition><![CDATA[
                                     boolean success = false;
+                                    for (Map.Entry entry : System.getProperties().entrySet()) {
+                                        print(entry.getKey() + ":" + entry.getValue());
+                                    }
 
                                     String[] targets = new String[] {
                                         "AggrBndryParser", "AggrMtdParser", "ComponentsParser", "ComponentsR6Parser",
@@ -165,7 +194,11 @@
                                         "MpDefaultParser", "MpExportParser", "MpFilterParser", "MpImportParser",
                                         "MpPeerParser", "MpPeeringParser", "PeerParser", "PeeringParser", "V6FilterParser" };
 
-                                    String basePath = System.getProperty("user.dir");
+                                    // Maven properties work here... wow
+                                    String mavenBaseDir = System.getProperty("project.basedir.property");
+                                    String baseDir = mavenBaseDir.replace("\\", "/");
+                                    System.out.println("Base Directory=" + baseDir);
+                                    String basePath = new File(baseDir).getAbsolutePath();
                                     String genPath = "/target/generated-sources/jflex/net/ripe/db/whois/common/generated";
                                     String PACKAGE_NAME = "net.ripe.db.whois.common.generated";
 
@@ -232,9 +265,8 @@
                     <rules>
                         <evaluateBeanshell>
                             <condition><![CDATA[
-                                boolean success = true;
-
-                                success == true;
+                                // Put your tinkery code in here if calling the plugin directly
+                                1 == 1;
                             ]]>
                             </condition>
                         </evaluateBeanshell>
