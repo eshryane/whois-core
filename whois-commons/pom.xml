@@ -142,19 +142,104 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.3.1</version>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <id>generate-byaccs</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>enforce</goal>
                         </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <rules>
+                                <evaluateBeanshell>
+                                    <condition><![CDATA[
+                                    boolean success = false;
+
+                                    String[] targets = new String[] {
+                                        "AggrBndryParser", "AggrMtdParser", "ComponentsParser", "ComponentsR6Parser",
+                                        "DefaultParser", "ExportParser", "ExportViaParser", "FilterParser", "IfaddrParser",
+                                        "ImportParser", "ImportViaParser", "InjectParser", "InjectR6Parser", "InterfaceParser",
+                                        "MpDefaultParser", "MpExportParser", "MpFilterParser", "MpImportParser",
+                                        "MpPeerParser", "MpPeeringParser", "PeerParser", "PeeringParser", "V6FilterParser" };
+
+                                    String basePath = System.getProperty("user.dir");
+                                    String genPath = "/target/generated-sources/jflex/net/ripe/db/whois/common/generated";
+                                    String PACKAGE_NAME = "net.ripe.db.whois.common.generated";
+
+                                    String BIN_PATH =  new File(basePath + "/src/main/parser/bin").getAbsolutePath();
+                                    String GENERATED_PATH = new File(basePath + genPath).getAbsolutePath();
+                                    String YACC_FILES_PATH = new File(basePath + "/src/main/parser/byacc").getAbsolutePath();
+
+                                    // Make generated dir
+                                    File generatedDir = new File(GENERATED_PATH);
+                                    generatedDir.mkdirs();
+                                    System.out.println("Generating in path: " + generatedDir.getAbsolutePath());
+
+                                    String executablePath = null;
+                                    String OS_NAME = System.getProperty("os.name").toLowerCase();
+                                    String OS_ARCH = System.getProperty("os.arch").toLowerCase();
+                                    if (OS_NAME.startsWith("windows")) {
+                                        executablePath = new File(BIN_PATH + "/yacc.com").getAbsolutePath();
+                                    } else if (OS_NAME.startsWith("linux")) {
+                                        if (OS_ARCH.equals("i386")) {
+                                            executablePath = new File(BIN_PATH + "/yacc.linux").getAbsolutePath();
+                                        }
+                                    } else if (OS_NAME.startsWith("mac")) {
+                                        executablePath = new File(BIN_PATH + "/yacc.macosx").getAbsolutePath();
+                                    }
+
+                                    if (executablePath != null) {
+                                        boolean allProcessed = true;
+
+                                        // Check we've already gend
+                                        if (generatedDir.listFiles().length >= targets.length) {
+                                            System.out.println("Parser source generation skipped since files already exist");
+                                        } else {
+                                            System.out.println("Generating files [" + targets.length + "]");
+                                            for (String target : targets) {
+                                                String yaccFile = new File( YACC_FILES_PATH + "/" + target + ".y").getAbsolutePath();
+                                                String[] args = new String[] {
+                                                        executablePath, "-Jclass=" + target, "-Jnoconstruct",
+                                                        "-Jimplements=AttributeParser<Void>",
+                                                        "-Jpackage=" + PACKAGE_NAME,  "-J", yaccFile
+                                                };
+                                                try {
+                                                    System.out.println("Generating " + target + ".java");
+                                                    new ProcessBuilder(Arrays.asList(args)).directory(generatedDir).start();
+                                                } catch (Exception ex) {
+                                                    allProcessed = false;
+                                                    System.err.println("Error generating sources [" + ex.getMessage() + "]");
+                                                }
+                                           }
+                                       }
+                                       success = allProcessed;
+                                    } else {
+                                        System.err.println("OS/ARCH not supported: " + OS_NAME + "-" + OS_ARCH);
+                                    }
+                                    success == true;
+                                    ]]>
+                                    </condition>
+                                </evaluateBeanshell>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <executable>src/main/parser/bin/generateByaccs</executable>
+                    <rules>
+                        <evaluateBeanshell>
+                            <condition><![CDATA[
+                                boolean success = true;
+
+                                success == true;
+                            ]]>
+                            </condition>
+                        </evaluateBeanshell>
+                    </rules>
+                    <fail>true</fail>
                 </configuration>
             </plugin>
             <plugin>
