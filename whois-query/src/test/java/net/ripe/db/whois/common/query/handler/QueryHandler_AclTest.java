@@ -2,6 +2,8 @@ package net.ripe.db.whois.common.query.handler;
 
 import com.google.common.collect.Sets;
 import com.google.common.net.InetAddresses;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.acl.AccessControlListManager;
@@ -92,6 +94,7 @@ public class QueryHandler_AclTest {
         });
 
         when(sourceContext.getWhoisSlaveSource()).thenReturn(Source.slave("RIPE"));
+        when(queryMessages.accessDeniedTemporarily(any(InetAddress.class))).thenReturn(new Message(Messages.Type.ERROR, ""));
     }
 
     @Test

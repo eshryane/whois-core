@@ -1,11 +1,13 @@
 package net.ripe.db.whois.common.query.executor;
 
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.ResponseObject;
+import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.query.domain.QueryException;
+import net.ripe.db.whois.common.query.query.Query;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.common.query.domain.QueryException;
-import net.ripe.db.whois.common.query.QueryMessages;
-import net.ripe.db.whois.common.query.query.Query;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,6 +35,8 @@ public class SystemInfoQueryExecutorTest {
     @Before
     public void setUp() throws Exception {
         subject = new SystemInfoQueryExecutor(sourceContext, queryMessages);
+
+        when(queryMessages.malformedQuery(any(String.class))).thenReturn(new Message(Messages.Type.ERROR, "malformed query"));
     }
 
     @Test
@@ -69,7 +74,7 @@ public class SystemInfoQueryExecutorTest {
             subject.execute(new Query("-q invalid", Query.Origin.LEGACY, false, queryMessages), new CaptureResponseHandler());
             fail("expected QueryException to be thrown");
         } catch (QueryException qe) {
-            assertThat(qe.getMessage(), containsString(queryMessages.malformedQuery().toString()));
+            assertThat(qe.getMessage(), containsString("malformed query"));
         }
     }
 

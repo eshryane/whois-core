@@ -2,6 +2,7 @@ package net.ripe.db.whois.common.query.handler;
 
 import com.google.common.net.InetAddresses;
 import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.source.SourceContext;
 import net.ripe.db.whois.common.query.acl.AccessControlListManager;
@@ -45,6 +46,9 @@ public class QueryHandler_BlockedTest {
         subject = new QueryHandler(whoisLog, accessControlListManager, sourceContext, queryMessages, queryExecutor);
         when(queryExecutor.supports(any(Query.class))).thenReturn(true);
         when(queryExecutor.isAclSupported()).thenReturn(true);
+        when(queryMessages.accessDeniedPermanently(any(InetAddress.class))).thenReturn(new Message(Messages.Type.ERROR, ""));
+        when(queryMessages.accessDeniedTemporarily(any(InetAddress.class))).thenReturn(new Message(Messages.Type.ERROR, ""));
+        when(queryMessages.notAllowedToProxy()).thenReturn(new Message(Messages.Type.ERROR, ""));
     }
 
     @Test

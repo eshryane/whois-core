@@ -1,5 +1,6 @@
 package net.ripe.db.whois.common.query.query;
 
+import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.query.QueryMessages;
 import org.junit.Before;
@@ -25,6 +26,8 @@ public class InverseValidatorTest {
 
     @Before
     public void setup() {
+        when(queryMessages.inverseSearchNotAllowed()).thenReturn(new Message(Messages.Type.ERROR, ""));
+
         subject = new InverseValidator(queryMessages);
         messages = new Messages();
     }

@@ -2,27 +2,34 @@ package net.ripe.db.whois.common.query.planner;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.query.domain.MessageObject;
 import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.query.domain.MessageObject;
 import net.ripe.db.whois.common.query.query.Query;
 import net.ripe.db.whois.common.query.support.Fixture;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GroupRelatedFunctionTest {
@@ -37,8 +44,15 @@ public class GroupRelatedFunctionTest {
 
     @Before
     public void setUp() {
+        when(queryMessages.relatedTo(any(CharSequence.class))).thenAnswer(new Answer<Message>() {
+            @Override
+            public Message answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.INFO, invocation.getArguments()[0].toString());
+            }
+        });
+
         query = new Query("foo", Query.Origin.LEGACY, false, queryMessages);
-        relatedToMessage = new MessageObject(queryMessages.relatedTo("10.0.0.0"));
+        relatedToMessage = new MessageObject(new Message(Messages.Type.INFO, "10.0.0.0"));
 
         subject = new GroupRelatedFunction(rpslObjectDao, query, Sets.newHashSet(decorator), queryMessages);
     }

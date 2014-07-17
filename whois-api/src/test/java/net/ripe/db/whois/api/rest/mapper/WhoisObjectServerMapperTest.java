@@ -10,13 +10,14 @@ import net.ripe.db.whois.api.rest.domain.WhoisVersion;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.domain.serials.Operation;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.VersionDateTime;
 import net.ripe.db.whois.common.query.domain.DeletedVersionResponseObject;
 import net.ripe.db.whois.common.query.domain.TagResponseObject;
 import net.ripe.db.whois.common.query.domain.VersionResponseObject;
+import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +45,8 @@ public class WhoisObjectServerMapperTest {
 
     @Mock
     private ReferencedTypeResolver referencedTypeResolver;
+    @Mock
+    private QueryMessages queryMessages;
 
     private WhoisObjectServerMapper whoisObjectServerMapper;
     private WhoisObjectMapper whoisObjectMapper;
@@ -144,7 +147,7 @@ public class WhoisObjectServerMapperTest {
 
     @Test
     public void map_versions() {
-        final DeletedVersionResponseObject deleted = new DeletedVersionResponseObject(new VersionDateTime(new LocalDateTime()), ObjectType.AUT_NUM, "AS102");
+        final DeletedVersionResponseObject deleted = new DeletedVersionResponseObject(new VersionDateTime(new LocalDateTime()), ObjectType.AUT_NUM, "AS102", queryMessages);
 
         final List<VersionResponseObject> versionInfos = Lists.newArrayList(
                 new VersionResponseObject(2, Operation.UPDATE, 3, new VersionDateTime(new LocalDateTime()), ObjectType.AUT_NUM, "AS102"),
@@ -177,7 +180,8 @@ public class WhoisObjectServerMapperTest {
                                 new Tag(ciString("foo"), "foo data"),
                                 new Tag(ciString("bar"), "bar data"),
                                 new Tag(ciString("barf"), "barf data")
-                        )),
+                        ),
+                        queryMessages),
                         FormattedServerAttributeMapper.class
                 ).getTags();
 

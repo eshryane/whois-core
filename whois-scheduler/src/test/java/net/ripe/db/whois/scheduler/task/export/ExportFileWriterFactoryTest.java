@@ -1,6 +1,9 @@
 package net.ripe.db.whois.scheduler.task.export;
 
 import com.google.common.base.Charsets;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.rpsl.DummifierCurrent;
 import net.ripe.db.whois.common.rpsl.DummifierLegacy;
 import org.hamcrest.Matchers;
@@ -20,6 +23,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ExportFileWriterFactoryTest {
@@ -29,11 +33,14 @@ public class ExportFileWriterFactoryTest {
 
     @Mock DummifierLegacy dummifierLegacy;
     @Mock DummifierCurrent dummifierCurrent;
+    @Mock QueryMessages queryMessages;
     ExportFileWriterFactory subject;
 
     @Before
     public void setup() {
-        subject = new ExportFileWriterFactory(dummifierLegacy, dummifierCurrent, "internal", "dbase_new", "dbase");
+        when(queryMessages.termsAndConditionsDump()).thenReturn(new Message(Messages.Type.INFO, ""));
+
+        subject = new ExportFileWriterFactory(dummifierLegacy, dummifierCurrent, queryMessages, "internal", "dbase_new", "dbase");
     }
 
     @Test(expected = IllegalStateException.class)

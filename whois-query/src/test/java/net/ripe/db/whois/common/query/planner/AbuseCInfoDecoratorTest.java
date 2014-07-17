@@ -1,16 +1,21 @@
 package net.ripe.db.whois.common.query.planner;
 
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.source.SourceContext;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.domain.MessageObject;
 import net.ripe.db.whois.common.query.query.Query;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -18,6 +23,7 @@ import java.util.Iterator;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -27,6 +33,17 @@ public class AbuseCInfoDecoratorTest {
     @Mock private SourceContext sourceContext;
     @Mock private QueryMessages queryMessages;
     @InjectMocks AbuseCInfoDecorator subject;
+
+    @Before
+    public void setUp() {
+        when(queryMessages.abuseCNotRegistered(any(CharSequence.class))).thenReturn(new Message(Messages.Type.INFO, ""));
+        when(queryMessages.abuseCShown(any(CharSequence.class), any(CharSequence.class))).thenAnswer(new Answer<Message>() {
+            @Override
+            public Message answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.INFO, String.format("%% Abuse contact for '%s' is '%s'\n", invocation.getArguments()[0], invocation.getArguments()[1]));
+            }
+        });
+    }
 
     @Test
     public void notApplicable() {

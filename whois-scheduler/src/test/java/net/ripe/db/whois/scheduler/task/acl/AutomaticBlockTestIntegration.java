@@ -31,6 +31,7 @@ public class AutomaticBlockTestIntegration extends AbstractSchedulerIntegrationT
     @Autowired PersonalObjectAccounting personalObjectAccounting;
     @Autowired AutomaticPermanentBlocks automaticPermanentBlocks;
     @Autowired IpResourceConfiguration ipResourceConfiguration;
+    @Autowired QueryMessages queryMessages;
 
     @Before
     public void startupServer() throws Exception {
@@ -62,16 +63,16 @@ public class AutomaticBlockTestIntegration extends AbstractSchedulerIntegrationT
             queryAndCheckNotBanned(personQuery, "person:         test person");
 
             // Caught by ACL manager
-            queryAndCheckBanned(QueryMessages.accessDeniedTemporarily(localHost));
+            queryAndCheckBanned(queryMessages.accessDeniedTemporarily(localHost));
 
             // Caught by ACL handler
-            queryAndCheckBanned(QueryMessages.accessDeniedTemporarily(localHost));
+            queryAndCheckBanned(queryMessages.accessDeniedTemporarily(localHost));
             dailyMaintenance();
         }
 
         testDateTimeProvider.setTime(new LocalDateTime().plusDays(currentDay++));
         dailyMaintenance();
-        queryAndCheckBanned(QueryMessages.accessDeniedPermanently(localHost));
+        queryAndCheckBanned(queryMessages.accessDeniedPermanently(localHost));
 
         testDateTimeProvider.setTime(new LocalDateTime().plusDays(currentDay++));
         databaseHelper.unban("127.0.0.1/32");
@@ -93,8 +94,8 @@ public class AutomaticBlockTestIntegration extends AbstractSchedulerIntegrationT
     private void queryAndCheckNotBanned(final String query, final String personOrRole) throws Exception {
         final String result = query(query);
         assertThat(result, containsString(personOrRole));
-        assertThat(result, not(containsString(QueryMessages.accessDeniedTemporarily(localHost).toString())));
-        assertThat(result, not(containsString(QueryMessages.accessDeniedPermanently(localHost).toString())));
+        assertThat(result, not(containsString(queryMessages.accessDeniedTemporarily(localHost).toString())));
+        assertThat(result, not(containsString(queryMessages.accessDeniedPermanently(localHost).toString())));
     }
 
     private void queryAndCheckBanned(final Message messages) throws Exception {

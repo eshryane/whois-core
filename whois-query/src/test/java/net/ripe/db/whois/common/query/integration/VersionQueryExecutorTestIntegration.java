@@ -1,21 +1,25 @@
-package net.ripe.db.whois.common.query.executor;
+package net.ripe.db.whois.common.query.integration;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.dao.VersionDao;
 import net.ripe.db.whois.common.dao.VersionInfo;
 import net.ripe.db.whois.common.dao.VersionLookupResult;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.domain.serials.Operation;
+import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.query.VersionDateTime;
+import net.ripe.db.whois.common.query.domain.QueryException;
+import net.ripe.db.whois.common.query.executor.CaptureResponseHandler;
+import net.ripe.db.whois.common.query.executor.VersionQueryExecutor;
+import net.ripe.db.whois.common.query.query.Query;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.common.query.QueryMessages;
-import net.ripe.db.whois.common.query.VersionDateTime;
-import net.ripe.db.whois.common.query.domain.QueryException;
-import net.ripe.db.whois.common.query.query.Query;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -23,7 +27,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -38,8 +44,9 @@ import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+// TODO: [ES] refactor
 @RunWith(MockitoJUnitRunner.class)
-public class VersionQueryExecutorTest {
+public class VersionQueryExecutorTestIntegration {
     @Mock VersionInfo versionInfo1;
     @Mock VersionInfo versionInfo2;
     @Mock VersionInfo versionInfo3;
@@ -52,6 +59,18 @@ public class VersionQueryExecutorTest {
     @Before
     public void setup() {
         when(sourceContext.getCurrentSource()).thenReturn(Source.master("TEST"));
+        when(queryMessages.versionListStart(any(CharSequence.class), any(CharSequence.class))).thenReturn(new Message(Messages.Type.INFO, ""));
+        when(queryMessages.versionPersonRole(any(CharSequence.class), any(CharSequence.class))).thenReturn(new Message(Messages.Type.INFO, ""));
+        when(queryMessages.noResults(any(CharSequence.class))).thenReturn(new Message(Messages.Type.ERROR, ""));
+        when(queryMessages.versionDeleted(any(CharSequence.class))).thenReturn(new Message(Messages.Type.INFO, ""));
+        when(queryMessages.malformedQuery(any(String.class))).thenAnswer(new Answer<Message>() {
+            @Override
+            public Message answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.ERROR, invocation.getArguments()[0].toString());
+            }
+        });
+        when(queryMessages.versionOutOfRange(any(Integer.class))).thenReturn(new Message(Messages.Type.ERROR, ""));
+
     }
 
     @Test

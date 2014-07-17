@@ -1,6 +1,8 @@
 package net.ripe.db.whois.common.query.executor.decorators;
 
 import com.google.common.collect.Lists;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
@@ -49,6 +51,8 @@ public class FilterPlaceholderDecoratorTest {
         source = Source.slave("TEST-GRS");
         when(sourceContext.getCurrentSource()).thenReturn(source);
         when(authoritativeResourceData.getAuthoritativeResource(any(CIString.class))).thenReturn(authoritativeResource);
+        when(queryMessages.duplicateIpFlagsPassed()).thenReturn(new Message(Messages.Type.ERROR, ""));
+
         subject = new FilterPlaceholdersDecorator(sourceContext, authoritativeResourceData);
     }
 

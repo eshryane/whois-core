@@ -2,6 +2,8 @@ package net.ripe.db.whois.scheduler.task.export;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.rpsl.ObjectType;
@@ -42,6 +44,20 @@ public class ExportFileWriterTest {
 
     @Before
     public void setUp() throws Exception {
+        when(queryMessages.termsAndConditionsDump()).thenReturn(new Message(Messages.Type.INFO, ""));
+        when(queryMessages.tagInfoStart(any(CharSequence.class))).thenAnswer(new Answer<Message>() {
+            @Override
+            public Message answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.INFO, String.format("Tags relating to '%s'\n", invocation.getArguments()[0]));
+            }
+        });
+        when(queryMessages.tagInfo(any(CharSequence.class), any(CharSequence.class))).thenAnswer(new Answer<Message>() {
+            @Override
+            public Message answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.INFO, String.format("%s # %s", invocation.getArguments()[0], invocation.getArguments()[1]));
+            }
+        });
+
         when(filenameStrategy.getFilename(any(ObjectType.class))).thenAnswer(new Answer<String>() {
             @Override
             public String answer(InvocationOnMock invocation) throws Throwable {

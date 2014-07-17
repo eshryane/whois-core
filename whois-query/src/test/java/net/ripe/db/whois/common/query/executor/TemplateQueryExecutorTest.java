@@ -1,5 +1,7 @@
 package net.ripe.db.whois.common.query.executor;
 
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.query.Query;
 import net.ripe.db.whois.common.rpsl.ObjectType;
@@ -13,6 +15,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateQueryExecutorTest {
@@ -23,6 +27,8 @@ public class TemplateQueryExecutorTest {
     @Before
     public void setUp() throws Exception {
         subject = new TemplateQueryExecutor(queryMessages);
+
+        when(queryMessages.invalidObjectType(any(CharSequence.class))).thenReturn(new Message(Messages.Type.ERROR, ""));
     }
 
     @Test

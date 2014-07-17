@@ -2,6 +2,8 @@
 package net.ripe.db.whois.common.query.planner;
 
 import com.google.common.collect.Lists;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.ResponseObject;
@@ -82,6 +84,22 @@ public class RpslResponseDecoratorTest {
         Fixture.mockRpslObjectDaoLoadingBehavior(rpslObjectDaoMock);
 
         decoratorPassthrough(filterPersonalDecorator, filterPlaceholdersDecorator, filterTagsDecorator, dummifyDecorator);
+
+        when(queryMessages.abuseCShown(any(CharSequence.class), any(CharSequence.class))).thenAnswer(new Answer<Message>() {
+            @Override
+            public Message answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.INFO, String.format("%% Abuse contact for '%s' is '%s'\n", invocation.getArguments()[0], invocation.getArguments()[1]));
+            }
+        });
+        when(queryMessages.outputFilterNotice()).thenReturn(new Message(Messages.Type.INFO, "% Note: this output has been filtered.\n%       To receive output for a database update, use the \"-B\" flag.\n"));
+        when(queryMessages.relatedTo(any(CharSequence.class))).thenReturn(new Message(Messages.Type.INFO, ""));
+        when(queryMessages.abuseCNotRegistered(any(CharSequence.class))).thenAnswer(new Answer<Message>() {
+            @Override
+            public Message answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.INFO, String.format("%% No abuse contact registered for %s\n", invocation.getArguments()[0]));
+            }
+        });
+        when(queryMessages.primaryKeysOnlyNotice()).thenReturn(new Message(Messages.Type.INFO, ""));
     }
 
     private static void decoratorPassthrough(ResponseDecorator... responseDecorator) {

@@ -2,11 +2,13 @@ package net.ripe.db.whois.common.query.pipeline;
 
 import com.google.common.base.Charsets;
 import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.query.QueryMessages;
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WhoisEncoderTest {
@@ -44,6 +47,11 @@ public class WhoisEncoderTest {
 
     private static String toString(ChannelBuffer input) {
         return input.toString(Charsets.UTF_8);
+    }
+
+    @Before
+    public void setup() {
+        when(queryMessages.inputTooLong()).thenReturn(new Message(Messages.Type.ERROR, ""));
     }
 
     @Test

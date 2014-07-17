@@ -1,6 +1,7 @@
 package net.ripe.db.whois.common.query.executor;
 
 import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.domain.MessageObject;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class MessageObjectTest {
         assertFalse("type", subject.equals(1));
         assertFalse("other", subject.equals(other));
 
-        final Message message = queryMessages.timeout();
+        final Message message = new Message(Messages.Type.ERROR, "message text");
         assertThat("fromMessage", new MessageObject(message), is(new MessageObject(message)));
 
         assertThat("hashCode self", subject.hashCode(), is(subject.hashCode()));

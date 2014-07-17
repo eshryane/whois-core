@@ -2,25 +2,31 @@ package net.ripe.db.whois.common.query.executor.decorators;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.TagsDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.query.QueryMessages;
-import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.query.query.Query;
+import net.ripe.db.whois.common.rpsl.RpslObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import java.util.Iterator;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,6 +38,22 @@ public class FilterTagsDecoratorTest {
 
     @InjectMocks
     FilterTagsDecorator subject;
+
+    @Before
+    public void setup() {
+        when(queryMessages.tagInfoStart(any(CharSequence.class))).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.INFO, String.format("%% Tags relating to '%s'\n", invocation.getArguments()[0]));
+            }
+        });
+        when(queryMessages.unreferencedTagInfo(any(CharSequence.class), any(CharSequence.class))).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return new Message(Messages.Type.INFO, String.format("%% Unreferenced # '%s' will be deleted in %s days\n", invocation.getArguments()[0], invocation.getArguments()[1]));
+            }
+        });
+    }
 
     @Test
     public void unrefInfo_for_unreferenced_role() {

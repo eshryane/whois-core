@@ -56,7 +56,7 @@ class ExportFileWriter {
 
             if (!tags.isEmpty()) {
                 writer.write('\n');
-                writer.write(new TagResponseObject(decoratedObject.getKey(), tags).toString());
+                writer.write(new TagResponseObject(decoratedObject.getKey(), tags, queryMessages).toString());
             }
         }
     }
