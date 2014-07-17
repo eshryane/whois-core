@@ -183,9 +183,6 @@
                                 <evaluateBeanshell>
                                     <condition><![CDATA[
                                     boolean success = false;
-                                    for (Map.Entry entry : System.getProperties().entrySet()) {
-                                        print(entry.getKey() + ":" + entry.getValue());
-                                    }
 
                                     String[] targets = new String[] {
                                         "AggrBndryParser", "AggrMtdParser", "ComponentsParser", "ComponentsR6Parser",
@@ -194,40 +191,66 @@
                                         "MpDefaultParser", "MpExportParser", "MpFilterParser", "MpImportParser",
                                         "MpPeerParser", "MpPeeringParser", "PeerParser", "PeeringParser", "V6FilterParser" };
 
-                                    // Maven properties work here... wow
-                                    String mavenBaseDir = System.getProperty("project.basedir.property");
-                                    String baseDir = mavenBaseDir.replace("\\", "/");
-                                    System.out.println("Base Directory=" + baseDir);
-                                    String basePath = new File(baseDir).getAbsolutePath();
+                                    // Use the properties-maven-plugin defined basedir system property
+                                    // Inlining maven $[project.basedir] wont work due to the
+                                    // unescaped backslashes in the filepath string (for windows only)
+                                    String mavenBaseDir = System.getProperty("project.basedir.property").replace("\\", "/");
+                                    String basePath = new File(mavenBaseDir).getAbsolutePath();
+                                    System.out.println("Base Path=" + basePath);
                                     String genPath = "/target/generated-sources/jflex/net/ripe/db/whois/common/generated";
                                     String PACKAGE_NAME = "net.ripe.db.whois.common.generated";
 
                                     String BIN_PATH =  new File(basePath + "/src/main/parser/bin").getAbsolutePath();
                                     String GENERATED_PATH = new File(basePath + genPath).getAbsolutePath();
                                     String YACC_FILES_PATH = new File(basePath + "/src/main/parser/byacc").getAbsolutePath();
+                                    File MAKE_EXE_PATH = new File(basePath + "/src/main/parser/byaccj-p2/src");
 
                                     // Make generated dir
                                     File generatedDir = new File(GENERATED_PATH);
                                     generatedDir.mkdirs();
                                     System.out.println("Generating in path: " + generatedDir.getAbsolutePath());
 
-                                    String executablePath = null;
+                                    File executableFile = null;
                                     String OS_NAME = System.getProperty("os.name").toLowerCase();
                                     String OS_ARCH = System.getProperty("os.arch").toLowerCase();
+
                                     if (OS_NAME.startsWith("windows")) {
-                                        executablePath = new File(BIN_PATH + "/yacc.com").getAbsolutePath();
+                                        executableFile = new File(BIN_PATH + "/yacc.com");
                                     } else if (OS_NAME.startsWith("linux")) {
                                         if (OS_ARCH.equals("i386")) {
-                                            executablePath = new File(BIN_PATH + "/yacc.linux").getAbsolutePath();
+                                            executableFile = new File(BIN_PATH + "/yacc.linux");
                                         }
                                     } else if (OS_NAME.startsWith("mac")) {
-                                        executablePath = new File(BIN_PATH + "/yacc.macosx").getAbsolutePath();
+                                        executableFile = new File(BIN_PATH + "/yacc.macosx");
                                     }
 
-                                    if (executablePath != null) {
+                                    if (executableFile == null || !executableFile.exists()) {
+                                        executableFile = null;
+                                        // Try building executable instead
+                                        try {
+                                            System.err.println("WARNING: suitable yacc binary not found - will compile the byaccj-p2 tool");
+                                            System.err.println("WARNING: you will need make+gcc");
+                                            String[] makeExe = new String[] { "make" };
+                                            if (new ProcessBuilder(Arrays.asList(makeExe)).directory(MAKE_EXE_PATH).start().waitFor() != 0) {
+                                               throw new Exception("yacc binary make failed");
+                                            }
+                                            executableFile = new File(BIN_PATH + "/yacc");
+                                            String[] cpExe = new String[] { "cp", "yacc", executableFile.getAbsolutePath() };
+                                            if (new ProcessBuilder(Arrays.asList(cpExe)).directory(MAKE_EXE_PATH).start().waitFor() != 0) {
+                                               throw new Exception("yacc binary cp failed");
+                                            }
+                                            System.out.println("Done building byaccj-p2");
+                                        } catch (Exception ex) {
+                                            System.err.println("Error: " + ex.getMessage());
+                                            System.err.println("OS/ARCH not supported: " + OS_NAME + "-" + OS_ARCH);
+                                        }
+                                    }
+
+                                    if (executableFile != null) {
+                                        String executablePath = executableFile.getAbsolutePath();
                                         boolean allProcessed = true;
 
-                                        // Check we've already gend
+                                        // Check if we've already generated source
                                         if (generatedDir.listFiles().length >= targets.length) {
                                             System.out.println("Parser source generation skipped since files already exist");
                                         } else {
@@ -241,7 +264,7 @@
                                                 };
                                                 try {
                                                     System.out.println("Generating " + target + ".java");
-                                                    new ProcessBuilder(Arrays.asList(args)).directory(generatedDir).start();
+                                                    new ProcessBuilder(Arrays.asList(args)).directory(generatedDir).start().waitFor();
                                                 } catch (Exception ex) {
                                                     allProcessed = false;
                                                     System.err.println("Error generating sources [" + ex.getMessage() + "]");
@@ -249,8 +272,6 @@
                                            }
                                        }
                                        success = allProcessed;
-                                    } else {
-                                        System.err.println("OS/ARCH not supported: " + OS_NAME + "-" + OS_ARCH);
                                     }
                                     success == true;
                                     ]]>
