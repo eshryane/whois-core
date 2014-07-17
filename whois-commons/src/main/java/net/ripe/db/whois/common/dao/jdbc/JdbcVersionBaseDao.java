@@ -1,11 +1,13 @@
 package net.ripe.db.whois.common.dao.jdbc;
 
+import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.VersionDao;
 import net.ripe.db.whois.common.dao.VersionInfo;
-import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectRowMapper;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectTypeFactory;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.EnumSet;
@@ -14,6 +16,9 @@ import java.util.Set;
 
 public abstract class JdbcVersionBaseDao implements VersionDao {
     private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private IObjectTypeFactory objectTypeFactory;
 
     protected JdbcVersionBaseDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -39,24 +44,24 @@ public abstract class JdbcVersionBaseDao implements VersionDao {
     }
 
 
-    public List<Integer> getObjectIds(final ObjectType type, final String searchKey) {
+    public List<Integer> getObjectIds(final IObjectType type, final String searchKey) {
         return jdbcTemplate.queryForList("" +
                         "SELECT object_id " +
                         "FROM last " +
                         "WHERE object_type = ? " +
                         "AND pkey = ? ",
                 Integer.class,
-                ObjectTypeIds.getId(type),
+                type.getId(),
                 searchKey
         );
     }
 
     @Override
-    public Set<ObjectType> getObjectType(String searchKey) {
-        final EnumSet<ObjectType> objectTypes = EnumSet.noneOf(ObjectType.class);
+    public Set<IObjectType> getObjectType(String searchKey) {
+        final Set<IObjectType> objectTypes = Sets.newHashSet();
         final List<Integer> serialTypes = jdbcTemplate.queryForList("SELECT object_type FROM last WHERE pkey = ? ORDER BY object_type", Integer.class, searchKey);
         for (Integer serialType : serialTypes) {
-            objectTypes.add(ObjectTypeIds.getType(serialType));
+            objectTypes.add(objectTypeFactory.get(serialType));
         }
         return objectTypes;
     }

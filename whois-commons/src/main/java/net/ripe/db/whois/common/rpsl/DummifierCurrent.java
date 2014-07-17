@@ -3,28 +3,18 @@ package net.ripe.db.whois.common.rpsl;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.ripe.db.whois.common.rpsl.impl.Role;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.rpsl.AttributeType.ABUSE_MAILBOX;
-import static net.ripe.db.whois.common.rpsl.AttributeType.ADDRESS;
-import static net.ripe.db.whois.common.rpsl.AttributeType.AUTH;
-import static net.ripe.db.whois.common.rpsl.AttributeType.CHANGED;
-import static net.ripe.db.whois.common.rpsl.AttributeType.E_MAIL;
-import static net.ripe.db.whois.common.rpsl.AttributeType.FAX_NO;
-import static net.ripe.db.whois.common.rpsl.AttributeType.IRT_NFY;
-import static net.ripe.db.whois.common.rpsl.AttributeType.MNT_NFY;
-import static net.ripe.db.whois.common.rpsl.AttributeType.NOTIFY;
-import static net.ripe.db.whois.common.rpsl.AttributeType.PERSON;
-import static net.ripe.db.whois.common.rpsl.AttributeType.PHONE;
-import static net.ripe.db.whois.common.rpsl.AttributeType.REF_NFY;
-import static net.ripe.db.whois.common.rpsl.AttributeType.UPD_TO;
+import static net.ripe.db.whois.common.rpsl.AttributeType.*;
 
 @Component
 public class DummifierCurrent implements Dummifier {
@@ -38,8 +28,11 @@ public class DummifierCurrent implements Dummifier {
     private static final Set<AttributeType> EMAIL_ATTRIBUTES = Sets.immutableEnumSet(E_MAIL, NOTIFY, CHANGED, REF_NFY, IRT_NFY, MNT_NFY, UPD_TO);
     private static final Set<AttributeType> PHONE_FAX_ATTRIBUTES = Sets.immutableEnumSet(PHONE, FAX_NO);
 
+    @Autowired
+    private IObjectTypeFactory objectTypeFactory;
+
     public RpslObject dummify(final int version, final RpslObject rpslObject) {
-        final ObjectType objectType = rpslObject.getType();
+        final IObjectType objectType = rpslObject.getType();
         Validate.isTrue(isAllowed(version, rpslObject), "The version is not supported by this dummifier", version);
 
         final List<RpslAttribute> attributes = Lists.newArrayList(rpslObject.getAttributes());
@@ -52,7 +45,7 @@ public class DummifierCurrent implements Dummifier {
             final AttributeType attributeType = replacement.getType();
 
             try {
-                if (!(objectType == ObjectType.ROLE && rpslObject.containsAttribute(ABUSE_MAILBOX))) {
+                if (!(objectType.equals(objectTypeFactory.get(Role.class)) && rpslObject.containsAttribute(ABUSE_MAILBOX))) {
                     replacement = replacePerson(attributeType, replacement);
                     replacement = replaceAuth(attributeType, replacement);
                     replacement = replacePhoneFax(attributeType, replacement);

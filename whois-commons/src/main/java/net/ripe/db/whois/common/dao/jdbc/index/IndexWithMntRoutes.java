@@ -2,11 +2,10 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectInfoResultSetExtractor;
-import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.text.MessageFormat;
@@ -32,7 +31,7 @@ class IndexWithMntRoutes extends IndexWithReference {
                 "AND object_type = ?",
                 objectInfo.getObjectId(),
                 reference.getObjectId(),
-                ObjectTypeIds.getId(objectInfo.getObjectType()));
+                objectInfo.getObjectType().getId());
 
         if (existing != 0) {
             return existing;
@@ -44,7 +43,7 @@ class IndexWithMntRoutes extends IndexWithReference {
                 "VALUES (?, ?, ?)",
                 objectInfo.getObjectId(),
                 reference.getObjectId(),
-                ObjectTypeIds.getId(objectInfo.getObjectType()));
+                objectInfo.getObjectType().getId());
     }
 
     @Override

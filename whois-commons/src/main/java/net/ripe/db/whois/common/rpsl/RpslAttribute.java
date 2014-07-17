@@ -14,7 +14,6 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciImmutableSet;
 import static net.ripe.db.whois.common.domain.CIString.ciString;
 
 @Immutable
@@ -200,7 +199,7 @@ public final class RpslAttribute {
         }
     }
 
-    public void validateSyntax(final ObjectType objectType, final ObjectMessages objectMessages) {
+    public void validateSyntax(final IObjectType objectType, final ObjectMessages objectMessages) {
         for (final CIString cleanValue : getCleanValues()) {
             if (!type.getSyntax().matches(objectType, cleanValue.toString())) {
                 objectMessages.addMessage(this, ValidationMessages.syntaxError(cleanValue.toString()));

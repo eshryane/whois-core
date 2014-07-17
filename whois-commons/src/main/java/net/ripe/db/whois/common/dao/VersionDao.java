@@ -1,6 +1,6 @@
 package net.ripe.db.whois.common.dao;
 
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 
 import javax.annotation.Nullable;
@@ -10,7 +10,7 @@ public interface VersionDao {
     RpslObject getRpslObject(VersionInfo info);
 
     @Nullable
-    VersionLookupResult findByKey(ObjectType type, String searchKey);
+    VersionLookupResult findByKey(IObjectType type, String searchKey);
 
-    Set<ObjectType> getObjectType(String searchKey);
+    Set<IObjectType> getObjectType(String searchKey);
 }

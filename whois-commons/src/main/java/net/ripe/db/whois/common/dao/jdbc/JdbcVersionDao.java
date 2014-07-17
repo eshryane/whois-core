@@ -3,10 +3,8 @@ package net.ripe.db.whois.common.dao.jdbc;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.VersionInfo;
 import net.ripe.db.whois.common.dao.VersionLookupResult;
-import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectRowMapper;
 import net.ripe.db.whois.common.dao.jdbc.domain.VersionInfoRowMapper;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.IObjectType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,7 +22,7 @@ public class JdbcVersionDao extends JdbcVersionBaseDao {
     }
 
     @Override
-    public VersionLookupResult findByKey(final ObjectType type, final String searchKey) {
+    public VersionLookupResult findByKey(final IObjectType type, final String searchKey) {
         final List<Integer> objectIds = getObjectIds(type, searchKey);
 
         if (objectIds.isEmpty()) {

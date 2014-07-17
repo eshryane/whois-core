@@ -5,7 +5,8 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.aspects.RetryFor;
 import net.ripe.db.whois.common.dao.UserDao;
 import net.ripe.db.whois.common.domain.User;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectTypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ import java.util.List;
 @RetryFor(RecoverableDataAccessException.class)
 public class JdbcUserDao implements UserDao {
     private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private static IObjectTypeFactory objectTypeFactory;
 
     @Autowired
     public JdbcUserDao(final @Qualifier("aclDataSource") DataSource dataSource) {
@@ -49,10 +53,10 @@ public class JdbcUserDao implements UserDao {
             final String username = rs.getString(1);
             final String password = rs.getString(2);
 
-            final List<ObjectType> objectTypes = Lists.newArrayList();
+            final List<IObjectType> objectTypes = Lists.newArrayList();
             for (final String objectTypeString : OBJECTTYPE_SPLITTER.split(rs.getString(3))) {
                 try {
-                    objectTypes.add(ObjectType.valueOf(objectTypeString));
+                    objectTypes.add(objectTypeFactory.get(objectTypeString));
                 } catch (IllegalArgumentException e) {
                     LOGGER.warn("Unknown objecttype for user {}: {}", username, objectTypeString);
                 }

@@ -4,19 +4,24 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.impl.Mntner;
+import net.ripe.db.whois.common.rpsl.impl.Organisation;
+import net.ripe.db.whois.common.rpsl.impl.Person;
+import net.ripe.db.whois.common.rpsl.impl.Role;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class DummifierLegacy implements Dummifier {
     private static final Logger LOGGER = LoggerFactory.getLogger(DummifierLegacy.class);
+
+    @Autowired
+    private static IObjectTypeFactory objectTypeFactory;
 
     public static final RpslObject PLACEHOLDER_PERSON_OBJECT = RpslObject.parse("" +
             "person:         Placeholder Person Object\n" +
@@ -59,8 +64,8 @@ public class DummifierLegacy implements Dummifier {
             "source:         RIPE"
     );
 
-    static final Set<ObjectType> SKIPPED_OBJECT_TYPES = Sets.immutableEnumSet(ObjectType.PERSON, ObjectType.ROLE);
-    static final Set<ObjectType> STRIPPED_OBJECT_TYPES = Sets.immutableEnumSet(ObjectType.MNTNER, ObjectType.ORGANISATION);
+    static final Set<IObjectType> SKIPPED_OBJECT_TYPES = Collections.unmodifiableSet(Sets.newHashSet(objectTypeFactory.get(Person.class), objectTypeFactory.get(Role.class)));
+    static final Set<IObjectType> STRIPPED_OBJECT_TYPES = Collections.unmodifiableSet(Sets.newHashSet(objectTypeFactory.get(Mntner.class), objectTypeFactory.get(Organisation.class)));
 
     private static final String PERSON_ROLE_PLACEHOLDER = "DUMY-RIPE";
     static final Set<AttributeType> PERSON_ROLE_REFERENCES = Sets.immutableEnumSet(
@@ -84,12 +89,12 @@ public class DummifierLegacy implements Dummifier {
     }
 
     public RpslObject dummify(final int version, final RpslObject rpslObject) {
-        final ObjectType objectType = rpslObject.getType();
+        final IObjectType objectType = rpslObject.getType();
         Validate.isTrue(isAllowed(version, rpslObject), "The given object type should be skipped", objectType);
 
         // [EB]: Shortcircuit for objects we'd normally skip for old protocols.
         if (version <= 2 && usePlaceHolder(rpslObject)) {
-            return objectType.equals(ObjectType.ROLE) ? PLACEHOLDER_ROLE_OBJECT : PLACEHOLDER_PERSON_OBJECT;
+            return objectType.equals(objectTypeFactory.get(Role.class)) ? PLACEHOLDER_ROLE_OBJECT : PLACEHOLDER_PERSON_OBJECT;
         }
 
         final List<RpslAttribute> attributes = Lists.newArrayList(rpslObject.getAttributes());
@@ -103,7 +108,7 @@ public class DummifierLegacy implements Dummifier {
         return new RpslObject(rpslObject, attributes);
     }
 
-    private void stripOptionalAttributes(List<RpslAttribute> attributes, ObjectType objectType) {
+    private void stripOptionalAttributes(List<RpslAttribute> attributes, IObjectType objectType) {
         if (!STRIPPED_OBJECT_TYPES.contains(objectType)) {
             return;
         }
@@ -172,10 +177,10 @@ public class DummifierLegacy implements Dummifier {
     }
 
     private boolean usePlaceHolder(final RpslObject rpslObject) {
-        final ObjectType objectType = rpslObject.getType();
+        final IObjectType objectType = rpslObject.getType();
 
         return SKIPPED_OBJECT_TYPES.contains(objectType)
-                && (!ObjectType.ROLE.equals(objectType) || rpslObject.findAttributes(AttributeType.ABUSE_MAILBOX).isEmpty());
+                && (!objectTypeFactory.get(Role.class).equals(objectType) || rpslObject.findAttributes(AttributeType.ABUSE_MAILBOX).isEmpty());
     }
 
     private static List<RpslAttribute> getDummificationRemarks(final RpslObject rpslObject) {

@@ -118,12 +118,12 @@ public class JdbcRpslObjectUpdateDao implements RpslObjectUpdateDao {
     }
 
     private boolean isInvalidReference(final RpslObject object, final AttributeType attributeType, final CIString referenceValue) {
-        final Set<ObjectType> references = attributeType.getReferences(referenceValue);
+        final Set<IObjectType> references = attributeType.getReferences(referenceValue);
         if (references.isEmpty()) {
             return false;
         }
 
-        for (final ObjectType reference : references) {
+        for (final IObjectType reference : references) {
             if (reference.equals(object.getType()) && object.getKey().equals(referenceValue)) {
                 return false;
             }
@@ -139,7 +139,7 @@ public class JdbcRpslObjectUpdateDao implements RpslObjectUpdateDao {
     @CheckForNull
     public RpslObjectInfo getAttributeReference(final AttributeType attributeType, final CIString value) {
         final CIString referenceValue = new RpslAttribute(attributeType, value.toString()).getReferenceValue();
-        for (final ObjectType objectType : attributeType.getReferences()) {
+        for (final IObjectType objectType : attributeType.getReferences()) {
             final RpslObjectInfo result = getAttributeReference(objectType, referenceValue);
             if (result != null) {
                 return result;
@@ -149,7 +149,7 @@ public class JdbcRpslObjectUpdateDao implements RpslObjectUpdateDao {
         return null;
     }
 
-    private RpslObjectInfo getAttributeReference(final ObjectType objectType, final CIString keyValue) {
+    private RpslObjectInfo getAttributeReference(final IObjectType objectType, final CIString keyValue) {
         final ObjectTemplate referenceTemplate = ObjectTemplate.getTemplate(objectType);
         final Set<AttributeType> referenceKeyAttributes = referenceTemplate.getKeyAttributes();
         Validate.isTrue(referenceKeyAttributes.size() == 1, "We can never have a reference to a composed key");
@@ -183,7 +183,7 @@ public class JdbcRpslObjectUpdateDao implements RpslObjectUpdateDao {
 
         final int sequenceId = jdbcTemplate.queryForInt("select max(sequence_id) from serials where object_id = ?", objectId);
 
-        final ObjectType objectType = rpslObject.getType();
+        final IObjectType objectType = rpslObject.getType();
         final String pkey = rpslObject.getKey().toString();
         final RpslObjectUpdateInfo updateInfo = new RpslObjectUpdateInfo(objectId, sequenceId, objectType, pkey);
 
@@ -217,7 +217,7 @@ public class JdbcRpslObjectUpdateDao implements RpslObjectUpdateDao {
     }
 
     @Override
-    public RpslObjectUpdateInfo lookupObject(ObjectType type, String pkey) {
+    public RpslObjectUpdateInfo lookupObject(IObjectType type, String pkey) {
         return lookupRpslObjectUpdateInfo(jdbcTemplate, type, pkey);
     }
 }

@@ -1,10 +1,9 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectInfoResultSetExtractor;
 import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -18,7 +17,7 @@ class IndexWithValueAndType extends IndexWithValue {
     }
 
     @Override
-    public List<RpslObjectInfo> findInIndex(JdbcTemplate jdbcTemplate, String value, ObjectType type) {
+    public List<RpslObjectInfo> findInIndex(JdbcTemplate jdbcTemplate, String value, IObjectType type) {
         final String query = MessageFormat.format("" +
                         "SELECT l.object_id, l.object_type, l.pkey " +
                         "  FROM {0} " +
@@ -29,12 +28,12 @@ class IndexWithValueAndType extends IndexWithValue {
                 lookupColumnName
         );
 
-        return jdbcTemplate.query(query, new RpslObjectInfoResultSetExtractor(), value, ObjectTypeIds.getId(type));
+        return jdbcTemplate.query(query, new RpslObjectInfoResultSetExtractor(), value, type.getId());
     }
 
     @Override
     public int addToIndex(final JdbcTemplate jdbcTemplate, final RpslObjectInfo objectInfo, final RpslObject object, final String value) {
         final String query = String.format("INSERT INTO %s (object_id, %s, object_type) VALUES (?, ?, ?)", lookupTableName, lookupColumnName);
-        return jdbcTemplate.update(query, objectInfo.getObjectId(), value, ObjectTypeIds.getId(objectInfo.getObjectType()));
+        return jdbcTemplate.update(query, objectInfo.getObjectId(), value, objectInfo.getObjectType().getId());
     }
 }

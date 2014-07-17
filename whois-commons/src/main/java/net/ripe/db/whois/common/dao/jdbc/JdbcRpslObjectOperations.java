@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.DateTimeProvider;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
-import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectRowMapper;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategy;
@@ -13,14 +12,10 @@ import net.ripe.db.whois.common.domain.Identifiable;
 import net.ripe.db.whois.common.domain.serials.Operation;
 import net.ripe.db.whois.common.domain.serials.SerialEntry;
 import net.ripe.db.whois.common.domain.serials.SerialRange;
-import net.ripe.db.whois.common.rpsl.AttributeTemplate;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.dao.DataAccessException;
@@ -44,6 +39,10 @@ import java.util.Set;
 @Component
 public class JdbcRpslObjectOperations {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcRpslObjectOperations.class);
+
+    @Autowired
+    private static IObjectTypeFactory objectTypeFactory;
+
 
     public static void insertIntoTables(final JdbcTemplate jdbcTemplate, final RpslObjectInfo rpslObjectInfo, final RpslObject rpslObject) {
         final Set<CIString> missing = insertIntoTablesIgnoreMissing(jdbcTemplate, rpslObjectInfo, rpslObject);
@@ -97,7 +96,7 @@ public class JdbcRpslObjectOperations {
         return missingReferences;
     }
 
-    public static RpslObjectUpdateInfo lookupRpslObjectUpdateInfo(final JdbcTemplate jdbcTemplate, final ObjectType type, final String pkey) {
+    public static RpslObjectUpdateInfo lookupRpslObjectUpdateInfo(final JdbcTemplate jdbcTemplate, final IObjectType type, final String pkey) {
         return jdbcTemplate.queryForObject("" +
                         "SELECT last.object_id, last.sequence_id, last.object_type " +
                         "FROM last " +
@@ -105,9 +104,9 @@ public class JdbcRpslObjectOperations {
                 new RowMapper<RpslObjectUpdateInfo>() {
                     @Override
                     public RpslObjectUpdateInfo mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-                        return new RpslObjectUpdateInfo(rs.getInt(1), rs.getInt(2), ObjectTypeIds.getType(rs.getInt(3)), pkey);
+                        return new RpslObjectUpdateInfo(rs.getInt(1), rs.getInt(2), objectTypeFactory.get(rs.getInt(3)), pkey);
                     }
-                }, ObjectTypeIds.getId(type), pkey
+                }, type.getId(), pkey
         );
     }
 
@@ -119,7 +118,7 @@ public class JdbcRpslObjectOperations {
                 new RowMapper<RpslObjectUpdateInfo>() {
                     @Override
                     public RpslObjectUpdateInfo mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-                        return new RpslObjectUpdateInfo(rs.getInt(1), rs.getInt(2), ObjectTypeIds.getType(rs.getInt(3)), pkey);
+                        return new RpslObjectUpdateInfo(rs.getInt(1), rs.getInt(2), objectTypeFactory.get(rs.getInt(3)), pkey);
                     }
                 }, objectId
         );
@@ -243,7 +242,7 @@ public class JdbcRpslObjectOperations {
     }
 
     public static RpslObjectUpdateInfo insertIntoLastAndUpdateSerials(final DateTimeProvider dateTimeProvider, final JdbcTemplate jdbcTemplate, final RpslObject object) {
-        final Integer objectTypeId = ObjectTypeIds.getId(object.getType());
+        final Integer objectTypeId = object.getType().getId();
         final String pkey = object.getKey().toString();
 
         final int objectId = insertIntoLast(dateTimeProvider, jdbcTemplate, object, objectTypeId, pkey);
@@ -262,7 +261,7 @@ public class JdbcRpslObjectOperations {
     }
 
     public static RpslObjectUpdateInfo insertIntoLastAndSetSerials(final DateTimeProvider dateTimeProvider, final JdbcTemplate jdbcTemplate, final RpslObject object, final int serialId) {
-        final Integer objectTypeId = ObjectTypeIds.getId(object.getType());
+        final Integer objectTypeId = object.getType().getId();
         final String pkey = object.getKey().toString();
 
         final int objectId = insertIntoLast(dateTimeProvider, jdbcTemplate, object, objectTypeId, pkey);

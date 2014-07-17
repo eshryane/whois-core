@@ -3,8 +3,10 @@ package net.ripe.db.whois.common.dao.jdbc;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.IObjectTypeFactory;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.impl.ASBlock;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.support.AbstractDaoTest;
 import org.junit.After;
@@ -29,6 +31,8 @@ import static org.junit.Assert.assertThat;
 public class JdbcRpslObjectDaoTest extends AbstractDaoTest {
     @Autowired RpslObjectDao subject;
     @Value("${whois.source}") protected String source;
+    @Autowired
+    IObjectTypeFactory objectTypeFactory;
 
     @Before
     public void setup() {
@@ -46,7 +50,7 @@ public class JdbcRpslObjectDaoTest extends AbstractDaoTest {
 
         RpslObject result = subject.findAsBlock(31066, 31066);
 
-        assertThat(result.getType(), is(ObjectType.AS_BLOCK));
+        assertThat(result.getType(), is(objectTypeFactory.get(ASBlock.class)));
         assertThat(result.getKey().toString(), is("AS31066-AS31066"));
     }
 

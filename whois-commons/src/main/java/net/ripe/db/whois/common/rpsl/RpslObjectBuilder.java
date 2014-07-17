@@ -3,6 +3,7 @@ package net.ripe.db.whois.common.rpsl;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +15,8 @@ import java.util.Map;
 public class RpslObjectBuilder {
     private RpslObject original;
     private final List<RpslAttribute> attributes;
+    @Autowired
+    private IObjectTypeFactory objectTypeFactory;
 
     public RpslObjectBuilder() {
         this.attributes = Lists.newArrayList();
@@ -151,9 +154,9 @@ public class RpslObjectBuilder {
     }
 
     /** determines object type based on first type attribute it finds */
-    public ObjectType getType() {
+    public IObjectType getType() {
         for (RpslAttribute attribute : attributes) {
-            final ObjectType objectType = ObjectType.getByNameOrNull(attribute.getKey());
+            final IObjectType objectType = objectTypeFactory.get(attribute.getKey());
             if (objectType != null) {
                 return objectType;
             }
@@ -165,7 +168,7 @@ public class RpslObjectBuilder {
     /** determine type by first type attribute present in object, then sort attributes according to attribute order in template.
      * This sort is guaranteed to be <i>stable</i>:  equal elements will not be reordered as a result of the sort.*/
     public RpslObjectBuilder sort() {
-        final ObjectType objectType = getType();
+        final IObjectType objectType = getType();
         Collections.sort(attributes, ObjectTemplate.getTemplate(objectType).getAttributeTypeComparator());
         return this;
     }
@@ -226,7 +229,7 @@ public class RpslObjectBuilder {
 
     /** determine type by first type attribute present in object, then add attribute according to attribute order in template. */
     public RpslObjectBuilder addAttributeSorted(final RpslAttribute newAttribute) {
-        final ObjectType objectType = getType();
+        final IObjectType objectType = getType();
         final ObjectTemplate objectTemplate = ObjectTemplate.getTemplate(objectType);
         final EnumSet<AttributeType> attributesAfter = getAttributeTypesAfter(objectTemplate, newAttribute.getType());
 

@@ -3,15 +3,19 @@ package net.ripe.db.whois.common.grs;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.etree.IntervalMap;
 import net.ripe.db.whois.common.etree.NestedIntervalMap;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectTypeFactory;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.impl.AutNum;
+import net.ripe.db.whois.common.rpsl.impl.Inet6Num;
+import net.ripe.db.whois.common.rpsl.impl.InetNum;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
@@ -24,7 +28,8 @@ import java.util.Set;
 
 @Immutable
 public class AuthoritativeResource {
-    private static final Set<ObjectType> RESOURCE_TYPES = Sets.newEnumSet(Lists.newArrayList(ObjectType.AUT_NUM, ObjectType.INETNUM, ObjectType.INET6NUM), ObjectType.class);
+    @Autowired
+    private IObjectTypeFactory objectTypeFactory;
 
     private final Set<CIString> autNums;
     private final IntervalMap<Ipv4Resource, Ipv4Resource> inetRanges;
@@ -101,60 +106,56 @@ public class AuthoritativeResource {
     }
 
     // TODO: since authresource is a dumb container of resources, perhaps containsExactly() would be a better name for this
-    public boolean isMaintainedByRir(final ObjectType objectType, final CIString pkey) {
+    public boolean isMaintainedByRir(final IObjectType objectType, final CIString pkey) {
         try {
-            switch (objectType) {
-                case AUT_NUM:
-                    return autNums.contains(pkey);
-                case INETNUM: {
-                    final Ipv4Resource pkeyResource = Ipv4Resource.parse(pkey);
+            if (objectType.equals(objectTypeFactory.get(AutNum.class))) {
+                return autNums.contains(pkey);
+            } else if (objectType.equals(objectTypeFactory.get(InetNum.class))) {
+                final Ipv4Resource pkeyResource = Ipv4Resource.parse(pkey);
 
-                    if (!inetRanges.findExact(pkeyResource).isEmpty()) {
-                        return true;
-                    }
-
-                    List<Ipv4Resource> matches = inetRanges.findFirstMoreSpecific(pkeyResource);
-                    if (matches.isEmpty()) {
-                        return false;
-                    }
-
-                    try {
-                        Ipv4Resource concatenatedResource = concatenateIpv4Resources(matches);
-                        if (concatenatedResource.compareTo(pkeyResource) == 0) {
-                            return true;
-                        }
-                    } catch (IllegalArgumentException ignored) {
-                        // empty match or gap in range
-                    }
-
-                    return false;
-                }
-                case INET6NUM: {
-                    final Ipv6Resource pkeyResource = Ipv6Resource.parse(pkey);
-
-                    if (!inet6Ranges.findExact(pkeyResource).isEmpty()) {
-                        return true;
-                    }
-
-                    List<Ipv6Resource> matches = inet6Ranges.findFirstMoreSpecific(pkeyResource);
-                    if (matches.isEmpty()) {
-                        return false;
-                    }
-
-                    try {
-                        Ipv6Resource concatenatedResource = concatenateIpv6Resources(matches);
-                        if (concatenatedResource.compareTo(pkeyResource) == 0) {
-                            return true;
-                        }
-                    } catch (IllegalArgumentException ignored) {
-                        // empty match or gap in range
-                    }
-
-                    return false;
-                }
-                default:
+                if (!inetRanges.findExact(pkeyResource).isEmpty()) {
                     return true;
+                }
+
+                List<Ipv4Resource> matches = inetRanges.findFirstMoreSpecific(pkeyResource);
+                if (matches.isEmpty()) {
+                    return false;
+                }
+
+                try {
+                    Ipv4Resource concatenatedResource = concatenateIpv4Resources(matches);
+                    if (concatenatedResource.compareTo(pkeyResource) == 0) {
+                        return true;
+                    }
+                } catch (IllegalArgumentException ignored) {
+                    // empty match or gap in range
+                }
+
+                return false;
+            } else if (objectType.equals(objectTypeFactory.get(Inet6Num.class))) {
+                final Ipv6Resource pkeyResource = Ipv6Resource.parse(pkey);
+
+                if (!inet6Ranges.findExact(pkeyResource).isEmpty()) {
+                    return true;
+                }
+
+                List<Ipv6Resource> matches = inet6Ranges.findFirstMoreSpecific(pkeyResource);
+                if (matches.isEmpty()) {
+                    return false;
+                }
+
+                try {
+                    Ipv6Resource concatenatedResource = concatenateIpv6Resources(matches);
+                    if (concatenatedResource.compareTo(pkeyResource) == 0) {
+                        return true;
+                    }
+                } catch (IllegalArgumentException ignored) {
+                    // empty match or gap in range
+                }
+
+                return false;
             }
+            return true;
         } catch (IllegalArgumentException ignored) {
             return false;
         }
@@ -165,26 +166,23 @@ public class AuthoritativeResource {
         return isMaintainedInRirSpace(rpslObject.getType(), rpslObject.getKey());
     }
 
-    public boolean isMaintainedInRirSpace(final ObjectType objectType, final CIString pkey) {
+    public boolean isMaintainedInRirSpace(final IObjectType objectType, final CIString pkey) {
         try {
-            switch (objectType) {
-                case AUT_NUM:
-                    return autNums.contains(pkey);
-                case INETNUM:
-                    return !inetRanges.findExactOrFirstLessSpecific(Ipv4Resource.parse(pkey)).isEmpty();
-                case INET6NUM:
-                    return !inet6Ranges.findExactOrFirstLessSpecific(Ipv6Resource.parse(pkey)).isEmpty();
-                default:
-                    return true;
+            if (objectType.equals(objectTypeFactory.get(AutNum.class))) {
+                return autNums.contains(pkey);
+            } else if (objectType.equals(objectTypeFactory.get(InetNum.class))) {
+                return !inetRanges.findExactOrFirstLessSpecific(Ipv4Resource.parse(pkey)).isEmpty();
+            } else if (objectType.equals(objectTypeFactory.get(Inet6Num.class))) {
+                return !inet6Ranges.findExactOrFirstLessSpecific(Ipv6Resource.parse(pkey)).isEmpty();
             }
+
+            return true;
         } catch (IllegalArgumentException ignored) {
             return false;
         }
     }
 
-    public Set<ObjectType> getResourceTypes() {
-        return RESOURCE_TYPES;
-    }
+    //public Set<ObjectType> getResourceTypes() { return RESOURCE_TYPES; }
 
     public Set<CIString> getAutNums() {
         return autNums;

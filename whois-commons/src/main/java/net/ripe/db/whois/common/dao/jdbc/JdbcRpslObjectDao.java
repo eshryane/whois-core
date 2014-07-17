@@ -14,11 +14,7 @@ import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategy;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Identifiable;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.*;
 import net.ripe.db.whois.common.source.IllegalSourceException;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceContext;
@@ -41,14 +37,7 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 @RetryFor(RecoverableDataAccessException.class)
@@ -174,13 +163,13 @@ public class JdbcRpslObjectDao implements RpslObjectDao {
     }
 
     @Override
-    public RpslObject getByKey(final ObjectType type, final String key) {
+    public RpslObject getByKey(final IObjectType type, final String key) {
         return getById(findByKey(type, key).getObjectId());
     }
 
     @Override
     @Nullable
-    public RpslObject getByKeyOrNull(final ObjectType type, final String key) {
+    public RpslObject getByKeyOrNull(final IObjectType type, final String key) {
         final RpslObjectInfo rpslObjectInfo = findByKeyOrNull(type, key);
         if (rpslObjectInfo == null) {
             return null;
@@ -189,18 +178,18 @@ public class JdbcRpslObjectDao implements RpslObjectDao {
     }
 
     @Override
-    public RpslObject getByKey(final ObjectType type, final CIString key) {
+    public RpslObject getByKey(final IObjectType type, final CIString key) {
         return getByKey(type, key.toString());
     }
 
     @Override
     @Nullable
-    public RpslObject getByKeyOrNull(final ObjectType type, final CIString key) {
+    public RpslObject getByKeyOrNull(final IObjectType type, final CIString key) {
         return getByKeyOrNull(type, key.toString());
     }
 
     @Override
-    public List<RpslObject> getByKeys(final ObjectType type, final Collection<CIString> searchKeys) {
+    public List<RpslObject> getByKeys(final IObjectType type, final Collection<CIString> searchKeys) {
         final List<RpslObject> result = new ArrayList<>(searchKeys.size());
 
         for (final CIString searchKey : searchKeys) {
@@ -251,18 +240,18 @@ public class JdbcRpslObjectDao implements RpslObjectDao {
     }
 
     @Override
-    public RpslObjectInfo findByKey(final ObjectType type, final CIString searchKey) {
+    public RpslObjectInfo findByKey(final IObjectType type, final CIString searchKey) {
         return findByKey(type, searchKey.toString());
     }
 
     @Override
     @Nullable
-    public RpslObjectInfo findByKeyOrNull(final ObjectType type, final CIString searchKey) {
+    public RpslObjectInfo findByKeyOrNull(final IObjectType type, final CIString searchKey) {
         return findByKeyOrNull(type, searchKey.toString());
     }
 
     @Override
-    public RpslObjectInfo findByKey(final ObjectType type, final String searchKey) {
+    public RpslObjectInfo findByKey(final IObjectType type, final String searchKey) {
         RpslObjectInfo result = findByKeyOrNull(type, searchKey);
         if (result == null) {
             throw new EmptyResultDataAccessException(1);
@@ -273,7 +262,7 @@ public class JdbcRpslObjectDao implements RpslObjectDao {
 
     @Override
     @Nullable
-    public RpslObjectInfo findByKeyOrNull(final ObjectType type, final String searchKey) {
+    public RpslObjectInfo findByKeyOrNull(final IObjectType type, final String searchKey) {
         final List<RpslObjectInfo> objectInfos = findByKeyInIndex(type, searchKey);
 
         switch (objectInfos.size()) {
@@ -286,7 +275,7 @@ public class JdbcRpslObjectDao implements RpslObjectDao {
         }
     }
 
-    private List<RpslObjectInfo> findByKeyInIndex(final ObjectType type, final String key) {
+    private List<RpslObjectInfo> findByKeyInIndex(final IObjectType type, final String key) {
         final AttributeType keyLookupAttribute = ObjectTemplate.getTemplate(type).getKeyLookupAttribute();
         final IndexStrategy indexStrategy = IndexStrategies.get(keyLookupAttribute);
         return indexStrategy.findInIndex(jdbcTemplate, key, type);
@@ -299,7 +288,7 @@ public class JdbcRpslObjectDao implements RpslObjectDao {
     }
 
     @Override
-    public List<RpslObjectInfo> findMemberOfByObjectTypeWithoutMbrsByRef(final ObjectType objectType, final String attributeValue) {
+    public List<RpslObjectInfo> findMemberOfByObjectTypeWithoutMbrsByRef(final IObjectType objectType, final String attributeValue) {
         final ObjectTemplate objectTemplate = ObjectTemplate.getTemplate(objectType);
         final Set<AttributeType> keyAttributes = objectTemplate.getKeyAttributes();
         Validate.isTrue(keyAttributes.size() == 1);
@@ -321,12 +310,12 @@ public class JdbcRpslObjectDao implements RpslObjectDao {
     }
 
     @Override
-    public Collection<RpslObjectInfo> relatedTo(final RpslObject identifiable, final Set<ObjectType> excludeObjectTypes) {
+    public Collection<RpslObjectInfo> relatedTo(final RpslObject identifiable, final Set<IObjectType> excludeObjectTypes) {
         final LinkedHashSet<RpslObjectInfo> result = Sets.newLinkedHashSet();
 
         for (final RpslAttribute attribute : identifiable.findAttributes(RELATED_TO_ATTRIBUTES)) {
             for (final CIString referenceValue : attribute.getReferenceValues()) {
-                for (final ObjectType objectType : attribute.getType().getReferences(referenceValue)) {
+                for (final IObjectType objectType : attribute.getType().getReferences(referenceValue)) {
                     if (excludeObjectTypes.contains(objectType)) {
                         continue;
                     }

@@ -2,10 +2,9 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 
 import com.google.common.collect.Iterables;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectInfoResultSetExtractor;
 import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
 import org.apache.commons.lang.Validate;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -14,11 +13,11 @@ import java.util.List;
 class IndexWithNameAndType extends IndexWithName {
     private final int objectTypeId;
 
-    public IndexWithNameAndType(final AttributeType attributeType, final ObjectType objectType, final String lookupTableName) {
+    public IndexWithNameAndType(final AttributeType attributeType, final IObjectType objectType, final String lookupTableName) {
         super(attributeType, lookupTableName);
 
         Validate.notNull(objectType);
-        objectTypeId = ObjectTypeIds.getId(objectType);
+        objectTypeId = objectType.getId();
     }
 
     @Override

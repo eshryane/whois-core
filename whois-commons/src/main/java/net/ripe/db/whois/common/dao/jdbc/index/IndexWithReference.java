@@ -3,11 +3,10 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.collect.CollectionHelper;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectInfoResultSetExtractor;
 import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
 import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.apache.commons.lang.Validate;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,11 +29,11 @@ class IndexWithReference extends IndexStrategySimpleLookup {
 
     private Set<IndexStrategy> getReferenceStrategies() {
         if (referenceStrategies == null) {
-            final Set<ObjectType> references = attributeType.getReferences();
+            final Set<IObjectType> references = attributeType.getReferences();
             Validate.notEmpty(references, "No references for: " + attributeType);
 
             final Set<IndexStrategy> tmpReferenceStrategies = Sets.newHashSet();
-            for (final ObjectType reference : references) {
+            for (final IObjectType reference : references) {
                 final ObjectTemplate template = ObjectTemplate.getTemplate(reference);
                 for (final AttributeType keyAttribute : template.getKeyAttributes()) {
                     tmpReferenceStrategies.add(IndexStrategies.get(keyAttribute));
@@ -75,7 +74,7 @@ class IndexWithReference extends IndexStrategySimpleLookup {
 
     int addToIndex(final JdbcTemplate jdbcTemplate, final RpslObjectInfo objectInfo, final int referenceObjectId) {
         final String query = String.format("INSERT INTO %s (object_id, %s, object_type) VALUES (?, ?, ?)", lookupTableName, lookupColumnName);
-        return jdbcTemplate.update(query, objectInfo.getObjectId(), referenceObjectId, ObjectTypeIds.getId(objectInfo.getObjectType()));
+        return jdbcTemplate.update(query, objectInfo.getObjectId(), referenceObjectId, objectInfo.getObjectType().getId());
     }
 
     @Override
@@ -124,7 +123,7 @@ class IndexWithReference extends IndexStrategySimpleLookup {
         return jdbcTemplate.query(query, new RpslObjectInfoResultSetExtractor(), value.getObjectId());
     }
 
-    public List<RpslObjectInfo> findInIndex(final JdbcTemplate jdbcTemplate, final RpslObjectInfo value, final ObjectType type) {
+    public List<RpslObjectInfo> findInIndex(final JdbcTemplate jdbcTemplate, final RpslObjectInfo value, final IObjectType type) {
         // FIXME: [AH] joining to last is very costly and unnecessary here; look for ways to drop this join
         final String query = MessageFormat.format(
                 "SELECT l.object_id, l.object_type, l.pkey " +
@@ -136,6 +135,6 @@ class IndexWithReference extends IndexStrategySimpleLookup {
                 lookupColumnName
         );
 
-        return jdbcTemplate.query(query, new RpslObjectInfoResultSetExtractor(), value.getObjectId(), ObjectTypeIds.getId(type));
+        return jdbcTemplate.query(query, new RpslObjectInfoResultSetExtractor(), value.getObjectId(), type.getId());
     }
 }

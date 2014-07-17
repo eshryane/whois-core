@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import org.apache.commons.lang.Validate;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -45,12 +45,12 @@ abstract class IndexStrategyAdapter implements IndexStrategy {
     }
 
     @Override
-    public final List<RpslObjectInfo> findInIndex(final JdbcTemplate jdbcTemplate, final CIString value, final ObjectType type) {
+    public final List<RpslObjectInfo> findInIndex(final JdbcTemplate jdbcTemplate, final CIString value, final IObjectType type) {
         return findInIndex(jdbcTemplate, value.toString(), type);
     }
 
     @Override
-    public List<RpslObjectInfo> findInIndex(final JdbcTemplate jdbcTemplate, final String value, final ObjectType type) {
+    public List<RpslObjectInfo> findInIndex(final JdbcTemplate jdbcTemplate, final String value, final IObjectType type) {
         return findInIndex(jdbcTemplate, value);
     }
 
@@ -60,7 +60,7 @@ abstract class IndexStrategyAdapter implements IndexStrategy {
     }
 
     @Override
-    public List<RpslObjectInfo> findInIndex(final JdbcTemplate jdbcTemplate, final RpslObjectInfo value, final ObjectType type) {
+    public List<RpslObjectInfo> findInIndex(final JdbcTemplate jdbcTemplate, final RpslObjectInfo value, final IObjectType type) {
         return Collections.emptyList();
     }
 

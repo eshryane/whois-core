@@ -2,7 +2,6 @@ package net.ripe.db.whois.common.iptree;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.serials.Operation;
 import net.ripe.db.whois.common.etree.IntersectingIntervalException;
@@ -13,8 +12,13 @@ import net.ripe.db.whois.common.etree.SynchronizedIntervalMap;
 import net.ripe.db.whois.common.ip.Interval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectTypeFactory;
 import net.ripe.db.whois.common.rpsl.attrs.Domain;
+import net.ripe.db.whois.common.rpsl.impl.Inet6Num;
+import net.ripe.db.whois.common.rpsl.impl.InetNum;
+import net.ripe.db.whois.common.rpsl.impl.Route;
+import net.ripe.db.whois.common.rpsl.impl.Route6;
 import net.ripe.db.whois.common.source.SourceConfiguration;
 import net.ripe.db.whois.common.source.SourceContext;
 import org.slf4j.Logger;
@@ -32,11 +36,6 @@ import java.util.concurrent.Semaphore;
 
 import static net.ripe.db.whois.common.domain.serials.Operation.UPDATE;
 import static net.ripe.db.whois.common.domain.serials.Operation.getByCode;
-import static net.ripe.db.whois.common.rpsl.ObjectType.DOMAIN;
-import static net.ripe.db.whois.common.rpsl.ObjectType.INET6NUM;
-import static net.ripe.db.whois.common.rpsl.ObjectType.INETNUM;
-import static net.ripe.db.whois.common.rpsl.ObjectType.ROUTE;
-import static net.ripe.db.whois.common.rpsl.ObjectType.ROUTE6;
 
 @Component
 public class IpTreeCacheManager {
@@ -45,17 +44,20 @@ public class IpTreeCacheManager {
     private final SourceContext sourceContext;
 
     @Autowired
+    private static IObjectTypeFactory objectTypeFactory;
+
+    @Autowired
     public IpTreeCacheManager(final SourceContext sourceContext) {
         this.sourceContext = sourceContext;
     }
 
     private static final class IpTreeUpdate {
-        private final ObjectType objectType;
+        private final IObjectType objectType;
         private final String pkey;
         private final int objectId;
         private final Operation operation;
 
-        private IpTreeUpdate(final ObjectType objectType, final String pkey, final int objectId, final Operation operation) {
+        private IpTreeUpdate(final IObjectType objectType, final String pkey, final int objectId, final Operation operation) {
             this.objectType = objectType;
             this.pkey = pkey;
             this.objectId = objectId;
@@ -103,36 +105,29 @@ public class IpTreeCacheManager {
         }
 
         private void update(final IpTreeUpdate ipTreeUpdate) {
-            switch (ipTreeUpdate.objectType) {
-                case INETNUM:
-                    update(ipv4TreeCache, new Ipv4Entry(Ipv4Resource.parse(ipTreeUpdate.pkey), ipTreeUpdate.objectId), ipTreeUpdate.operation);
-                    break;
-                case INET6NUM:
-                    update(ipv6TreeCache, new Ipv6Entry(Ipv6Resource.parse(ipTreeUpdate.pkey), ipTreeUpdate.objectId), ipTreeUpdate.operation);
-                    break;
-                case ROUTE:
-                    update(ipv4RouteTreeCache, Ipv4RouteEntry.parse(ipTreeUpdate.pkey, ipTreeUpdate.objectId), ipTreeUpdate.operation);
-                    break;
-                case ROUTE6:
-                    update(ipv6RouteTreeCache, Ipv6RouteEntry.parse(ipTreeUpdate.pkey, ipTreeUpdate.objectId), ipTreeUpdate.operation);
-                    break;
-                case DOMAIN:
-                    final Domain domain = Domain.parse(ipTreeUpdate.pkey);
-                    switch (domain.getType()) {
-                        case INADDR:
-                            update(ipv4DomainTreeCache, new Ipv4Entry((Ipv4Resource) domain.getReverseIp(), ipTreeUpdate.objectId), ipTreeUpdate.operation);
-                            break;
-                        case IP6:
-                            update(ipv6DomainTreeCache, new Ipv6Entry((Ipv6Resource) domain.getReverseIp(), ipTreeUpdate.objectId), ipTreeUpdate.operation);
-                            break;
-                        default:
-                            LOGGER.debug("Ignoring domain: {}", domain.getValue());
-                            break;
-                    }
-
-                    break;
-                default:
-                    throw new IllegalArgumentException(String.format("Unexpected object type: %s", ipTreeUpdate.objectType));
+            if (ipTreeUpdate.objectType.equals(objectTypeFactory.get(InetNum.class))) {
+                update(ipv4TreeCache, new Ipv4Entry(Ipv4Resource.parse(ipTreeUpdate.pkey), ipTreeUpdate.objectId), ipTreeUpdate.operation);
+            } else if (ipTreeUpdate.objectType.equals(objectTypeFactory.get(Inet6Num.class))) {
+                update(ipv6TreeCache, new Ipv6Entry(Ipv6Resource.parse(ipTreeUpdate.pkey), ipTreeUpdate.objectId), ipTreeUpdate.operation);
+            } else if (ipTreeUpdate.objectType.equals(objectTypeFactory.get(Route.class))) {
+                update(ipv4RouteTreeCache, Ipv4RouteEntry.parse(ipTreeUpdate.pkey, ipTreeUpdate.objectId), ipTreeUpdate.operation);
+            } else if (ipTreeUpdate.objectType.equals(objectTypeFactory.get(Route6.class))) {
+                update(ipv6RouteTreeCache, Ipv6RouteEntry.parse(ipTreeUpdate.pkey, ipTreeUpdate.objectId), ipTreeUpdate.operation);
+            } else if (ipTreeUpdate.objectType.equals(objectTypeFactory.get(net.ripe.db.whois.common.rpsl.impl.Domain.class))) {
+                final Domain domain = Domain.parse(ipTreeUpdate.pkey);
+                switch (domain.getType()) {
+                    case INADDR:
+                        update(ipv4DomainTreeCache, new Ipv4Entry((Ipv4Resource) domain.getReverseIp(), ipTreeUpdate.objectId), ipTreeUpdate.operation);
+                        break;
+                    case IP6:
+                        update(ipv6DomainTreeCache, new Ipv6Entry((Ipv6Resource) domain.getReverseIp(), ipTreeUpdate.objectId), ipTreeUpdate.operation);
+                        break;
+                    default:
+                        LOGGER.debug("Ignoring domain: {}", domain.getValue());
+                        break;
+                }
+            } else {
+                throw new IllegalArgumentException(String.format("Unexpected object type: %s", ipTreeUpdate.objectType));
             }
         }
 
@@ -226,7 +221,7 @@ public class IpTreeCacheManager {
                         @Override
                         public IpTreeUpdate mapRow(final ResultSet rs, final int rowNum) throws SQLException {
                             return new IpTreeUpdate(
-                                    ObjectTypeIds.getType(rs.getInt(1)),
+                                    objectTypeFactory.get(rs.getInt(1)),
                                     rs.getString(2),
                                     rs.getInt(3),
                                     getByCode(rs.getInt(4))
@@ -234,11 +229,11 @@ public class IpTreeCacheManager {
                         }
                     },
                     fromExclusive, toInclusive,
-                    ObjectTypeIds.getId(INETNUM),
-                    ObjectTypeIds.getId(INET6NUM),
-                    ObjectTypeIds.getId(ObjectType.ROUTE),
-                    ObjectTypeIds.getId(ROUTE6),
-                    ObjectTypeIds.getId(DOMAIN)
+                    objectTypeFactory.get(InetNum.class).getId(),
+                    objectTypeFactory.get(Inet6Num.class).getId(),
+                    objectTypeFactory.get(Route.class).getId(),
+                    objectTypeFactory.get(Route6.class).getId(),
+                    objectTypeFactory.get(net.ripe.db.whois.common.rpsl.impl.Domain.class).getId()
             );
 
             cacheEntry.nestedIntervalMaps.update(ipTreeUpdates, toInclusive, cacheEntry);
@@ -284,7 +279,7 @@ public class IpTreeCacheManager {
                 new RowMapper<IpTreeUpdate>() {
                     @Override
                     public IpTreeUpdate mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new IpTreeUpdate(INETNUM,
+                        return new IpTreeUpdate(objectTypeFactory.get(InetNum.class),
                                 new Ipv4Entry(new Ipv4Resource(rs.getLong(1), rs.getLong(2)), rs.getInt(3)).getKey().toRangeString(),
                                 rs.getInt(3),
                                 UPDATE);
@@ -298,7 +293,7 @@ public class IpTreeCacheManager {
                 new RowMapper<IpTreeUpdate>() {
                     @Override
                     public IpTreeUpdate mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new IpTreeUpdate(INET6NUM,
+                        return new IpTreeUpdate(objectTypeFactory.get(Inet6Num.class),
                                 new Ipv6Entry(Ipv6Resource.parseFromStrings(rs.getString(1), rs.getString(2), rs.getInt(3)), rs.getInt(4)).getKey().toString(),
                                 rs.getInt(4),
                                 UPDATE);
@@ -312,7 +307,7 @@ public class IpTreeCacheManager {
                 new RowMapper<IpTreeUpdate>() {
                     @Override
                     public IpTreeUpdate mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new IpTreeUpdate(ROUTE,
+                        return new IpTreeUpdate(objectTypeFactory.get(Route.class),
                                 Ipv4Resource.parsePrefixWithLength(rs.getLong(1), rs.getInt(2)).toString() + rs.getString(3),
                                 rs.getInt(4),
                                 UPDATE);
@@ -327,7 +322,7 @@ public class IpTreeCacheManager {
                     @Override
                     public IpTreeUpdate mapRow(final ResultSet rs, final int rowNum) throws SQLException {
 
-                        return new IpTreeUpdate(ROUTE6,
+                        return new IpTreeUpdate(objectTypeFactory.get(Route6.class),
                                 new Ipv6Entry(Ipv6Resource.parseFromStrings(rs.getString(1), rs.getString(2), rs.getInt(3)), rs.getInt(4)).getKey() + rs.getString(5),
                                 rs.getInt(4),
                                 UPDATE);
@@ -341,7 +336,7 @@ public class IpTreeCacheManager {
                 new RowMapper<IpTreeUpdate>() {
                     @Override
                     public IpTreeUpdate mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-                        return new IpTreeUpdate(DOMAIN,
+                        return new IpTreeUpdate(objectTypeFactory.get(net.ripe.db.whois.common.rpsl.impl.Domain.class),
                                 rs.getString(1),
                                 rs.getInt(2),
                                 UPDATE);

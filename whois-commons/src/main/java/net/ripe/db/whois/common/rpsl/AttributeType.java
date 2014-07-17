@@ -3,6 +3,8 @@ package net.ripe.db.whois.common.rpsl;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.impl.Role;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.CheckForNull;
 import java.util.Arrays;
@@ -98,7 +100,7 @@ public enum AttributeType implements Documented {
                     "Making this reference will remove any query limits for the ROLE object. " +
                     "These ROLE objects are considered to include only commercial data.")
             .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
-            .references(ObjectType.ROLE)),
+            .references(objectTypeFactory.get(Role.class))),
 
     ADDRESS(new Builder("address", "ad")
             .doc("Full postal address of a contact")
@@ -107,7 +109,7 @@ public enum AttributeType implements Documented {
     ADMIN_C(new Builder("admin-c", "ac")
             .doc("References an on-site administrative contact.")
             .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
-            .references(ObjectType.PERSON, ObjectType.ROLE)),
+            .references(ObjectType.PERSON, objectTypeFactory.get(Role.class))),
 
     AGGR_BNDRY(new Builder("aggr-bndry", "ab")
             .doc("Defines a set of ASes, which form the aggregation boundary.")
@@ -145,7 +147,7 @@ public enum AttributeType implements Documented {
     AUTHOR(new Builder("author", "ah")
             .doc("References a poem author.")
             .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
-            .references(ObjectType.PERSON, ObjectType.ROLE)),
+            .references(ObjectType.PERSON, objectTypeFactory.get(Role.class))),
 
     AUT_NUM(new Builder("aut-num", "an")
             .doc("The autonomous system number.")
@@ -532,7 +534,7 @@ public enum AttributeType implements Documented {
             .doc("References a person or role capable of responding to queries concerning the IP address(es) " +
                     "specified in the 'pingable' attribute.")
             .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
-            .references(ObjectType.PERSON, ObjectType.ROLE)),
+            .references(ObjectType.PERSON, objectTypeFactory.get(Role.class))),
 
     PINGABLE(new Builder("pingable", "pa")
             .doc("Allows a network operator to advertise an IP address of a node that should be reachable from outside " +
@@ -601,7 +603,7 @@ public enum AttributeType implements Documented {
     TECH_C(new Builder("tech-c", "tc")
             .doc("References a technical contact.")
             .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
-            .references(ObjectType.PERSON, ObjectType.ROLE)),
+            .references(ObjectType.PERSON, objectTypeFactory.get(Role.class))),
 
     TEXT(new Builder("text", "tx")
             .doc("Text of the poem. Must be humorous, but not malicious or insulting.")
@@ -614,7 +616,7 @@ public enum AttributeType implements Documented {
     ZONE_C(new Builder("zone-c", "zc")
             .doc("References a zone contact.")
             .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
-            .references(ObjectType.PERSON, ObjectType.ROLE));
+            .references(ObjectType.PERSON, objectTypeFactory.get(Role.class)));
 
     private static final Map<CIString, AttributeType> TYPE_NAMES = Maps.newHashMapWithExpectedSize(AttributeType.values().length);
 
@@ -631,7 +633,7 @@ public enum AttributeType implements Documented {
         private Documented description;
         private AttributeSyntax syntax = AttributeSyntax.ANY_SYNTAX;
         private AttributeValueType valueType = AttributeValueType.SINGLE_VALUE;
-        private Set<ObjectType> references = Collections.emptySet();
+        private Set<IObjectType> references = Collections.emptySet();
 
         private Builder(final String name, final String flag) {
             this.name = name;
@@ -658,7 +660,7 @@ public enum AttributeType implements Documented {
             return this;
         }
 
-        private Builder references(final ObjectType... objectTypes) {
+        private Builder references(final IObjectType... objectTypes) {
             this.references = Collections.unmodifiableSet(Sets.newEnumSet(Arrays.asList(objectTypes), ObjectType.class));
             return this;
         }
@@ -669,7 +671,11 @@ public enum AttributeType implements Documented {
     private final Documented description;
     private final AttributeSyntax syntax;
     private final AttributeValueType valueType;
-    private final Set<ObjectType> references;
+    private final Set<IObjectType> references;
+
+    @Autowired
+    private static IObjectTypeFactory objectTypeFactory;
+
 
     private AttributeType(final Builder builder) {
         this.name = builder.name;
@@ -700,11 +706,11 @@ public enum AttributeType implements Documented {
         return syntax;
     }
 
-    public boolean isValidValue(final ObjectType objectType, final CIString value) {
+    public boolean isValidValue(final IObjectType objectType, final CIString value) {
         return isValidValue(objectType, value.toString());
     }
 
-    public boolean isValidValue(final ObjectType objectType, final String value) {
+    public boolean isValidValue(final IObjectType objectType, final String value) {
         return syntax.matches(objectType, value);
     }
 
@@ -712,11 +718,11 @@ public enum AttributeType implements Documented {
         return valueType.getValues(value);
     }
 
-    public Set<ObjectType> getReferences() {
+    public Set<IObjectType> getReferences() {
         return references;
     }
 
-    public Set<ObjectType> getReferences(final CIString value) {
+    public Set<IObjectType> getReferences(final CIString value) {
         if (this == AUTH && (value.startsWith("md5-pw"))) {
             return Collections.emptySet();
         }
@@ -725,7 +731,7 @@ public enum AttributeType implements Documented {
     }
 
     @Override
-    public String getDescription(final ObjectType objectType) {
+    public String getDescription(final IObjectType objectType) {
         return description.getDescription(objectType);
     }
 

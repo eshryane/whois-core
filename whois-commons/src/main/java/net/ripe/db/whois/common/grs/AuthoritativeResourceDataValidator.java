@@ -4,11 +4,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.etree.IntervalMap;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.etree.IntervalMap;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectTypeFactory;
+import net.ripe.db.whois.common.rpsl.impl.AutNum;
+import net.ripe.db.whois.common.rpsl.impl.Inet6Num;
+import net.ripe.db.whois.common.rpsl.impl.InetNum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,6 +33,10 @@ class AuthoritativeResourceDataValidator {
     private final String reportFormat;
 
     @Autowired
+    private IObjectTypeFactory objectTypeFactory;
+
+
+    @Autowired
     AuthoritativeResourceDataValidator(
             @Value("${grs.sources}") final String[] grsSourceNames,
             final AuthoritativeResourceData authoritativeResourceData) {
@@ -41,7 +49,7 @@ class AuthoritativeResourceDataValidator {
         }
 
         int maxObjectTypeLength = 0;
-        for (final ObjectType objectType : ObjectType.values()) {
+        for (final IObjectType objectType : objectTypeFactory.values()) {
             maxObjectTypeLength = Math.max(maxObjectTypeLength, objectType.getName().length());
         }
 
@@ -66,18 +74,18 @@ class AuthoritativeResourceDataValidator {
 
     private void checkOverlaps(final Writer writer, final CIString source1, final AuthoritativeResource resource1, final CIString source2, final AuthoritativeResource resource2) throws IOException {
         checkOverlapsForAutNum(writer, source1, resource1, source2, resource2);
-        checkOverlapsForIntervals(writer, source1, resource1.getInetRanges(), source2, resource2.getInetRanges(), ObjectType.INETNUM, Ipv4Resource.MAX_RANGE);
-        checkOverlapsForIntervals(writer, source1, resource1.getInet6Ranges(), source2, resource2.getInet6Ranges(), ObjectType.INET6NUM, Ipv6Resource.MAX_RANGE);
+        checkOverlapsForIntervals(writer, source1, resource1.getInetRanges(), source2, resource2.getInetRanges(), objectTypeFactory.get(InetNum.class) , Ipv4Resource.MAX_RANGE);
+        checkOverlapsForIntervals(writer, source1, resource1.getInet6Ranges(), source2, resource2.getInet6Ranges(), objectTypeFactory.get(Inet6Num.class), Ipv6Resource.MAX_RANGE);
     }
 
     private void checkOverlapsForAutNum(final Writer writer, final CIString source1, final AuthoritativeResource resource1, final CIString source2, final AuthoritativeResource resource2) throws IOException {
         final Set<CIString> overlappingAutNums = Sets.intersection(resource1.getAutNums(), resource2.getAutNums());
         for (final CIString overlappingAutNum : overlappingAutNums) {
-            reportOverlap(writer, source1, source2, ObjectType.AUT_NUM, overlappingAutNum.toString(), overlappingAutNum.toString());
+            reportOverlap(writer, source1, source2, objectTypeFactory.get(AutNum.class), overlappingAutNum.toString(), overlappingAutNum.toString());
         }
     }
 
-    private <E extends IpInterval<E>, M extends IntervalMap<E, E>> void checkOverlapsForIntervals(final Writer writer, final CIString source1, final M intervalMap1, final CIString source2, final M intervalMap2, final ObjectType objectType, final E parent) throws IOException {
+    private <E extends IpInterval<E>, M extends IntervalMap<E, E>> void checkOverlapsForIntervals(final Writer writer, final CIString source1, final M intervalMap1, final CIString source2, final M intervalMap2, final IObjectType objectType, final E parent) throws IOException {
         final List<E> intervals1 = intervalMap1.findExactAndAllMoreSpecific(parent);
         final List<E> intervals2 = intervalMap2.findExactAndAllMoreSpecific(parent);
 
@@ -90,7 +98,7 @@ class AuthoritativeResourceDataValidator {
         }
     }
 
-    private void reportOverlap(final Writer writer, final CIString source1, final CIString source2, final ObjectType type, final String resource1, final String resource2) throws IOException {
+    private void reportOverlap(final Writer writer, final CIString source1, final CIString source2, final IObjectType type, final String resource1, final String resource2) throws IOException {
         writer.write(String.format(reportFormat, source1, source2, type.getName(), resource1, resource2));
     }
 }

@@ -9,7 +9,10 @@ import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Identifiable;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.io.ByteArrayOutput;
+import net.ripe.db.whois.common.rpsl.impl.Person;
+import net.ripe.db.whois.common.rpsl.impl.Role;
 import org.apache.commons.lang.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Nullable;
@@ -29,9 +32,12 @@ import java.util.Set;
 
 @Immutable
 public class RpslObject implements Identifiable, ResponseObject {
-    private final ObjectType type;
+    private final IObjectType type;
     private final RpslAttribute typeAttribute;
     private final CIString key;
+
+    @Autowired
+    private IObjectTypeFactory objectTypeFactory;
 
     private Integer objectId;
 
@@ -62,7 +68,7 @@ public class RpslObject implements Identifiable, ResponseObject {
         Validate.notEmpty(attributes);
 
         this.typeAttribute = attributes.get(0);
-        this.type = ObjectType.getByName(typeAttribute.getKey());
+        this.type = objectTypeFactory.get(typeAttribute.getKey());
         this.attributes = Collections.unmodifiableList(attributes);
 
         final Set<AttributeType> keyAttributes = ObjectTemplate.getTemplate(type).getKeyAttributes();
@@ -101,7 +107,7 @@ public class RpslObject implements Identifiable, ResponseObject {
         return objectId;
     }
 
-    public ObjectType getType() {
+    public IObjectType getType() {
         return type;
     }
 
@@ -118,13 +124,10 @@ public class RpslObject implements Identifiable, ResponseObject {
     }
 
     public String getFormattedKey() {
-        switch (type) {
-            case PERSON:
-            case ROLE:
-                return String.format("[%s] %s   %s", type.getName(), getKey(), getAttributes().get(0).getCleanValue());
-            default:
-                return String.format("[%s] %s", type.getName(), getKey());
+        if (type.equals(objectTypeFactory.get(Person.class)) || type.equals(objectTypeFactory.get(Role.class))) {
+            return String.format("[%s] %s   %s", type.getName(), getKey(), getAttributes().get(0).getCleanValue());
         }
+        return String.format("[%s] %s", type.getName(), getKey());
     }
 
     @Override

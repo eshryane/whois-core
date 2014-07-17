@@ -3,8 +3,12 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectTypeFactory;
+import net.ripe.db.whois.common.rpsl.impl.Person;
+import net.ripe.db.whois.common.rpsl.impl.Role;
 import org.apache.commons.lang.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +16,10 @@ import java.util.Map;
 
 public final class IndexStrategies {
     private static final Map<AttributeType, IndexStrategy> INDEX_BY_ATTRIBUTE;
-    private static final Map<ObjectType, List<IndexStrategy>> INDEXES_REFERING_OBJECT;
+    private static final Map<IObjectType, List<IndexStrategy>> INDEXES_REFERING_OBJECT;
+
+    @Autowired
+    private static IObjectTypeFactory objectTypeFactory;
 
     static {
         final IndexStrategy[] indexStrategies = {
@@ -95,7 +102,7 @@ public final class IndexStrategies {
                 new Unindexed(AttributeType.PEER),
                 new Unindexed(AttributeType.PEERING),
                 new IndexWithValue(AttributeType.PEERING_SET, "peering_set", "peering_set"),
-                new IndexWithNameAndType(AttributeType.PERSON, ObjectType.PERSON, "names"),
+                new IndexWithNameAndType(AttributeType.PERSON, objectTypeFactory.get(Person.class), "names"),
                 new Unindexed(AttributeType.PHONE),
                 new IndexWithReference(AttributeType.PING_HDL, "ping_hdl", "pe_ro_id"),
                 new Unindexed(AttributeType.PINGABLE),
@@ -104,7 +111,7 @@ public final class IndexStrategies {
                 new IndexWithReference(AttributeType.REFERRAL_BY, "referral_by", "mnt_id"),
                 new IndexWithValue(AttributeType.REF_NFY, "ref_nfy", "ref_nfy"),
                 new Unindexed(AttributeType.REMARKS),
-                new IndexWithNameAndType(AttributeType.ROLE, ObjectType.ROLE, "names"),
+                new IndexWithNameAndType(AttributeType.ROLE, objectTypeFactory.get(Role.class), "names"),
                 new IndexWithRoute(AttributeType.ROUTE),
                 new IndexWithRoute6(AttributeType.ROUTE6),
                 new IndexWithValue(AttributeType.ROUTE_SET, "route_set", "route_set"),
@@ -126,8 +133,8 @@ public final class IndexStrategies {
         }
         INDEX_BY_ATTRIBUTE = Collections.unmodifiableMap(indexByAttribute);
 
-        final Map<ObjectType, List<IndexStrategy>> indexesReferingObject = Maps.newEnumMap(ObjectType.class);
-        for (final ObjectType objectType : ObjectType.values()) {
+        final Map<IObjectType, List<IndexStrategy>> indexesReferingObject = Maps.newHashMap();
+        for (final IObjectType objectType : objectTypeFactory.values()) {
             final List<IndexStrategy> indexesRefererringCurrentObject = Lists.newArrayList();
             for (final IndexStrategy indexStrategy : indexStrategies) {
                 if (indexStrategy.getAttributeType().getReferences().contains(objectType)) {
@@ -147,7 +154,7 @@ public final class IndexStrategies {
         return INDEX_BY_ATTRIBUTE.get(attributeType);
     }
 
-    public static List<IndexStrategy> getReferencing(final ObjectType objectType) {
+    public static List<IndexStrategy> getReferencing(final IObjectType objectType) {
         return INDEXES_REFERING_OBJECT.get(objectType);
     }
 }

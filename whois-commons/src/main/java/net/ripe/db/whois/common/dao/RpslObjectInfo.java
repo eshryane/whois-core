@@ -2,21 +2,21 @@ package net.ripe.db.whois.common.dao;
 
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Identifiable;
+import net.ripe.db.whois.common.rpsl.IObjectType;
 import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 public class RpslObjectInfo implements Identifiable, Comparable<RpslObjectInfo> {
     private final int objectId;
-    private final ObjectType objectType;
+    private final IObjectType objectType;
     private final String key;
 
-    public RpslObjectInfo(final int objectId, final ObjectType objectType, final CIString key) {
+    public RpslObjectInfo(final int objectId, final IObjectType objectType, final CIString key) {
         this(objectId, objectType, key.toString());
     }
 
-    public RpslObjectInfo(final int objectId, final ObjectType objectType, final String key) {
+    public RpslObjectInfo(final int objectId, final IObjectType objectType, final String key) {
         Validate.notNull(objectType);
         this.objectId = objectId;
         this.objectType = objectType;
@@ -28,7 +28,7 @@ public class RpslObjectInfo implements Identifiable, Comparable<RpslObjectInfo> 
         return objectId;
     }
 
-    public ObjectType getObjectType() {
+    public IObjectType getObjectType() {
         return objectType;
     }
 

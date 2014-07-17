@@ -79,6 +79,11 @@
             </dependency>
             <dependency>
                 <groupId>net.ripe.db</groupId>
+                <artifactId>whois-object-xp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.ripe.db</groupId>
                 <artifactId>whois-commons</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>

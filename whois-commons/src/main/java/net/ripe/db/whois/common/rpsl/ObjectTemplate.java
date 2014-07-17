@@ -619,7 +619,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
         return Collections.unmodifiableSet(attributeTypes);
     }
 
-    public static ObjectTemplate getTemplate(final ObjectType type) {
+    public static ObjectTemplate getTemplate(final IObjectType type) {
         final ObjectTemplate objectTemplate = TEMPLATE_MAP.get(type);
         if (objectTemplate == null) {
             throw new IllegalStateException("No template for " + type);

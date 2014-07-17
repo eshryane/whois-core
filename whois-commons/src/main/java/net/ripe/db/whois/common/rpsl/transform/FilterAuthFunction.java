@@ -6,21 +6,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.PasswordHelper;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
-import net.ripe.db.whois.common.rpsl.RpslObjectFilter;
+import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.impl.Mntner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /*
 password and cookie parameters are used in rest api lookup ONLY, so the port43 netty worker pool is not affected by any SSO
@@ -33,6 +25,9 @@ public class FilterAuthFunction implements FilterFunction {
 
     private List<String> passwords = null;
     private RpslObjectDao rpslObjectDao = null;
+
+    @Autowired
+    private IObjectTypeFactory objectTypeFactory;
 
     public FilterAuthFunction(final List<String> passwords,
                               final RpslObjectDao rpslObjectDao) {
@@ -94,7 +89,7 @@ public class FilterAuthFunction implements FilterFunction {
         }
 
         final Set<RpslAttribute> auths = Sets.newHashSet();
-        final List<RpslObject> mntByMntners = rpslObjectDao.getByKeys(ObjectType.MNTNER, maintainers);
+        final List<RpslObject> mntByMntners = rpslObjectDao.getByKeys(objectTypeFactory.get(Mntner.class), maintainers);
 
         for (RpslObject mntner : mntByMntners) {
             auths.addAll(mntner.findAttributes(AttributeType.AUTH));

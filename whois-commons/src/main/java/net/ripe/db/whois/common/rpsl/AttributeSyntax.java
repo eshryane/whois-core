@@ -31,6 +31,7 @@ import net.ripe.db.whois.common.rpsl.attrs.Inet6numStatus;
 import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;
 import net.ripe.db.whois.common.rpsl.attrs.OrgType;
 import net.ripe.db.whois.common.rpsl.attrs.RangeOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -243,7 +244,7 @@ public interface AttributeSyntax extends Documented {
     AttributeSyntax METHOD_SYNTAX = new AnySyntax("" +
             "Currently, only PGP keys are supported.\n");
 
-    AttributeSyntax MNT_ROUTES_SYNTAX = new AttributeSyntaxParser(new AttributeParser.MntRoutesParser(), new Multiple(new HashMap<ObjectType, String>() {{
+    AttributeSyntax MNT_ROUTES_SYNTAX = new AttributeSyntaxParser(new AttributeParser.MntRoutesParser(), new Multiple(new HashMap<IObjectType, String>() {{
         put(ObjectType.AUT_NUM, "<mnt-name> [ { list of (<ipv4-address>/<prefix> or <ipv6-address>/<prefix>) } | ANY ]\n");
         put(ObjectType.INET6NUM, "<mnt-name> [ { list of <ipv6-address>/<prefix> } | ANY ]\n");
         put(ObjectType.INETNUM, "<mnt-name> [ { list of <address-prefix-range> } | ANY ]\n");
@@ -307,7 +308,7 @@ public interface AttributeSyntax extends Documented {
 
     AttributeSyntax MP_MEMBERS_SYNTAX = new MembersSyntax(true);
 
-    AttributeSyntax MP_PEER_SYNTAX = new AttributeSyntaxParser(new MpPeerParser(), new Multiple(new HashMap<ObjectType, String>() {{
+    AttributeSyntax MP_PEER_SYNTAX = new AttributeSyntaxParser(new MpPeerParser(), new Multiple(new HashMap<IObjectType, String>() {{
         put(ObjectType.INET_RTR, "" +
                 "<protocol> afi <afi> <ipv4- or ipv6- address> <options>\n" +
                 "| <protocol> <inet-rtr-name> <options>\n" +
@@ -508,7 +509,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             final boolean lengthOk = maxLength == null || value.length() <= maxLength;
             final boolean matches = matchPattern.matcher(value).matches();
 
@@ -516,7 +517,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             return description;
         }
     }
@@ -533,19 +534,19 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             return true;
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             return description;
         }
     }
 
     class RoutePrefixSyntax implements AttributeSyntax {
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             switch (objectType) {
                 case ROUTE:
                     return IPV4_SYNTAX.matches(objectType, value);
@@ -557,7 +558,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             switch (objectType) {
                 case ROUTE:
                     return "" +
@@ -583,7 +584,7 @@ public interface AttributeSyntax extends Documented {
         private static final double LONGITUDE_RANGE = 180.0;
 
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             final Matcher matcher = GEOLOC_PATTERN.matcher(value);
             if (!matcher.matches()) {
                 return false;
@@ -601,7 +602,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             return "" +
                     "Location coordinates of the resource. Can take one of the following forms:\n" +
                     "\n" +
@@ -611,7 +612,7 @@ public interface AttributeSyntax extends Documented {
 
     class MemberOfSyntax implements AttributeSyntax {
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             switch (objectType) {
                 case AUT_NUM:
                     return AS_SET_SYNTAX.matches(objectType, value);
@@ -626,7 +627,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             switch (objectType) {
                 case AUT_NUM:
                     return "" +
@@ -697,7 +698,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             switch (objectType) {
                 case AS_SET:
                     final boolean asNumberSyntax = AS_NUMBER_SYNTAX.matches(objectType, value);
@@ -735,7 +736,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             switch (objectType) {
                 case AS_SET:
                     return "" +
@@ -775,7 +776,7 @@ public interface AttributeSyntax extends Documented {
             }
         }
 
-        private boolean validateRouteSetWithRange(ObjectType objectType, String value) {
+        private boolean validateRouteSetWithRange(IObjectType objectType, String value) {
             final int rangeOperationIdx = value.lastIndexOf('^');
             if (rangeOperationIdx == -1) {
                 return false;
@@ -800,12 +801,12 @@ public interface AttributeSyntax extends Documented {
 
     class OrgTypeSyntax implements AttributeSyntax {
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             return OrgType.getFor(value) != null;
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             final StringBuilder builder = new StringBuilder();
             builder.append("org-type can have one of these values:\n\n");
 
@@ -827,7 +828,7 @@ public interface AttributeSyntax extends Documented {
         private static final Splitter SPLITTER = Splitter.on(' ').trimResults().omitEmptyStrings();
 
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             if (!PATTERN.matcher(value).matches()) {
                 return false;
             }
@@ -847,7 +848,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             return "" +
                     "It should contain 2 to 10 words.\n" +
                     "Each word consists of letters, digits or the following symbols:\n" +
@@ -859,7 +860,7 @@ public interface AttributeSyntax extends Documented {
 
     class StatusSyntax implements AttributeSyntax {
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             switch (objectType) {
                 case INETNUM:
                     try {
@@ -881,7 +882,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             final StringBuilder descriptionBuilder = new StringBuilder();
             descriptionBuilder.append("Status can have one of these values:\n\n");
 
@@ -906,7 +907,7 @@ public interface AttributeSyntax extends Documented {
 
     class ComponentsSyntax implements AttributeSyntax {
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             switch (objectType) {
                 case ROUTE:
                     return new AttributeSyntaxParser(new ComponentsParser()).matches(objectType, value);
@@ -918,7 +919,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             return "" +
                     "[ATOMIC] [[<filter>] [protocol <protocol> <filter> ...]]\n" +
                     "\n" +
@@ -932,7 +933,7 @@ public interface AttributeSyntax extends Documented {
 
     class ExportCompsSyntax implements AttributeSyntax {
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             switch (objectType) {
                 case ROUTE:
                     return new AttributeSyntaxParser(new FilterParser()).matches(objectType, value);
@@ -944,7 +945,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             switch (objectType) {
                 case ROUTE:
                     return "" +
@@ -964,7 +965,7 @@ public interface AttributeSyntax extends Documented {
 
     class InjectSyntax implements AttributeSyntax {
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             switch (objectType) {
                 case ROUTE:
                     return new AttributeSyntaxParser(new InjectParser()).matches(objectType, value);
@@ -978,7 +979,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             return "" +
                     "[at <router-expression>]\n" +
                     "[action <action>]\n" +
@@ -1004,7 +1005,7 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public boolean matches(final ObjectType objectType, final String value) {
+        public boolean matches(final IObjectType objectType, final String value) {
             try {
                 attributeParser.parse(value);
                 return true;
@@ -1014,10 +1015,10 @@ public interface AttributeSyntax extends Documented {
         }
 
         @Override
-        public String getDescription(final ObjectType objectType) {
+        public String getDescription(final IObjectType objectType) {
             return description.getDescription(objectType);
         }
     }
 
-    boolean matches(ObjectType objectType, String value);
+    boolean matches(IObjectType objectType, String value);
 }
