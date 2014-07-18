@@ -29,7 +29,7 @@ import java.util.Set;
 
 @Immutable
 public class RpslObject implements Identifiable, ResponseObject {
-    private final ObjectType type;
+    private final IObjectType type;
     private final RpslAttribute typeAttribute;
     private final CIString key;
 
@@ -40,11 +40,11 @@ public class RpslObject implements Identifiable, ResponseObject {
     private int hash;
 
     public RpslObject(final RpslObject oldObject, final List<RpslAttribute> attributes) {
-        this(oldObject.objectId, attributes);
+        this(oldObject.objectId, oldObject.getType(), attributes);
     }
 
-    public RpslObject(final Integer objectId, final List<RpslAttribute> attributes) {
-        this(attributes);
+    public RpslObject(final Integer objectId, final IObjectType type, final List<RpslAttribute> attributes) {
+        this(type, attributes);
         this.objectId = objectId;
     }
 
@@ -58,11 +58,11 @@ public class RpslObject implements Identifiable, ResponseObject {
         this.hash = rpslObject.hash;
     }
 
-    public RpslObject(final List<RpslAttribute> attributes) {
+    public RpslObject(final IObjectType type, final List<RpslAttribute> attributes) {
         Validate.notEmpty(attributes);
 
         this.typeAttribute = attributes.get(0);
-        this.type = ObjectType.getByName(typeAttribute.getKey());
+        this.type = type;
         this.attributes = Collections.unmodifiableList(attributes);
 
         final Set<AttributeType> keyAttributes = ObjectTemplate.getTemplate(type).getKeyAttributes();
@@ -101,7 +101,7 @@ public class RpslObject implements Identifiable, ResponseObject {
         return objectId;
     }
 
-    public ObjectType getType() {
+    public IObjectType getType() {
         return type;
     }
 

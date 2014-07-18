@@ -7,12 +7,13 @@ import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectType;
 import net.ripe.db.whois.common.rpsl.PasswordHelper;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
 import net.ripe.db.whois.common.rpsl.RpslObjectFilter;
+import net.ripe.db.whois.common.rpsl.impl.Mntner;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -94,7 +95,7 @@ public class FilterAuthFunction implements FilterFunction {
         }
 
         final Set<RpslAttribute> auths = Sets.newHashSet();
-        final List<RpslObject> mntByMntners = rpslObjectDao.getByKeys(ObjectType.MNTNER, maintainers);
+        final List<RpslObject> mntByMntners = rpslObjectDao.getByKeys(Mntner.class, maintainers);
 
         for (RpslObject mntner : mntByMntners) {
             auths.addAll(mntner.findAttributes(AttributeType.AUTH));

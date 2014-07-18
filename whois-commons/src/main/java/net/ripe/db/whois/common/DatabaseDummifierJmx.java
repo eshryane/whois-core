@@ -8,11 +8,12 @@ import net.ripe.db.whois.common.jdbc.SimpleDataSourceFactory;
 import net.ripe.db.whois.common.jmx.JmxBase;
 import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.DummifierCurrent;
-import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.IObjectTypeFactory;
 import net.ripe.db.whois.common.rpsl.PasswordHelper;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
+import net.ripe.db.whois.common.rpsl.impl.Mntner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -50,6 +51,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  */
 public class DatabaseDummifierJmx extends JmxBase {
+    @Autowired private static final IObjectTypeFactory objectTypeFactory;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseDummifierJmx.class);
 
     private static final String ARG_JDBCURL = "jdbc-url";
@@ -158,7 +161,7 @@ public class DatabaseDummifierJmx extends JmxBase {
                         final RpslObject rpslObject = RpslObject.parse(object);
                         RpslObject dummyObject = dummifier.dummify(3, rpslObject);
 
-                        if (ObjectType.MNTNER.equals(rpslObject.getType()) && hasPassword(rpslObject)) {
+                        if (objectTypeFactory.get(Mntner.class).equals(rpslObject.getType()) && hasPassword(rpslObject)) {
                             dummyObject = replaceWithMntnerNamePassword(dummyObject);
                         }
 

@@ -151,7 +151,7 @@ public class RpslObjectBuilder {
     }
 
     /** determines object type based on first type attribute it finds */
-    public ObjectType getType() {
+    public IObjectType getType() {
         for (RpslAttribute attribute : attributes) {
             final ObjectType objectType = ObjectType.getByNameOrNull(attribute.getKey());
             if (objectType != null) {

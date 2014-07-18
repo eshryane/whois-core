@@ -19,6 +19,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.ripe.db.whois.common.rpsl.impl.AbstractObjectType;
+import net.ripe.db.whois.common.rpsl.impl.ASBlock;
+import net.ripe.db.whois.common.rpsl.impl.ASSet;
+import net.ripe.db.whois.common.rpsl.impl.AutNum;
+import net.ripe.db.whois.common.rpsl.impl.Domain;
+import net.ripe.db.whois.common.rpsl.impl.FilterSet;
+import net.ripe.db.whois.common.rpsl.impl.Inet6Num;
+import net.ripe.db.whois.common.rpsl.impl.InetNum;
+import net.ripe.db.whois.common.rpsl.impl.InetRtr;
+import net.ripe.db.whois.common.rpsl.impl.Irt;
+import net.ripe.db.whois.common.rpsl.impl.KeyCert;
+import net.ripe.db.whois.common.rpsl.impl.Mntner;
+import net.ripe.db.whois.common.rpsl.impl.Organisation;
+import net.ripe.db.whois.common.rpsl.impl.PeeringSet;
+import net.ripe.db.whois.common.rpsl.impl.Person;
+import net.ripe.db.whois.common.rpsl.impl.RipeObjectTypeFactory;
+import net.ripe.db.whois.common.rpsl.impl.Role;
+import net.ripe.db.whois.common.rpsl.impl.Route6;
+import net.ripe.db.whois.common.rpsl.impl.Route;
+import net.ripe.db.whois.common.rpsl.impl.RouteSet;
+import net.ripe.db.whois.common.rpsl.impl.RtrSet;
+
 import static net.ripe.db.whois.common.rpsl.AttributeTemplate.Cardinality.MULTIPLE;
 import static net.ripe.db.whois.common.rpsl.AttributeTemplate.Cardinality.SINGLE;
 import static net.ripe.db.whois.common.rpsl.AttributeTemplate.Key;
@@ -132,13 +154,16 @@ import static net.ripe.db.whois.common.rpsl.AttributeType.TEXT;
 import static net.ripe.db.whois.common.rpsl.AttributeType.UPD_TO;
 import static net.ripe.db.whois.common.rpsl.AttributeType.ZONE_C;
 
+@Component
 public final class ObjectTemplate implements Comparable<ObjectTemplate> {
-    private static final Map<ObjectType, ObjectTemplate> TEMPLATE_MAP;
+    @Autowired private static final IObjectTypeFactory objectTypeFactory;
+
+    private static final Map<IObjectType, ObjectTemplate> TEMPLATE_MAP;
 
     static {
         final ArrayList<ObjectTemplate> objectTemplates = Lists.newArrayList(
 
-                new ObjectTemplate(ObjectType.AS_BLOCK, 7,
+                new ObjectTemplate(objectTypeFactory.get(AsBlock.class), 7,
                         new AttributeTemplate(AS_BLOCK, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(REMARKS, OPTIONAL, MULTIPLE),
@@ -149,7 +174,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.AS_SET, 9,
+                new ObjectTemplate(objectTypeFactory.get(AsSet.class), 9,
                         new AttributeTemplate(AS_SET, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(MEMBERS, OPTIONAL, MULTIPLE),
@@ -164,7 +189,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.AUT_NUM, 8,
+                new ObjectTemplate(objectTypeFactory.get(AutNum.class), 8,
                         new AttributeTemplate(AUT_NUM, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(AS_NAME, MANDATORY, SINGLE),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
@@ -188,7 +213,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.DOMAIN, 30,
+                new ObjectTemplate(objectTypeFactory.get(Domain.class), 30,
                         new AttributeTemplate(DOMAIN, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(ORG, OPTIONAL, MULTIPLE, INVERSE_KEY),
@@ -203,7 +228,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.FILTER_SET, 21,
+                new ObjectTemplate(objectTypeFactory.get(FilterSet.class), 21,
                         new AttributeTemplate(FILTER_SET, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(FILTER, OPTIONAL, SINGLE),
@@ -218,7 +243,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.INET_RTR, 15,
+                new ObjectTemplate(objectTypeFactory.get(InetRtr.class), 15,
                         new AttributeTemplate(INET_RTR, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(ALIAS, OPTIONAL, MULTIPLE),
@@ -237,7 +262,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.INET6NUM, 6,
+                new ObjectTemplate(objectTypeFactory.get(Inet6num.class), 6,
                         new AttributeTemplate(INET6NUM, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(NETNAME, MANDATORY, SINGLE, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
@@ -259,7 +284,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.INETNUM, 5,
+                new ObjectTemplate(objectTypeFactory.get(Inetnum.class), 5,
                         new AttributeTemplate(INETNUM, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(NETNAME, MANDATORY, SINGLE, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
@@ -280,7 +305,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.IRT, 41,
+                new ObjectTemplate(objectTypeFactory.get(Irt.class), 41,
                         new AttributeTemplate(IRT, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(ADDRESS, MANDATORY, MULTIPLE),
                         new AttributeTemplate(PHONE, OPTIONAL, MULTIPLE),
@@ -300,7 +325,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.KEY_CERT, 45,
+                new ObjectTemplate(objectTypeFactory.get(KeyCert.class), 45,
                         new AttributeTemplate(KEY_CERT, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(METHOD, GENERATED, SINGLE),
                         new AttributeTemplate(OWNER, GENERATED, MULTIPLE),
@@ -315,7 +340,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.MNTNER, 40,
+                new ObjectTemplate(objectTypeFactory.get(Mntner.class), 40,
                         new AttributeTemplate(MNTNER, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(ORG, OPTIONAL, MULTIPLE, INVERSE_KEY),
@@ -332,7 +357,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.ORGANISATION, 48,
+                new ObjectTemplate(objectTypeFactory.get(Organisation.class), 48,
                         new AttributeTemplate(ORGANISATION, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(ORG_NAME, MANDATORY, SINGLE, LOOKUP_KEY),
                         new AttributeTemplate(ORG_TYPE, MANDATORY, SINGLE),
@@ -356,7 +381,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.PEERING_SET, 22,
+                new ObjectTemplate(objectTypeFactory.get(PeeringSet.class), 22,
                         new AttributeTemplate(PEERING_SET, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(PEERING, OPTIONAL, MULTIPLE),
@@ -371,7 +396,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.PERSON, 50,
+                new ObjectTemplate(objectTypeFactory.get(Person.class), 50,
                         new AttributeTemplate(PERSON, MANDATORY, SINGLE, LOOKUP_KEY),
                         new AttributeTemplate(ADDRESS, MANDATORY, MULTIPLE),
                         new AttributeTemplate(PHONE, MANDATORY, MULTIPLE),
@@ -386,7 +411,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.POEM, 37,
+                new ObjectTemplate(objectTypeFactory.get(Poem.class), 37,
                         new AttributeTemplate(POEM, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(FORM, MANDATORY, SINGLE, INVERSE_KEY),
@@ -398,7 +423,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.POETIC_FORM, 36,
+                new ObjectTemplate(objectTypeFactory.get(PoeticForm.class), 36,
                         new AttributeTemplate(POETIC_FORM, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, OPTIONAL, MULTIPLE),
                         new AttributeTemplate(ADMIN_C, MANDATORY, MULTIPLE, INVERSE_KEY),
@@ -408,7 +433,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.ROLE, 49,
+                new ObjectTemplate(objectTypeFactory.get(Role.class), 49,
                         new AttributeTemplate(ROLE, MANDATORY, SINGLE, LOOKUP_KEY),
                         new AttributeTemplate(ADDRESS, MANDATORY, MULTIPLE),
                         new AttributeTemplate(PHONE, OPTIONAL, MULTIPLE),
@@ -425,7 +450,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.ROUTE_SET, 12,
+                new ObjectTemplate(objectTypeFactory.get(RouteSet.class), 12,
                         new AttributeTemplate(ROUTE_SET, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(MEMBERS, OPTIONAL, MULTIPLE),
@@ -441,7 +466,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.ROUTE, 10,
+                new ObjectTemplate(objectTypeFactory.get(Route.class), 10,
                         new AttributeTemplate(ROUTE, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(ORIGIN, MANDATORY, SINGLE, PRIMARY_KEY, INVERSE_KEY),
@@ -463,7 +488,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.ROUTE6, 11,
+                new ObjectTemplate(objectTypeFactory.get(Route6.class), 11,
                         new AttributeTemplate(ROUTE6, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(ORIGIN, MANDATORY, SINGLE, PRIMARY_KEY, INVERSE_KEY),
@@ -485,7 +510,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(CHANGED, MANDATORY, MULTIPLE),
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE)),
 
-                new ObjectTemplate(ObjectType.RTR_SET, 23,
+                new ObjectTemplate(objectTypeFactory.get(RtrSet.class), 23,
                         new AttributeTemplate(RTR_SET, MANDATORY, SINGLE, PRIMARY_KEY, LOOKUP_KEY),
                         new AttributeTemplate(DESCR, MANDATORY, MULTIPLE),
                         new AttributeTemplate(MEMBERS, OPTIONAL, MULTIPLE),
@@ -502,7 +527,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
                         new AttributeTemplate(SOURCE, MANDATORY, SINGLE))
         );
 
-        final Map<ObjectType, ObjectTemplate> templateMap = Maps.newEnumMap(ObjectType.class);
+        final Map<IObjectType, ObjectTemplate> templateMap = Maps.newEnumMap(IObjectType.class);
         for (final ObjectTemplate objectTemplate : objectTemplates) {
             templateMap.put(objectTemplate.getObjectType(), objectTemplate);
         }
@@ -545,7 +570,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
         }
     }
 
-    private final ObjectType objectType;
+    private final IObjectType objectType;
     private final int orderPosition;
     private final Map<AttributeType, AttributeTemplate> attributeTemplateMap;
     private final List<AttributeTemplate> attributeTemplates;
@@ -558,7 +583,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
     private final Set<AttributeType> multipleAttributes;
     private final Comparator<RpslAttribute> comparator;
 
-    private ObjectTemplate(final ObjectType objectType, final int orderPosition, final AttributeTemplate... attributeTemplates) {
+    private ObjectTemplate(final IObjectType objectType, final int orderPosition, final AttributeTemplate... attributeTemplates) {
         this.objectType = objectType;
         this.orderPosition = orderPosition;
 
@@ -619,7 +644,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
         return Collections.unmodifiableSet(attributeTypes);
     }
 
-    public static ObjectTemplate getTemplate(final ObjectType type) {
+    public static ObjectTemplate getTemplate(final IObjectType type) {
         final ObjectTemplate objectTemplate = TEMPLATE_MAP.get(type);
         if (objectTemplate == null) {
             throw new IllegalStateException("No template for " + type);
@@ -632,7 +657,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
         return TEMPLATE_MAP.values();
     }
 
-    public ObjectType getObjectType() {
+    public IObjectType getObjectType() {
         return objectType;
     }
 
@@ -673,7 +698,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
     }
 
     public boolean isSet() {
-        return ObjectType.getSets().contains(objectType);
+        return objectType.isSet();
     }
 
     @Override
@@ -706,7 +731,7 @@ public final class ObjectTemplate implements Comparable<ObjectTemplate> {
     }
 
     public void validateSyntax(final RpslObject rpslObject, final ObjectMessages objectMessages, final boolean skipGenerated) {
-        final ObjectType rpslObjectType = rpslObject.getType();
+        final IObjectType rpslObjectType = rpslObject.getType();
 
         final Map<AttributeType, Integer> attributeCount = Maps.newEnumMap(AttributeType.class);
         for (final AttributeTemplate attributeTemplate : attributeTemplates) {
