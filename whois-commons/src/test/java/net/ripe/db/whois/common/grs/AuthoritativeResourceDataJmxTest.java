@@ -48,7 +48,7 @@ public class AuthoritativeResourceDataJmxTest {
     public void checkOverlaps_unwriteable_file() throws IOException {
         final File file = new File("/some/unexisting/dir/overlaps");
         final String msg = subject.checkOverlaps(file.getAbsolutePath(), "");
-        assertThat(msg, startsWith("Failed writing to: /some/unexisting/dir/overlaps"));
+        assertThat(msg, startsWith("Failed writing to: " + file.getAbsolutePath()));
 
         verifyZeroInteractions(authoritativeResourceDataValidator);
     }
