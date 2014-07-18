@@ -3,6 +3,7 @@ package net.ripe.db.whois.common.rpsl;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.attributesyntax.AttributeSyntax;
 
 import javax.annotation.CheckForNull;
 import java.util.Arrays;
@@ -12,77 +13,21 @@ import java.util.Map;
 import java.util.Set;
 
 import static net.ripe.db.whois.common.domain.CIString.ciString;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.AGGR_BNDRY_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.AGGR_MTD_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.ALIAS_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.AS_BLOCK_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.AS_NUMBER_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.AS_SET_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.AUTH_SCHEME_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.CERTIF_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.CHANGED_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.COMPONENTS_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.COUNTRY_CODE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.DEFAULT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.DOMAIN_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.DS_RDATA_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.EMAIL_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.EXPORT_COMPS_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.EXPORT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.EXPORT_VIA_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.FILTER_SET_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.FILTER_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.FREE_FORM_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.GENERATED_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.GEOLOC_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.HOLES_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.IFADDR_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.IMPORT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.IMPORT_VIA_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.INET_RTR_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.INJECT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.INTERFACE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.IPV4_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.IPV6_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.IRT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.KEY_CERT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.LANGUAGE_CODE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MBRS_BY_REF_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MEMBERS_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MEMBER_OF_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.METHOD_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MNT_ROUTES_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MP_DEFAULT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MP_EXPORT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MP_FILTER_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MP_IMPORT_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MP_MEMBERS_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MP_PEERING_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.MP_PEER_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.NETNAME_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.NIC_HANDLE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.NSERVER_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.NUMBER_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.OBJECT_NAME_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.ORGANISATION_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.ORG_NAME_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.ORG_TYPE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.PEERING_SET_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.PEERING_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.PEER_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.PERSON_ROLE_NAME_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.PHONE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.PINGABLE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.POEM_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.POETIC_FORM_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.REFERRAL_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.ROUTE6_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.ROUTE_SET_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.ROUTE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.RTR_SET_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.SOURCE_SYNTAX;
-import static net.ripe.db.whois.common.rpsl.AttributeSyntax.STATUS_SYNTAX;
 import static net.ripe.db.whois.common.rpsl.AttributeValueType.LIST_VALUE;
+
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.AnySyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.AttributeSyntaxParser.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.AttributeSyntaxRegexp.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.ComponentsSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.ExportCompsSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.GeolocSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.InjectSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.MemberOfSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.MembersSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.OrgTypeSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.PersonRoleSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.RoutePrefixSyntax.*;
+import static net.ripe.db.whois.common.rpsl.attributesyntax.impl.StatusSyntax.*;
 
 public enum AttributeType implements Documented {
     ABUSE_MAILBOX(new Builder("abuse-mailbox", "am")
@@ -90,202 +35,202 @@ public enum AttributeType implements Documented {
                     "This attribute should only be used in the ROLE object. It will be deprecated from any other object. " +
                     "Adding this attribute to a ROLE object, then referencing it in an \"abuse-c:\" attribute of an ORGANISATION object, " +
                     "will remove any query limits for the ROLE object. These ROLE objects are considered to include only commercial data.")
-            .syntax(AttributeSyntax.EMAIL_SYNTAX)),
+            .syntax(EMAIL_SYNTAX)),
 
     ABUSE_C(new Builder("abuse-c", "au")
             .doc("References an abuse contact. " +
                     "This can only be a ROLE object containing an \"abuse-mailbox:\" attribute. " +
                     "Making this reference will remove any query limits for the ROLE object. " +
                     "These ROLE objects are considered to include only commercial data.")
-            .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
+            .syntax(NIC_HANDLE_SYNTAX)
             .references(ObjectType.ROLE)),
 
     ADDRESS(new Builder("address", "ad")
             .doc("Full postal address of a contact")
-            .syntax(AttributeSyntax.FREE_FORM_SYNTAX)),
+            .syntax(FREE_FORM_SYNTAX)),
 
     ADMIN_C(new Builder("admin-c", "ac")
             .doc("References an on-site administrative contact.")
-            .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
+            .syntax(NIC_HANDLE_SYNTAX)
             .references(ObjectType.PERSON, ObjectType.ROLE)),
 
     AGGR_BNDRY(new Builder("aggr-bndry", "ab")
             .doc("Defines a set of ASes, which form the aggregation boundary.")
-            .syntax(AttributeSyntax.AGGR_BNDRY_SYNTAX)),
+            .syntax(AGGR_BNDRY_SYNTAX)),
 
     AGGR_MTD(new Builder("aggr-mtd", "ag")
             .doc("Specifies how the aggregate is generated.")
-            .syntax(AttributeSyntax.AGGR_MTD_SYNTAX)),
+            .syntax(AGGR_MTD_SYNTAX)),
 
     ALIAS(new Builder("alias", "az")
             .doc("The canonical DNS name for the router.")
-            .syntax(AttributeSyntax.ALIAS_SYNTAX)),
+            .syntax(ALIAS_SYNTAX)),
 
     ASSIGNMENT_SIZE(new Builder("assignment-size", "ae")
             .doc("Specifies the size of blocks assigned to end users from this aggregated inet6num assignment.")
-            .syntax(AttributeSyntax.NUMBER_SYNTAX)),
+            .syntax(NUMBER_SYNTAX)),
 
     AS_BLOCK(new Builder("as-block", "ak")
             .doc("Range of AS numbers.")
-            .syntax(AttributeSyntax.AS_BLOCK_SYNTAX)),
+            .syntax(AS_BLOCK_SYNTAX)),
 
     AS_NAME(new Builder("as-name", "aa")
             .doc("A descriptive name associated with an AS.")
-            .syntax(AttributeSyntax.OBJECT_NAME_SYNTAX)),
+            .syntax(OBJECT_NAME_SYNTAX)),
 
     AS_SET(new Builder("as-set", "as")
             .doc("Defines the name of the set.")
-            .syntax(AttributeSyntax.AS_SET_SYNTAX)),
+            .syntax(AS_SET_SYNTAX)),
 
     AUTH(new Builder("auth", "at")
             .doc("Defines an authentication scheme to be used.")
-            .syntax(AttributeSyntax.AUTH_SCHEME_SYNTAX)
+            .syntax(AUTH_SCHEME_SYNTAX)
             .references(ObjectType.KEY_CERT)),
 
     AUTHOR(new Builder("author", "ah")
             .doc("References a poem author.")
-            .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
+            .syntax(NIC_HANDLE_SYNTAX)
             .references(ObjectType.PERSON, ObjectType.ROLE)),
 
     AUT_NUM(new Builder("aut-num", "an")
             .doc("The autonomous system number.")
-            .syntax(AttributeSyntax.AS_NUMBER_SYNTAX)),
+            .syntax(AS_NUMBER_SYNTAX)),
 
     CERTIF(new Builder("certif", "ce")
             .doc("Contains the public key.")
-            .syntax(AttributeSyntax.CERTIF_SYNTAX)),
+            .syntax(CERTIF_SYNTAX)),
 
     CHANGED(new Builder("changed", "ch")
             .doc("Specifies who submitted the update, and when the object was updated. " +
                     "This attribute is filtered from the default whois output.")
-            .syntax(AttributeSyntax.CHANGED_SYNTAX)),
+            .syntax(CHANGED_SYNTAX)),
 
     COMPONENTS(new Builder("components", "co")
             .doc("The \"components:\" attribute defines what component routes are used to form the aggregate.")
-            .syntax(AttributeSyntax.COMPONENTS_SYNTAX)),
+            .syntax(COMPONENTS_SYNTAX)),
 
     COUNTRY(new Builder("country", "cy")
             .doc("Identifies the country.")
-            .syntax(AttributeSyntax.COUNTRY_CODE_SYNTAX)),
+            .syntax(COUNTRY_CODE_SYNTAX)),
 
     DEFAULT(new Builder("default", "df")
             .doc("Specifies default routing policies.")
-            .syntax(AttributeSyntax.DEFAULT_SYNTAX)),
+            .syntax(DEFAULT_SYNTAX)),
 
     DESCR(new Builder("descr", "de")
             .doc("A short decription related to the object.")
-            .syntax(AttributeSyntax.FREE_FORM_SYNTAX)),
+            .syntax(FREE_FORM_SYNTAX)),
 
     DOMAIN(new Builder("domain", "dn")
             .doc("Domain name.")
-            .syntax(AttributeSyntax.DOMAIN_SYNTAX)),
+            .syntax(DOMAIN_SYNTAX)),
 
     DS_RDATA(new Builder("ds-rdata", "ds")
             .doc("DS records for this domain.")
-            .syntax(AttributeSyntax.DS_RDATA_SYNTAX)),
+            .syntax(DS_RDATA_SYNTAX)),
 
     ENCRYPTION(new Builder("encryption", "en")
             .doc("References a key-cert object representing a CSIRT public key used " +
                     "to encrypt correspondence sent to the CSIRT.")
-            .syntax(AttributeSyntax.KEY_CERT_SYNTAX)
+            .syntax(KEY_CERT_SYNTAX)
             .references(ObjectType.KEY_CERT)),
 
     EXPORT(new Builder("export", "ex")
             .doc("Specifies an export policy expression.")
-            .syntax(AttributeSyntax.EXPORT_SYNTAX)),
+            .syntax(EXPORT_SYNTAX)),
 
     EXPORT_COMPS(new Builder("export-comps", "ec")
             .doc("Defines the set's policy filter, a logical expression which when applied to a set of " +
                     "routes returns a subset of these routes.")
-            .syntax(AttributeSyntax.EXPORT_COMPS_SYNTAX)),
+            .syntax(EXPORT_COMPS_SYNTAX)),
 
     E_MAIL(new Builder("e-mail", "em")
             .doc("The e-mail address of a person, role, organisation or irt team. " +
                     "This attribute is filtered from the default whois output when at least one of the objects " +
                     "returned by the query contains an abuse-mailbox attribute.")
-            .syntax(AttributeSyntax.EMAIL_SYNTAX)),
+            .syntax(EMAIL_SYNTAX)),
 
     FAX_NO(new Builder("fax-no", "fx")
             .doc("The fax number of a contact.")
-            .syntax(AttributeSyntax.PHONE_SYNTAX)),
+            .syntax(PHONE_SYNTAX)),
 
     FILTER(new Builder("filter", "fi")
             .doc("Defines the set's policy filter.")
-            .syntax(AttributeSyntax.FILTER_SYNTAX)),
+            .syntax(FILTER_SYNTAX)),
 
     FILTER_SET(new Builder("filter-set", "fs")
             .doc("Defines the name of the filter.")
-            .syntax(AttributeSyntax.FILTER_SET_SYNTAX)),
+            .syntax(FILTER_SET_SYNTAX)),
 
     FINGERPR(new Builder("fingerpr", "fp")
             .doc("A fingerprint of a key certificate generated by the database.")
-            .syntax(AttributeSyntax.GENERATED_SYNTAX)),
+            .syntax(GENERATED_SYNTAX)),
 
     FORM(new Builder("form", "fr")
             .doc("Specifies the identifier of a registered poem type.")
-            .syntax(AttributeSyntax.POETIC_FORM_SYNTAX)
+            .syntax(POETIC_FORM_SYNTAX)
             .references(ObjectType.POETIC_FORM)
             .listValue()),
 
     GEOLOC(new Builder("geoloc", "gl")
             .doc("The location coordinates for the resource.")
-            .syntax(AttributeSyntax.GEOLOC_SYNTAX)),
+            .syntax(GEOLOC_SYNTAX)),
 
     HOLES(new Builder("holes", "ho")
             .doc("Lists the component address prefixes that are not reachable through the aggregate route" +
                     "(perhaps that part of the address space is unallocated).")
-            .syntax(AttributeSyntax.HOLES_SYNTAX)
+            .syntax(HOLES_SYNTAX)
             .listValue()),
 
     IFADDR(new Builder("ifaddr", "if")
             .doc("Specifies an interface address within an Internet router.")
-            .syntax(AttributeSyntax.IFADDR_SYNTAX)),
+            .syntax(IFADDR_SYNTAX)),
 
     IMPORT(new Builder("import", "ip")
             .doc("Specifies import policy expression.")
-            .syntax(AttributeSyntax.IMPORT_SYNTAX)),
+            .syntax(IMPORT_SYNTAX)),
 
     INET6NUM(new Builder("inet6num", "i6")
             .doc("Specifies a range of IPv6 addresses in prefix notation.")
-            .syntax(AttributeSyntax.IPV6_SYNTAX)),
+            .syntax(IPV6_SYNTAX)),
 
     INETNUM(new Builder("inetnum", "in")
             .doc("Specifies a range of IPv4 that inetnum object presents. " +
                     "The ending address should be greater than the starting one.")
-            .syntax(AttributeSyntax.IPV4_SYNTAX)),
+            .syntax(IPV4_SYNTAX)),
 
     INET_RTR(new Builder("inet-rtr", "ir")
             .doc("Fully qualified DNS name of the inet-rtr without trailing \".\".")
-            .syntax(AttributeSyntax.INET_RTR_SYNTAX)),
+            .syntax(INET_RTR_SYNTAX)),
 
     INJECT(new Builder("inject", "ij")
             .doc("Specifies which routers perform the aggregation and when they perform it.")
-            .syntax(AttributeSyntax.INJECT_SYNTAX)),
+            .syntax(INJECT_SYNTAX)),
 
     INTERFACE(new Builder("interface", "ie")
             .doc("Specifies a multiprotocol interface address within an Internet router.")
-            .syntax(AttributeSyntax.INTERFACE_SYNTAX)),
+            .syntax(INTERFACE_SYNTAX)),
 
     IRT(new Builder("irt", "it")
             .doc("Specifies the name of the irt object. The name should start with the prefix \"IRT-\", " +
                     "reserved for this type of object.")
-            .syntax(AttributeSyntax.IRT_SYNTAX)),
+            .syntax(IRT_SYNTAX)),
 
     IRT_NFY(new Builder("irt-nfy", "iy")
             .doc("Specifies the e-mail address to be notified when a reference to the irt object is added or removed.")
-            .syntax(AttributeSyntax.EMAIL_SYNTAX)),
+            .syntax(EMAIL_SYNTAX)),
 
     KEY_CERT(new Builder("key-cert", "kc")
             .doc("Defines the public key stored in the database.")
-            .syntax(AttributeSyntax.KEY_CERT_SYNTAX)),
+            .syntax(KEY_CERT_SYNTAX)),
 
     LANGUAGE(new Builder("language", "ln")
             .doc("Identifies the language.")
-            .syntax(AttributeSyntax.LANGUAGE_CODE_SYNTAX)),
+            .syntax(LANGUAGE_CODE_SYNTAX)),
 
     LOCAL_AS(new Builder("local-as", "la")
             .doc("Specifies the autonomous system that operates the router.")
-            .syntax(AttributeSyntax.AS_NUMBER_SYNTAX)),
+            .syntax(AS_NUMBER_SYNTAX)),
 
     MBRS_BY_REF(new Builder("mbrs-by-ref", "mr")
             .doc("This attribute can be used in all \"set\" objects; it allows indirect population of a set. " +
@@ -295,13 +240,13 @@ public enum AttributeType implements Documented {
                     "If the value of a \"mbrs-by-ref:\" attribute is ANY, any object of the corresponding type " +
                     "referring to the set is a member of the set. If the \"mbrs-by-ref:\" attribute is missing, " +
                     "the set is defined explicitly by the \"members:\" attribute.")
-            .syntax(AttributeSyntax.MBRS_BY_REF_SYNTAX)
+            .syntax(MBRS_BY_REF_SYNTAX)
             .references(ObjectType.MNTNER)
             .listValue()),
 
     MEMBERS(new Builder("members", "ms")
             .doc("Lists the members of the set.")
-            .syntax(AttributeSyntax.MEMBERS_SYNTAX)
+            .syntax(MEMBERS_SYNTAX)
             .listValue()), // No reference checking should be performed for members!
 
     MEMBER_OF(new Builder("member-of", "mo")
@@ -309,22 +254,22 @@ public enum AttributeType implements Documented {
                     "The value of the \"member-of:\" attribute identifies a set object that this object wants " +
                     "to be a member of. This claim, however, should be acknowledged by a " +
                     "respective \"mbrs-by-ref:\" attribute in the referenced object.")
-            .syntax(AttributeSyntax.MEMBER_OF_SYNTAX)
+            .syntax(MEMBER_OF_SYNTAX)
             .references(ObjectType.AS_SET, ObjectType.ROUTE_SET, ObjectType.RTR_SET)
             .listValue()),
 
     METHOD(new Builder("method", "mh")
             .doc("Defines the type of the public key.")
-            .syntax(AttributeSyntax.METHOD_SYNTAX)),
+            .syntax(METHOD_SYNTAX)),
 
     MNTNER(new Builder("mntner", "mt")
             .doc("A unique identifier of the mntner object.")
-            .syntax(AttributeSyntax.OBJECT_NAME_SYNTAX)),
+            .syntax(OBJECT_NAME_SYNTAX)),
 
     MNT_BY(new Builder("mnt-by", "mb")
             .doc("Specifies the identifier of a registered mntner object used for authorisation of operations " +
                     "performed with the object that contains this attribute.")
-            .syntax(AttributeSyntax.OBJECT_NAME_SYNTAX)
+            .syntax(OBJECT_NAME_SYNTAX)
             .references(ObjectType.MNTNER)
             .listValue()),
 
@@ -332,7 +277,7 @@ public enum AttributeType implements Documented {
             .doc("Specifies the identifier of a registered mntner object used for reverse domain authorisation. " +
                     "Protects domain objects. The authentication method of this maintainer object will be used for " +
                     "any encompassing reverse domain object.")
-            .syntax(AttributeSyntax.OBJECT_NAME_SYNTAX)
+            .syntax(OBJECT_NAME_SYNTAX)
             .references(ObjectType.MNTNER)
             .listValue()),
 
@@ -340,7 +285,7 @@ public enum AttributeType implements Documented {
             .doc("May appear in an inetnum or inet6num object. It points to an irt object representing a " +
                     "Computer Security Incident Response Team (CSIRT) that handles security incidents for " +
                     "the address space specified by the inetnum or inet6num object.")
-            .syntax(AttributeSyntax.IRT_SYNTAX)
+            .syntax(IRT_SYNTAX)
             .references(ObjectType.IRT)
             .listValue()),
 
@@ -349,18 +294,18 @@ public enum AttributeType implements Documented {
                     "Protects creation of objects directly (one level) below in the hierarchy of an object type. " +
                     "The authentication method of this maintainer object will then be used upon creation of any " +
                     "object directly below the object that contains the \"mnt-lower:\" attribute.")
-            .syntax(AttributeSyntax.OBJECT_NAME_SYNTAX)
+            .syntax(OBJECT_NAME_SYNTAX)
             .references(ObjectType.MNTNER)
             .listValue()),
 
     MNT_NFY(new Builder("mnt-nfy", "mn")
             .doc("Specifies the e-mail address to be notified when an object protected by a mntner is successfully updated.")
-            .syntax(AttributeSyntax.EMAIL_SYNTAX)),
+            .syntax(EMAIL_SYNTAX)),
 
     MNT_REF(new Builder("mnt-ref", "mz")
             .doc("Specifies the maintainer objects that are entitled to add references " +
                     "to the organisation object from other objects.")
-            .syntax(AttributeSyntax.OBJECT_NAME_SYNTAX)
+            .syntax(OBJECT_NAME_SYNTAX)
             .references(ObjectType.MNTNER)
             .listValue()),
 
@@ -413,70 +358,70 @@ public enum AttributeType implements Documented {
                         "specified, is \"ANY\" or all more specifics.");
 
             }}))
-            .syntax(AttributeSyntax.MNT_ROUTES_SYNTAX)
+            .syntax(MNT_ROUTES_SYNTAX)
             .references(ObjectType.MNTNER)),
 
     MP_DEFAULT(new Builder("mp-default", "ma")
             .doc("Specifies default multiprotocol routing policies.")
-            .syntax(AttributeSyntax.MP_DEFAULT_SYNTAX)),
+            .syntax(MP_DEFAULT_SYNTAX)),
 
     MP_EXPORT(new Builder("mp-export", "me")
             .doc("Specifies a multiprotocol export policy expression.")
-            .syntax(AttributeSyntax.MP_EXPORT_SYNTAX)),
+            .syntax(MP_EXPORT_SYNTAX)),
 
     EXPORT_VIA(new Builder("export-via", "ev")
             .doc("Specifies an export policy expression targeted at a non-adjacent network.")
-            .syntax(AttributeSyntax.EXPORT_VIA_SYNTAX)),
+            .syntax(EXPORT_VIA_SYNTAX)),
 
     MP_FILTER(new Builder("mp-filter", "mf")
             .doc("Defines the set's multiprotocol policy filter.")
-            .syntax(AttributeSyntax.MP_FILTER_SYNTAX)),
+            .syntax(MP_FILTER_SYNTAX)),
 
     MP_IMPORT(new Builder("mp-import", "my")
             .doc("Specifies multiprotocol import policy expression.")
-            .syntax(AttributeSyntax.MP_IMPORT_SYNTAX)),
+            .syntax(MP_IMPORT_SYNTAX)),
 
     IMPORT_VIA(new Builder("import-via", "iv")
             .doc("Specifies an import policy expression targeted at a non-adjacent network.")
-            .syntax(AttributeSyntax.IMPORT_VIA_SYNTAX)),
+            .syntax(IMPORT_VIA_SYNTAX)),
 
     MP_MEMBERS(new Builder("mp-members", "mm")
             .doc("Lists the multiprotocol members of the set.")
-            .syntax(AttributeSyntax.MP_MEMBERS_SYNTAX).listValue()),
+            .syntax(MP_MEMBERS_SYNTAX).listValue()),
 
     MP_PEER(new Builder("mp-peer", "mp")
             .doc(new Multiple(new HashMap<ObjectType, String>() {{
                 put(ObjectType.INET_RTR, "Details of any (interior or exterior) multiprotocol router peerings.");
                 put(ObjectType.PEERING_SET, "Defines a multiprotocol peering that can be used for importing or exporting routes.");
             }}))
-            .syntax(AttributeSyntax.MP_PEER_SYNTAX)),
+            .syntax(MP_PEER_SYNTAX)),
 
     MP_PEERING(new Builder("mp-peering", "mg")
             .doc("Defines a multiprotocol peering that can be used for importing or exporting routes.")
-            .syntax(AttributeSyntax.MP_PEERING_SYNTAX)),
+            .syntax(MP_PEERING_SYNTAX)),
 
     NETNAME(new Builder("netname", "na")
             .doc("The name of a range of IP address space.")
-            .syntax(AttributeSyntax.NETNAME_SYNTAX)),
+            .syntax(NETNAME_SYNTAX)),
 
     NIC_HDL(new Builder("nic-hdl", "nh")
             .doc("Specifies the NIC handle of a role or person object. When creating an object, one can also " +
                     "specify an \"AUTO\" NIC handle by setting the value of the attribute to \"AUTO-1\" " +
                     "or AUTO-1<Initials>. In such case the database will assign the NIC handle automatically.")
-            .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)),
+            .syntax(NIC_HANDLE_SYNTAX)),
 
     NOTIFY(new Builder("notify", "ny")
             .doc("Specifies the e-mail address to which notifications of changes to an object should be sent. " +
                     "This attribute is filtered from the default whois output.")
-            .syntax(AttributeSyntax.EMAIL_SYNTAX)),
+            .syntax(EMAIL_SYNTAX)),
 
     NSERVER(new Builder("nserver", "ns")
             .doc("Specifies the nameservers of the domain.")
-            .syntax(AttributeSyntax.NSERVER_SYNTAX)),
+            .syntax(NSERVER_SYNTAX)),
 
     ORG(new Builder("org", "og")
             .doc("Points to an existing organisation object representing the entity that holds the resource.")
-            .syntax(AttributeSyntax.ORGANISATION_SYNTAX)
+            .syntax(ORGANISATION_SYNTAX)
             .references(ObjectType.ORGANISATION)),
 
     ORG_NAME(new Builder("org-name", "on")
@@ -485,135 +430,135 @@ public enum AttributeType implements Documented {
                     "a look-up key and the whois protocol does not allow specifying character sets in queries. " +
                     "The user can put the name of the organisation in non-ASCII character sets in " +
                     "the \"descr:\" attribute if required.")
-            .syntax(AttributeSyntax.ORG_NAME_SYNTAX)),
+            .syntax(ORG_NAME_SYNTAX)),
 
     ORG_TYPE(new Builder("org-type", "ot")
             .doc("Specifies the type of the organisation.")
-            .syntax(AttributeSyntax.ORG_TYPE_SYNTAX)),
+            .syntax(ORG_TYPE_SYNTAX)),
 
     ORGANISATION(new Builder("organisation", "oa")
             .doc("Specifies the ID of an organisation object. When creating an object, one has to specify " +
                     "an \"AUTO\" ID by setting the value of the attribute to \"AUTO-1\" or \"AUTO-1<letterCombination>\", " +
                     "so the database will assign the ID automatically.")
-            .syntax(AttributeSyntax.ORGANISATION_SYNTAX)),
+            .syntax(ORGANISATION_SYNTAX)),
 
     ORIGIN(new Builder("origin", "or")
             .doc("Specifies the AS that originates the route." +
                     "The corresponding aut-num object should be registered in the database.")
-            .syntax(AttributeSyntax.AS_NUMBER_SYNTAX)
+            .syntax(AS_NUMBER_SYNTAX)
             .references(ObjectType.AUT_NUM)),
 
     OWNER(new Builder("owner", "ow")
             .doc("Specifies the owner of the public key.")
-            .syntax(AttributeSyntax.GENERATED_SYNTAX)),
+            .syntax(GENERATED_SYNTAX)),
 
     PEER(new Builder("peer", "pe")
             .doc("Details of any (interior or exterior) router peerings.")
-            .syntax(AttributeSyntax.PEER_SYNTAX)),
+            .syntax(PEER_SYNTAX)),
 
     PEERING(new Builder("peering", "pg")
             .doc("Defines a peering that can be used for importing or exporting routes.")
-            .syntax(AttributeSyntax.PEERING_SYNTAX)),
+            .syntax(PEERING_SYNTAX)),
 
     PEERING_SET(new Builder("peering-set", "ps")
             .doc("Specifies the name of the peering-set.")
-            .syntax(AttributeSyntax.PEERING_SET_SYNTAX)),
+            .syntax(PEERING_SET_SYNTAX)),
 
     PERSON(new Builder("person", "pn")
             .doc("Specifies the full name of an administrative, technical or zone contact person for " +
                     "other objects in the database.")
-            .syntax(AttributeSyntax.PERSON_ROLE_NAME_SYNTAX)),
+            .syntax(PERSON_ROLE_NAME_SYNTAX)),
 
     PHONE(new Builder("phone", "ph")
             .doc("Specifies a telephone number of the contact.")
-            .syntax(AttributeSyntax.PHONE_SYNTAX)),
+            .syntax(PHONE_SYNTAX)),
 
     PING_HDL(new Builder("ping-hdl", "pc")
             .doc("References a person or role capable of responding to queries concerning the IP address(es) " +
                     "specified in the 'pingable' attribute.")
-            .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
+            .syntax(NIC_HANDLE_SYNTAX)
             .references(ObjectType.PERSON, ObjectType.ROLE)),
 
     PINGABLE(new Builder("pingable", "pa")
             .doc("Allows a network operator to advertise an IP address of a node that should be reachable from outside " +
                     "networks. This node can be used as a destination address for diagnostic tests. " +
                     "The IP address must be within the address range of the prefix containing this attribute.")
-            .syntax(AttributeSyntax.PINGABLE_SYNTAX)),
+            .syntax(PINGABLE_SYNTAX)),
 
     POEM(new Builder("poem", "po")
             .doc("Specifies the title of the poem.")
-            .syntax(AttributeSyntax.POEM_SYNTAX)),
+            .syntax(POEM_SYNTAX)),
 
     POETIC_FORM(new Builder("poetic-form", "pf")
             .doc("Specifies the poem type.")
-            .syntax(AttributeSyntax.POETIC_FORM_SYNTAX)),
+            .syntax(POETIC_FORM_SYNTAX)),
 
     REFERRAL_BY(new Builder("referral-by", "rb")
             .doc("Mandatory historical attribute referencing a mntner name. Not used. Suggest setting it to this mntner name.")
-            .syntax(AttributeSyntax.REFERRAL_SYNTAX)
+            .syntax(REFERRAL_SYNTAX)
             .references(ObjectType.MNTNER)),
 
     REF_NFY(new Builder("ref-nfy", "rn")
             .doc("Specifies the e-mail address to be notified when a reference to the organisation object is added " +
                     "or removed. This attribute is filtered from the default whois output when at least one of the " +
                     "objects returned by the query contains an abuse-mailbox attribute.")
-            .syntax(AttributeSyntax.EMAIL_SYNTAX)),
+            .syntax(EMAIL_SYNTAX)),
 
     REMARKS(new Builder("remarks", "rm")
             .doc("Contains remarks.")
-            .syntax(AttributeSyntax.FREE_FORM_SYNTAX)),
+            .syntax(FREE_FORM_SYNTAX)),
 
     ROLE(new Builder("role", "ro")
             .doc("Specifies the full name of a role entity, e.g. RIPE DBM.")
-            .syntax(AttributeSyntax.ORG_NAME_SYNTAX)),
+            .syntax(ORG_NAME_SYNTAX)),
 
     ROUTE(new Builder("route", "rt")
             .doc("Specifies the prefix of the interAS route. Together with the \"origin:\" attribute, " +
                     "constitutes a primary key of the route object.")
-            .syntax(AttributeSyntax.ROUTE_SYNTAX)),
+            .syntax(ROUTE_SYNTAX)),
 
     ROUTE6(new Builder("route6", "r6")
             .doc("Specifies the IPv6 prefix of the interAS route. Together with the \"origin:\" attribute," +
                     "constitutes a primary key of the route6 object.")
-            .syntax(AttributeSyntax.ROUTE6_SYNTAX)),
+            .syntax(ROUTE6_SYNTAX)),
 
     ROUTE_SET(new Builder("route-set", "rs")
             .doc("Specifies the name of the route set. It is a primary key for the route-set object.")
-            .syntax(AttributeSyntax.ROUTE_SET_SYNTAX)),
+            .syntax(ROUTE_SET_SYNTAX)),
 
     RTR_SET(new Builder("rtr-set", "is")
             .doc("Defines the name of the rtr-set.")
-            .syntax(AttributeSyntax.RTR_SET_SYNTAX)),
+            .syntax(RTR_SET_SYNTAX)),
 
     SIGNATURE(new Builder("signature", "sg")
             .doc("References a key-cert object representing a CSIRT public key used by the team to sign their correspondence.")
-            .syntax(AttributeSyntax.KEY_CERT_SYNTAX)
+            .syntax(KEY_CERT_SYNTAX)
             .references(ObjectType.KEY_CERT)),
 
     SOURCE(new Builder("source", "so")
             .doc("Specifies the registry where the object is registered. Should be \"RIPE\" for the RIPE Database.")
-            .syntax(AttributeSyntax.SOURCE_SYNTAX)),
+            .syntax(SOURCE_SYNTAX)),
 
     STATUS(new Builder("status", "st")
             .doc("Specifies the status of the resource.")
-            .syntax(AttributeSyntax.STATUS_SYNTAX)),
+            .syntax(STATUS_SYNTAX)),
 
     TECH_C(new Builder("tech-c", "tc")
             .doc("References a technical contact.")
-            .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
+            .syntax(NIC_HANDLE_SYNTAX)
             .references(ObjectType.PERSON, ObjectType.ROLE)),
 
     TEXT(new Builder("text", "tx")
             .doc("Text of the poem. Must be humorous, but not malicious or insulting.")
-            .syntax(AttributeSyntax.FREE_FORM_SYNTAX)),
+            .syntax(FREE_FORM_SYNTAX)),
 
     UPD_TO(new Builder("upd-to", "dt")
             .doc("Specifies the e-mail address to be notified when an object protected by a mntner is unsuccessfully updated.")
-            .syntax(AttributeSyntax.EMAIL_SYNTAX)),
+            .syntax(EMAIL_SYNTAX)),
 
     ZONE_C(new Builder("zone-c", "zc")
             .doc("References a zone contact.")
-            .syntax(AttributeSyntax.NIC_HANDLE_SYNTAX)
+            .syntax(NIC_HANDLE_SYNTAX)
             .references(ObjectType.PERSON, ObjectType.ROLE));
 
     private static final Map<CIString, AttributeType> TYPE_NAMES = Maps.newHashMapWithExpectedSize(AttributeType.values().length);
@@ -629,7 +574,7 @@ public enum AttributeType implements Documented {
         private final String name;
         private final String flag;
         private Documented description;
-        private AttributeSyntax syntax = AttributeSyntax.ANY_SYNTAX;
+        private AttributeSyntax syntax = ANY_SYNTAX;
         private AttributeValueType valueType = AttributeValueType.SINGLE_VALUE;
         private Set<ObjectType> references = Collections.emptySet();
 

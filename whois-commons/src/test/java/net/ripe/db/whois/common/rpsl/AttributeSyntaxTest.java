@@ -1,5 +1,7 @@
 package net.ripe.db.whois.common.rpsl;
 
+import net.ripe.db.whois.common.rpsl.attributesyntax.AttributeSyntax;
+import net.ripe.db.whois.common.rpsl.attributesyntax.impl.OrgTypeSyntax;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -970,7 +972,7 @@ public class AttributeSyntaxTest {
         verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "DIRECT_ASSIGNMENT");
         verifySuccess(ObjectType.ORGANISATION, AttributeType.ORG_TYPE, "OTHER");
 
-        final AttributeSyntax.OrgTypeSyntax orgTypeSyntax = new AttributeSyntax.OrgTypeSyntax();
+        final OrgTypeSyntax orgTypeSyntax = new OrgTypeSyntax();
         final String description = orgTypeSyntax.getDescription(ObjectType.ORGANISATION);
         assertThat(description, is("" +
                 "org-type can have one of these values:\n" +
