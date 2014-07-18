@@ -7,6 +7,8 @@ import org.apache.commons.cli.*;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -40,18 +42,11 @@ public class RipeQueryHandler
         initQueryParser();
     }
 
-    private void initQueryParser() {
-        options = new Options();
-        options.addOption("help", false, "Help");
-        options.addOption("T", true, "Object type");
-        options.addOption("i", true, "Inverse key lookup");
-        parser = new BasicParser();
-    }
-
     @Override
     public IQuery parse(String query) {
 
         // Command line parsing
+        String key = null;
         CommandLine cmd = null;
         try {
             cmd = parser.parse(options, query.split("\\s"));
@@ -59,22 +54,17 @@ public class RipeQueryHandler
             e.printStackTrace(); // TODO log and throw exception
             return null;
         }
+        String[] args = cmd.getArgs();
+        if (args.length > 0) {
+            key = args[0];
+        }
 
         // Selecting specialized query executor
-        IQueryExecutor queryExecutor = ripeAsnumQueryExecutor;
-        for (Option option: cmd.getOptions()) {
-            String opt = option.getOpt();
-            if (opt.equals("help")) {
-                queryExecutor = ripeHelpQueryExecutor;
-            }
-        }
+        IQueryExecutor queryExecutor = getQueryExecutor(key);
 
         // Setting command line arguments in selected query executor
         IQuery queryHolder = (IQuery) queryExecutor;
-        for (Option option: cmd.getOptions()) {
-            String opt = option.getOpt();
-            queryHolder.setArgValue(opt, cmd.getOptionValue(opt));
-        }
+        populate(queryHolder, key, cmd);
 
         return queryHolder;
     }
@@ -102,7 +92,7 @@ public class RipeQueryHandler
         return super.modifyQueryResponse(new IQueryResponse() {
             @Override
             public String toString() {
-                return "\n" + queryResponse.toString() + "\nRIPE NCC";
+                return "\n[ header ]\n" + queryResponse.toString() + "\n[ footer ]";
             }
         });
     }
@@ -111,6 +101,7 @@ public class RipeQueryHandler
     public IQueryExecutor getQueryExecutor(IQuery query) {
         return (IQueryExecutor) query;
     }
+
 
     @Override
     protected IQueryParser getQueryParser() {
@@ -125,5 +116,63 @@ public class RipeQueryHandler
     @Override
     protected Collection<IQueryResponsePublisher> getQueryResponsePublishers() {
         return publishers;
+    }
+
+    private void initQueryParser() {
+        options = new Options();
+        options.addOption(
+                OptionBuilder.withArgName("type")
+                        .hasArg()
+                        .withDescription("Object type")
+                        .create("T")
+        );
+        options.addOption(
+                OptionBuilder.withArgName("inverse key")
+                        .hasArg()
+                        .withDescription("Inverse key lookup")
+                        .create("i")
+        );
+
+        parser = new BasicParser();
+
+    }
+
+    private void initHelpText() {
+        HelpFormatter formatter = new HelpFormatter();
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        formatter.printHelp(pw, 100, "whois [options] [key]", "", options, 4, 4, "");
+        ((RipeHelpQueryExecutor) ripeHelpQueryExecutor).setHelpText(sw.toString());
+    }
+
+    private IQueryExecutor getQueryExecutor(String key) {
+        IQueryExecutor queryExecutor = null;
+        Collection<IQueryExecutor> queryExecutors =
+                Arrays.asList(ripeHelpQueryExecutor, ripeAsnumQueryExecutor); // FIXME initialize elsewhere
+        for (IQueryExecutor ripeQueryExecutor: queryExecutors) {
+            if (ripeQueryExecutor.supports(key)) {
+                queryExecutor = ripeQueryExecutor;
+                break;
+            }
+        }
+
+        if (queryExecutor == null) {
+            throw new UnsupportedOperationException("Verify your query syntax");
+        }
+
+        return queryExecutor;
+    }
+
+    private void populate(IQuery queryHolder, String key, CommandLine cmd) {
+        queryHolder.setKey(key);
+        for (Option option: cmd.getOptions()) {
+            String opt = option.getOpt();
+            queryHolder.setOptionValue(opt, cmd.getOptionValue(opt));
+        }
+
+        // Init help text
+        if (queryHolder == ripeHelpQueryExecutor) {
+            initHelpText(); // FIXME initialize elsewhere
+        }
     }
 }

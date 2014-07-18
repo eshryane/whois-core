@@ -17,11 +17,20 @@ public class RipeAsnumQueryExecutorTest {
     public void testMe() {
         IQueryResponse queryResponse = subject.execute(new IQuery() {
             @Override
-            public void setArgValue(String key, String value) {
+            public void setKey(String key) {
             }
 
             @Override
-            public String getArgValue(String key) {
+            public String getKey() {
+                return null;
+            }
+
+            @Override
+            public void setOptionValue(String key, String value) {
+            }
+
+            @Override
+            public String getOptionValue(String key) {
                 return null;
             }
         });

@@ -1,6 +1,6 @@
 package net.ripe.db.whois.query.impl;
 
-import net.ripe.db.whois.query.*;
+import net.ripe.db.whois.query.IQueryExecutor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 public class RipeQueryHandlerTest {
 
     @Spy
-    private IQueryExecutor ripeAsnumQueryExecutor = new RipeAsnumQueryExecutor();;
+    private IQueryExecutor ripeAsnumQueryExecutor = new RipeAsnumQueryExecutor();
 
     @Spy
     private IQueryExecutor ripeHelpQueryExecutor = new RipeHelpQueryExecutor();
@@ -40,13 +40,25 @@ public class RipeQueryHandlerTest {
 
     @Test
     public void testAutnum() throws IOException {
-        subject.handle("-T aut-num");
+        subject.handle("-T aut-num AS-404");
         verify(out).write((byte[]) anyObject());
     }
 
     @Test
     public void testHelp() throws IOException {
-        subject.handle("-help");
+        subject.handle("help");
+        verify(out).write((byte[]) anyObject());
+    }
+
+    @Test
+    public void testHelp2() throws IOException {
+        subject.handle("-T aut-num");
+        verify(out).write((byte[]) anyObject());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testUnsupported() throws IOException {
+        subject.handle("196/8");
         verify(out).write((byte[]) anyObject());
     }
 }
