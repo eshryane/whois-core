@@ -11,6 +11,10 @@
     <artifactId>whois-commons</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <project.basedir.escaped>xxx</project.basedir.escaped>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -141,20 +145,70 @@
             </resource>
         </resources>
         <plugins>
+            <!-- project.basedir.property path - used in enforcer beanshelling - backslashes need escaping for windows -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <phase>initialize</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>set-system-properties</goal>
                         </goals>
+                        <configuration>
+                            <properties>
+                                <property>
+                                    <name>project.basedir.property</name>
+                                    <value>${project.basedir}</value>
+                                </property>
+                            </properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.3.1</version>
+                <executions>
+                    <execution>
+                        <id>generate-byaccs</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <rules>
+                                <evaluateBeanshell>
+                                    <condition><![CDATA[
+                                        // Use the properties-maven-plugin defined "project.basedir.property"
+                                        // Inlining maven $[project.basedir] wont work due to the unescaped backslashes
+                                        // in the filepath string (this is for windows only)
+                                        String mavenBaseDir = System.getProperty("project.basedir.property").replace("\\", "/");
+                                        String sourcePath = new File(mavenBaseDir + "/src/main/parser/bin/generateByaccs.bsh").getAbsolutePath();
+                                        System.out.println("Source Path=" + sourcePath);
+                                        Object obj = new bsh.Interpreter().source(sourcePath);
+                                        1 == 1;
+                                    ]]>
+                                    </condition>
+                                </evaluateBeanshell>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <executable>src/main/parser/bin/generateByaccs</executable>
+                    <rules>
+                        <evaluateBeanshell>
+                            <condition><![CDATA[
+                                // Put your tinkery code in here if calling the plugin directly
+                                1 == 1;
+                            ]]>
+                            </condition>
+                        </evaluateBeanshell>
+                    </rules>
+                    <fail>true</fail>
                 </configuration>
             </plugin>
             <plugin>
