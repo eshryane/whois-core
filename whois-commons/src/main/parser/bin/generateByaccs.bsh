@@ -1,0 +1,96 @@
+/**
+ * Beanshell script for generating java yacc syntax parser files
+ */
+
+    String[] targets = new String[] {
+        "AggrBndryParser", "AggrMtdParser", "ComponentsParser", "ComponentsR6Parser",
+        "DefaultParser", "ExportParser", "ExportViaParser", "FilterParser", "IfaddrParser",
+        "ImportParser", "ImportViaParser", "InjectParser", "InjectR6Parser", "InterfaceParser",
+        "MpDefaultParser", "MpExportParser", "MpFilterParser", "MpImportParser",
+        "MpPeerParser", "MpPeeringParser", "PeerParser", "PeeringParser", "V6FilterParser" };
+
+    // Use the properties-maven-plugin defined "project.basedir.property"
+    // Inlining maven $[project.basedir] wont work due to the unescaped backslashes
+    // in the filepath string (this is for windows only)
+    String mavenBaseDir = System.getProperty("project.basedir.property").replace("\\", "/");
+    String basePath = new File(mavenBaseDir).getAbsolutePath();
+    System.out.println("Base Path=" + basePath);
+    String genPath = "/target/generated-sources/jflex/net/ripe/db/whois/common/generated";
+    String PACKAGE_NAME = "net.ripe.db.whois.common.generated";
+
+    String BIN_PATH =  new File(basePath + "/src/main/parser/bin").getAbsolutePath();
+    String GENERATED_PATH = new File(basePath + genPath).getAbsolutePath();
+    String YACC_FILES_PATH = new File(basePath + "/src/main/parser/byacc").getAbsolutePath();
+    File MAKE_EXE_PATH = new File(basePath + "/src/main/parser/byaccj-p2/src");
+
+    // Make generated dir
+    File generatedDir = new File(GENERATED_PATH);
+    generatedDir.mkdirs();
+    System.out.println("Generating files in path: " + generatedDir.getAbsolutePath());
+
+    File executableFile = new File(BIN_PATH + "/yacc");
+    String OS_NAME = System.getProperty("os.name").toLowerCase();
+    String OS_ARCH = System.getProperty("os.arch").toLowerCase();
+
+    System.out.println("Ok you're using " + OS_NAME + "-" + OS_ARCH);
+    if (OS_NAME.startsWith("windows")) {
+        executableFile = new File(BIN_PATH + "/yacc.com");
+    } else if (OS_NAME.startsWith("linux")) {
+        if (OS_ARCH.equals("i386")) {
+            executableFile = new File(BIN_PATH + "/yacc.linux");
+        }
+    } else if (OS_NAME.startsWith("mac")) {
+        executableFile = new File(BIN_PATH + "/yacc.macosx");
+    }
+
+    if (!executableFile.exists()) {
+        // Try building executable if it doesn't exist
+        try {
+            System.err.println("WARNING: suitable yacc binary not found - will compile the byaccj-p2 tool");
+            System.err.println("WARNING: you will need make+gcc");
+            String[] makeExe = new String[] { "make" };
+            if (new ProcessBuilder(Arrays.asList(makeExe)).directory(MAKE_EXE_PATH).start().waitFor() != 0) {
+               throw new Exception("yacc binary make failed");
+            }
+            String[] cpExe = new String[] { "cp", "yacc", executableFile.getAbsolutePath() };
+            if (new ProcessBuilder(Arrays.asList(cpExe)).directory(MAKE_EXE_PATH).start().waitFor() != 0) {
+               throw new Exception("yacc binary cp failed");
+            }
+            System.out.println("Done building byaccj-p2");
+        } catch (Exception ex) {
+            System.err.println("Error: " + ex.getMessage());
+            System.err.println("OS/ARCH not supported: " + OS_NAME + "-" + OS_ARCH);
+            throw ex;
+        }
+    }
+
+    try {
+        if (executableFile.exists()) {
+            String executablePath = executableFile.getAbsolutePath();
+            System.out.println("Using executable [" + executablePath + "]");
+            // Check if we've already generated source
+            if (generatedDir.listFiles().length >= targets.length) {
+                System.out.println("Parser source generation skipped since files already exist");
+            } else {
+                System.out.println("Generating files [" + targets.length + "]");
+                for (String target : targets) {
+                    File yaccFile = new File( YACC_FILES_PATH + "/" + target + ".y");
+                    if (!yaccFile.exists()) {
+                       throw new Exception("File not found [" + yaccFile.getAbsolutePath() + "]");
+                    }
+                    String[] args = new String[] {
+                            executablePath, "-Jclass=" + target, "-Jnoconstruct",
+                            "-Jimplements=AttributeParser<Void>",
+                            "-Jpackage=" + PACKAGE_NAME,  "-J", yaccFile.getAbsolutePath()
+                    };
+                    System.out.println("Generating " + target + ".java");
+                    new ProcessBuilder(Arrays.asList(args)).directory(generatedDir).start().waitFor();
+               }
+           }
+        } else {
+           throw new Exception("yacc executable could not be located");
+        }
+    } catch (Exception ex) {
+        System.err.println("Error: " + ex.getMessage());
+        throw ex;
+    }
