@@ -4,9 +4,10 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectInfoResultSetExtractor;
-import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.text.MessageFormat;
@@ -61,8 +62,8 @@ class IndexWithMntRoutes extends IndexWithReference {
                         "  LEFT JOIN last l ON l.object_id = {2}.object_id " +
                         "  WHERE {0}.{1} = ? " +
                         "  AND l.sequence_id != 0 ",
-                IndexStrategies.get(AttributeType.MNTNER).getLookupTableName(),
-                IndexStrategies.get(AttributeType.MNTNER).getLookupColumnName(),
+                IndexStrategies.get(AttributeTypes.MNTNER).getLookupTableName(),
+                IndexStrategies.get(AttributeTypes.MNTNER).getLookupColumnName(),
                 lookupTableName,
                 lookupColumnName);
 

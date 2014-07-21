@@ -9,10 +9,11 @@ import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
 import net.ripe.db.whois.common.domain.serials.Operation;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.support.AbstractDaoTest;
 import net.ripe.db.whois.common.support.database.diff.Database;
 import net.ripe.db.whois.common.support.database.diff.DatabaseDiff;
@@ -166,7 +167,7 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
     @Test
     public void delete_updated_object() {
         final RpslObjectUpdateInfo created = subject.createObject(makeObject(ObjectType.MNTNER, "TEST"));
-        final RpslObject rpslObject = makeObject(ObjectType.MNTNER, created.getKey(), new RpslAttribute(AttributeType.REMARKS, "updated"));
+        final RpslObject rpslObject = makeObject(ObjectType.MNTNER, created.getKey(), new RpslAttribute(AttributeTypes.REMARKS, "updated"));
 
         final RpslObjectUpdateInfo updated = subject.updateObject(created.getObjectId(), rpslObject);
         Database before = new Database(whoisTemplate);
@@ -300,19 +301,19 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
         assertThat(added.find("names", with("name", "second")), hasSize(2));
 
         // test lookup
-        final List<RpslObjectInfo> personIndex = IndexStrategies.get(AttributeType.PERSON).findInIndex(whoisTemplate, "name");
+        final List<RpslObjectInfo> personIndex = IndexStrategies.get(AttributeTypes.PERSON).findInIndex(whoisTemplate, "name");
         assertThat(personIndex.size(), is(2));
         assertConsistsOfObjectIds(personIndex, new int[]{1, 2});
 
-        final List<RpslObjectInfo> person2Index = IndexStrategies.get(AttributeType.PERSON).findInIndex(whoisTemplate, "second name");
+        final List<RpslObjectInfo> person2Index = IndexStrategies.get(AttributeTypes.PERSON).findInIndex(whoisTemplate, "second name");
         assertThat(person2Index.size(), is(1));
         assertConsistsOfObjectIds(person2Index, new int[]{2});
 
-        final List<RpslObjectInfo> roleIndex = IndexStrategies.get(AttributeType.ROLE).findInIndex(whoisTemplate, "second");
+        final List<RpslObjectInfo> roleIndex = IndexStrategies.get(AttributeTypes.ROLE).findInIndex(whoisTemplate, "second");
         assertThat(roleIndex.size(), is(1));
         assertConsistsOfObjectIds(roleIndex, new int[]{4});
 
-        final List<RpslObjectInfo> noneIndex = IndexStrategies.get(AttributeType.ROLE).findInIndex(whoisTemplate, "person");
+        final List<RpslObjectInfo> noneIndex = IndexStrategies.get(AttributeTypes.ROLE).findInIndex(whoisTemplate, "person");
         assertThat(noneIndex.size(), is(0));
 
         // now delete the objects
@@ -353,15 +354,15 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
         assertThat(added.find("org_name", with("name", "second")), hasSize(1));
 
         // test lookup
-        final List<RpslObjectInfo> orgIndex = IndexStrategies.get(AttributeType.ORG_NAME).findInIndex(whoisTemplate, "first");
+        final List<RpslObjectInfo> orgIndex = IndexStrategies.get(AttributeTypes.ORG_NAME).findInIndex(whoisTemplate, "first");
         assertThat(orgIndex.size(), is(1));
         assertConsistsOfObjectIds(orgIndex, new int[]{1});
 
-        final List<RpslObjectInfo> org2Index = IndexStrategies.get(AttributeType.ORG_NAME).findInIndex(whoisTemplate, "name");
+        final List<RpslObjectInfo> org2Index = IndexStrategies.get(AttributeTypes.ORG_NAME).findInIndex(whoisTemplate, "name");
         assertThat(org2Index.size(), is(2));
         assertConsistsOfObjectIds(org2Index, new int[]{1, 2});
 
-        final List<RpslObjectInfo> noneIndex = IndexStrategies.get(AttributeType.ORG_NAME).findInIndex(whoisTemplate, "bunny");
+        final List<RpslObjectInfo> noneIndex = IndexStrategies.get(AttributeTypes.ORG_NAME).findInIndex(whoisTemplate, "bunny");
         assertThat(noneIndex.size(), is(0));
 
         // now delete the objects
@@ -477,7 +478,7 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
         final RpslObjectUpdateInfo created = subject.createObject(makeObject(ObjectType.MNTNER, "TEST"));
         final Database oldDb = new Database(whoisTemplate);
 
-        final AttributeType addedAttributeType = AttributeType.MNT_BY;
+        final AttributeType addedAttributeType = AttributeTypes.MNT_BY;
         final RpslObject rpslObject = makeObject(ObjectType.MNTNER, created.getKey(), new RpslAttribute(addedAttributeType, referenced.getKey()));
         final RpslObjectUpdateInfo updated = subject.updateObject(created.getObjectId(), rpslObject);
 
@@ -531,7 +532,7 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
 
     @Test
     public void update_removeAttribute_Main() {
-        final AttributeType removedAttributeType = AttributeType.UPD_TO;
+        final AttributeType removedAttributeType = AttributeTypes.UPD_TO;
         final String removedKey = "UPD-TO";
         final RpslObject rpslObject = makeObject(ObjectType.MNTNER, "TEST", new RpslAttribute(removedAttributeType, removedKey));
 
@@ -575,7 +576,7 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
     public void update_removeAttribute_Leaf() {
         final RpslObjectUpdateInfo referenced = subject.createObject(makeObject(ObjectType.MNTNER, "MNT-BY"));
 
-        final AttributeType removedAttributeType = AttributeType.MNT_BY;
+        final AttributeType removedAttributeType = AttributeTypes.MNT_BY;
         final RpslObject rpslObject = makeObject(ObjectType.MNTNER, "TEST", new RpslAttribute(removedAttributeType, referenced.getKey()));
 
         final RpslObjectUpdateInfo created = subject.createObject(rpslObject);
@@ -625,7 +626,7 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
         final RpslObjectUpdateInfo objectD = subject.createObject(makeObject(ObjectType.ROLE, "D"));
 
         final String pkey = "TEST";
-        final AttributeType changedAttributeType = AttributeType.ADMIN_C;
+        final AttributeType changedAttributeType = AttributeTypes.ADMIN_C;
 
         final RpslObjectUpdateInfo created = subject.createObject(makeObject(ObjectType.MNTNER, pkey));
 
@@ -665,7 +666,7 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
         assertThat(added.find("last"), hasSize(1));
         assertThat(added.find("history"), hasSize(1));
 
-        final String admin_c = getTableForAttributeType(AttributeType.ADMIN_C);
+        final String admin_c = getTableForAttributeType(AttributeTypes.ADMIN_C);
 
         assertThat(added.find(admin_c), hasSize(2));
 
@@ -829,7 +830,7 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
         final RpslObjectUpdateInfo created = subject.createObject(makeObject(ObjectType.MNTNER, "PKEY"));
         final Database before = new Database(whoisTemplate);
 
-        final AttributeType attributeType = AttributeType.UPD_TO;
+        final AttributeType attributeType = AttributeTypes.UPD_TO;
         final RpslObjectUpdateInfo updated = subject.updateObject(created.getObjectId(), makeObject(ObjectType.MNTNER, "PKEY",
                 new RpslAttribute(attributeType, "upd@te.to"),
                 new RpslAttribute(attributeType, "UPD@TE.TO"),
@@ -853,7 +854,7 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
         final RpslObjectUpdateInfo created = subject.createObject(makeObject(ObjectType.MNTNER, "PKEY"));
         final Database before = new Database(whoisTemplate);
 
-        final AttributeType attributeType = AttributeType.ORG;
+        final AttributeType attributeType = AttributeTypes.ORG;
         final RpslObjectUpdateInfo updated = subject.updateObject(created.getObjectId(), makeObject(ObjectType.MNTNER, "PKEY",
                 new RpslAttribute(attributeType, "org-ref"),
                 new RpslAttribute(attributeType, "Org-rEF"),
@@ -873,17 +874,17 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
 
     /* The 4 methods below ensure we have no dependency on the data in the Object/AttributeDao we're testing. */
     private final Map<AttributeType, String> TABLE_BY_ATTRIBUTE = new HashMap<AttributeType, String>() {{
-        put(AttributeType.ABUSE_MAILBOX, "abuse_mailbox");
-        put(AttributeType.ADMIN_C, "admin_c");
-        put(AttributeType.AUTH, "auth");
-        put(AttributeType.MNTNER, "mntner");
-        put(AttributeType.MNT_BY, "mnt_by");
-        put(AttributeType.MNT_NFY, "mnt_nfy");
-        put(AttributeType.NOTIFY, "notify");
-        put(AttributeType.ORG, "org");
-        put(AttributeType.REFERRAL_BY, "referral_by");
-        put(AttributeType.TECH_C, "tech_c");
-        put(AttributeType.UPD_TO, "upd_to");
+        put(AttributeTypes.ABUSE_MAILBOX, "abuse_mailbox");
+        put(AttributeTypes.ADMIN_C, "admin_c");
+        put(AttributeTypes.AUTH, "auth");
+        put(AttributeTypes.MNTNER, "mntner");
+        put(AttributeTypes.MNT_BY, "mnt_by");
+        put(AttributeTypes.MNT_NFY, "mnt_nfy");
+        put(AttributeTypes.NOTIFY, "notify");
+        put(AttributeTypes.ORG, "org");
+        put(AttributeTypes.REFERRAL_BY, "referral_by");
+        put(AttributeTypes.TECH_C, "tech_c");
+        put(AttributeTypes.UPD_TO, "upd_to");
     }};
 
     private String getTableForAttributeType(final AttributeType attributeType) {
@@ -895,17 +896,17 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
     }
 
     private final Map<AttributeType, String> COLUMN_BY_ATTRIBUTE = new HashMap<AttributeType, String>() {{
-        put(AttributeType.ABUSE_MAILBOX, "abuse_mailbox");
-        put(AttributeType.ADMIN_C, "pe_ro_id");
-        put(AttributeType.AUTH, "auth");
-        put(AttributeType.MNTNER, "mntner");
-        put(AttributeType.MNT_BY, "mnt_id");
-        put(AttributeType.MNT_NFY, "mnt_nfy");
-        put(AttributeType.NOTIFY, "notify");
-        put(AttributeType.ORG, "org_id");
-        put(AttributeType.REFERRAL_BY, "mnt_id");
-        put(AttributeType.TECH_C, "pe_ro_id");
-        put(AttributeType.UPD_TO, "upd_to");
+        put(AttributeTypes.ABUSE_MAILBOX, "abuse_mailbox");
+        put(AttributeTypes.ADMIN_C, "pe_ro_id");
+        put(AttributeTypes.AUTH, "auth");
+        put(AttributeTypes.MNTNER, "mntner");
+        put(AttributeTypes.MNT_BY, "mnt_id");
+        put(AttributeTypes.MNT_NFY, "mnt_nfy");
+        put(AttributeTypes.NOTIFY, "notify");
+        put(AttributeTypes.ORG, "org_id");
+        put(AttributeTypes.REFERRAL_BY, "mnt_id");
+        put(AttributeTypes.TECH_C, "pe_ro_id");
+        put(AttributeTypes.UPD_TO, "upd_to");
     }};
 
     private String getColumnForAttributeType(final AttributeType attributeType) {
@@ -936,21 +937,21 @@ public class JdbcRpslObjectUpdateDaoTest extends AbstractDaoTest {
     private static RpslObject makeObject(final ObjectType type, final String pkey, final RpslAttribute... rpslAttributes) {
         final List<RpslAttribute> attributeList = Lists.newArrayList();
 
-        attributeList.add(new RpslAttribute(AttributeType.getByName(type.getName()), pkey));
+        attributeList.add(new RpslAttribute(AttributeTypes.getByName(type.getName()), pkey));
 
         // append secondary keys
         switch (type) {
             case INET6NUM:
             case INETNUM:
-                attributeList.add(new RpslAttribute(AttributeType.NETNAME, "netname"));
+                attributeList.add(new RpslAttribute(AttributeTypes.NETNAME, "netname"));
                 break;
             case ROUTE:
             case ROUTE6:
-                attributeList.add(new RpslAttribute(AttributeType.ORIGIN, "AS3333"));
+                attributeList.add(new RpslAttribute(AttributeTypes.ORIGIN, "AS3333"));
                 break;
             case PERSON:
             case ROLE:
-                attributeList.add(new RpslAttribute(AttributeType.NIC_HDL, pkey));
+                attributeList.add(new RpslAttribute(AttributeTypes.NIC_HDL, pkey));
                 break;
         }
 

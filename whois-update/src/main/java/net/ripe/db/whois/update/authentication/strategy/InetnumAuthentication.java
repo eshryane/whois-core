@@ -5,14 +5,11 @@ import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.iptree.IpEntry;
-import net.ripe.db.whois.common.iptree.Ipv4Entry;
-import net.ripe.db.whois.common.iptree.Ipv4Tree;
-import net.ripe.db.whois.common.iptree.Ipv6Entry;
-import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.iptree.*;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -62,10 +59,10 @@ public class InetnumAuthentication extends AuthenticationStrategyBase {
 
         final RpslObject parentObject = rpslObjectDao.getById(ipEntry.getObjectId());
 
-        AttributeType attributeType = AttributeType.MNT_LOWER;
+        AttributeType attributeType = AttributeTypes.MNT_LOWER;
         Collection<CIString> maintainerKeys = parentObject.getValuesForAttribute(attributeType);
         if (maintainerKeys.isEmpty()) {
-            attributeType = AttributeType.MNT_BY;
+            attributeType = AttributeTypes.MNT_BY;
             maintainerKeys = parentObject.getValuesForAttribute(attributeType);
         }
 

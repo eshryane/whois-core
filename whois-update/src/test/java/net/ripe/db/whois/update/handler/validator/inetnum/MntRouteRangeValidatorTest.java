@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.handler.validator.inetnum;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -117,7 +117,7 @@ public class MntRouteRangeValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeType.MNT_ROUTES)), eq(UpdateMessages.invalidIpv4Address("::/128")));
+        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeTypes.MNT_ROUTES)), eq(UpdateMessages.invalidIpv4Address("::/128")));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class MntRouteRangeValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeType.MNT_ROUTES)), eq(UpdateMessages.invalidIpv6Address("192.0.0.0/24")));
+        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeTypes.MNT_ROUTES)), eq(UpdateMessages.invalidIpv6Address("192.0.0.0/24")));
     }
 
     @Test
@@ -143,7 +143,7 @@ public class MntRouteRangeValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeType.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("192.0.0.0/16")));
+        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeTypes.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("192.0.0.0/16")));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class MntRouteRangeValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeType.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("2a00:c00::/16")));
+        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeTypes.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("2a00:c00::/16")));
     }
 
     @Test
@@ -169,8 +169,8 @@ public class MntRouteRangeValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeType.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("192.0.0.0/16")));
-        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeType.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("192.0.0.0/8")));
+        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeTypes.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("192.0.0.0/16")));
+        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeTypes.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("192.0.0.0/8")));
     }
 
     @Test
@@ -183,8 +183,8 @@ public class MntRouteRangeValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeType.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("2a00:c00::/24")));
-        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeType.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("2a00:c00::/16")));
+        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeTypes.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("2a00:c00::/24")));
+        verify(updateContext).addMessage(any(PreparedUpdate.class), eq(rpslObject.findAttribute(AttributeTypes.MNT_ROUTES)), eq(UpdateMessages.invalidRouteRange("2a00:c00::/16")));
     }
 
     @Test

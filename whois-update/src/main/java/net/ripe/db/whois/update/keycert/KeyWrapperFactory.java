@@ -2,9 +2,9 @@ package net.ripe.db.whois.update.keycert;
 
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.UpdateContainer;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class KeyWrapperFactory {
             }
         } catch (IllegalArgumentException e) {
             final Message errorMessage = new Message(Messages.Type.ERROR, e.getMessage());
-            final List<RpslAttribute> attributes = object.findAttributes(AttributeType.CERTIF);
+            final List<RpslAttribute> attributes = object.findAttributes(AttributeTypes.CERTIF);
             if (attributes.isEmpty()) {
                 updateContext.addMessage(updateContainer, errorMessage);
             } else {

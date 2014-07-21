@@ -1,15 +1,11 @@
 package net.ripe.db.whois.update.handler.validator.inetnum;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
-import net.ripe.db.whois.update.domain.Action;
-import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.UpdateContainer;
-import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.domain.UpdateMessages;
+import net.ripe.db.whois.update.domain.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,11 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static net.ripe.db.whois.common.domain.CIString.ciSet;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -67,14 +59,14 @@ public class MntLowerAddedRemovedTest {
     @Test
     public void modify_mntLower_added_inetnum() {
         when(update.getType()).thenReturn(ObjectType.INETNUM);
-        when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
         when(update.getReferenceObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ASSIGNED ANYCAST"));
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ASSIGNED ANYCAST\nmnt-lower: TEST-MNT"));
         when(updateContext.getSubject(update)).thenReturn(authenticationSubject);
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -96,12 +88,12 @@ public class MntLowerAddedRemovedTest {
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
         when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff::/48\nstatus: ASSIGNED PI"));
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/48\nstatus: ASSIGNED PI\nmnt-lower: TEST-MNT"));
-        when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
         when(updateContext.getSubject(update)).thenReturn(authenticationSubject);
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -123,12 +115,12 @@ public class MntLowerAddedRemovedTest {
         when(update.getType()).thenReturn(ObjectType.INETNUM);
         when(update.getReferenceObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ASSIGNED ANYCAST\nmnt-lower: TEST-MNT"));
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ASSIGNED ANYCAST"));
-        when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
         when(updateContext.getSubject(update)).thenReturn(authenticationSubject);
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -150,12 +142,12 @@ public class MntLowerAddedRemovedTest {
         when(update.getType()).thenReturn(ObjectType.INET6NUM);
         when(update.getReferenceObject()).thenReturn(RpslObject.parse("inet6num: ffff::/48\nstatus: ASSIGNED ANYCAST\nmnt-lower: TEST-MNT"));
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inet6num: ffff::/48\nstatus: ASSIGNED ANYCAST"));
-        when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_LOWER)).thenReturn(ciSet("TEST-MNT"));
         when(updateContext.getSubject(update)).thenReturn(authenticationSubject);
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -181,7 +173,7 @@ public class MntLowerAddedRemovedTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -207,7 +199,7 @@ public class MntLowerAddedRemovedTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -234,7 +226,7 @@ public class MntLowerAddedRemovedTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -246,7 +238,7 @@ public class MntLowerAddedRemovedTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -257,19 +249,19 @@ public class MntLowerAddedRemovedTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext, never()).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 
     @Test
     public void modify_fails_assigned_anycast_inetnum() {
         when(update.getType()).thenReturn(ObjectType.INETNUM);
-        when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("OTHER-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_LOWER)).thenReturn(ciSet("OTHER-MNT"));
         when(update.getReferenceObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ASSIGNED ANYCAST\nmnt-lower: TEST-MNT"));
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ASSIGNED ANYCAST\nmnt-lower: OTHER-MNT"));
         when(updateContext.getSubject(update)).thenReturn(authenticationSubject);
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, times(1)).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+        verify(updateContext, times(1)).addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
     }
 }

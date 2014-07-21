@@ -1,10 +1,11 @@
 package net.ripe.db.whois.update.handler.validator.sets;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -23,8 +24,8 @@ public class PeeringSetAttributeMustBePresent implements BusinessRuleValidator {
 
     public PeeringSetAttributeMustBePresent() {
         attributeMap = new HashMap<>();
-        attributeMap.put(ObjectType.PEERING_SET, Lists.newArrayList(AttributeType.PEERING, AttributeType.MP_PEERING));
-        attributeMap.put(ObjectType.FILTER_SET, Lists.newArrayList(AttributeType.FILTER, AttributeType.MP_FILTER));
+        attributeMap.put(ObjectType.PEERING_SET, Lists.newArrayList(AttributeTypes.PEERING, AttributeTypes.MP_PEERING));
+        attributeMap.put(ObjectType.FILTER_SET, Lists.newArrayList(AttributeTypes.FILTER, AttributeTypes.MP_FILTER));
     }
 
     @Override

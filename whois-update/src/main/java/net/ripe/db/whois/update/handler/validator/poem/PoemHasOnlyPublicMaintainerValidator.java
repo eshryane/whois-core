@@ -2,9 +2,9 @@ package net.ripe.db.whois.update.handler.validator.poem;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -32,7 +32,7 @@ public class PoemHasOnlyPublicMaintainerValidator implements BusinessRuleValidat
 
     @Override
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
-        final RpslAttribute mntByAttribute = update.getUpdatedObject().findAttribute(AttributeType.MNT_BY);
+        final RpslAttribute mntByAttribute = update.getUpdatedObject().findAttribute(AttributeTypes.MNT_BY);
         if (!mntByAttribute.getCleanValue().equals(POEM_MAINTAINER)) {
             updateContext.addMessage(update, mntByAttribute, UpdateMessages.poemRequiresPublicMaintainer());
         }

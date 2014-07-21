@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.handler.validator.common;
 
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.dao.CountryCodeRepository;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -43,6 +43,6 @@ public class CountryValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeType.COUNTRY), UpdateMessages.countryNotRecognised(ciString("AB")));
+        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeTypes.COUNTRY), UpdateMessages.countryNotRecognised(ciString("AB")));
     }
 }

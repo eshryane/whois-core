@@ -2,10 +2,10 @@ package net.ripe.db.whois.update.handler.validator.common;
 
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -74,7 +74,7 @@ public class MntRoutesValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeType.MNT_ROUTES), new Message(Messages.Type.ERROR, "Syntax error in EXACT-MR-MNT {any, 20.13.0.0/16^+} (ANY can only occur as a single value)"));
+        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeTypes.MNT_ROUTES), new Message(Messages.Type.ERROR, "Syntax error in EXACT-MR-MNT {any, 20.13.0.0/16^+} (ANY can only occur as a single value)"));
     }
 
     @Test
@@ -133,7 +133,7 @@ public class MntRoutesValidatorTest {
 
         subject.validate(update, updateContext);
 
-        final List<RpslAttribute> attributes = rpslObject.findAttributes(AttributeType.MNT_ROUTES);
+        final List<RpslAttribute> attributes = rpslObject.findAttributes(AttributeTypes.MNT_ROUTES);
         verify(updateContext).addMessage(update, attributes.get(0), new Message(Messages.Type.ERROR, "Syntax error in EXACT-MR-MNT {20.13.0.0/16^+} (ANY can only occur as a single value)"));
         verify(updateContext).addMessage(update, attributes.get(1), new Message(Messages.Type.ERROR, "Syntax error in EXACT-MR-MNT any (ANY can only occur as a single value)"));
     }

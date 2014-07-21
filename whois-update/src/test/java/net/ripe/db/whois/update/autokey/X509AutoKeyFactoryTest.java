@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.autokey;
 
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.autokey.dao.X509Repository;
 import net.ripe.db.whois.update.domain.X509KeycertId;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class X509AutoKeyFactoryTest {
 
     @Test
     public void attributeType() {
-        assertThat(subject.getAttributeType(), is(AttributeType.KEY_CERT));
+        assertThat(subject.getAttributeType(), is(AttributeTypes.KEY_CERT));
     }
 
     @Test

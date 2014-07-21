@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.domain;
 
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,7 +88,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.CREATE);
 
-        final Set<CIString> newValues = subject.getNewValues(AttributeType.MNT_BY);
+        final Set<CIString> newValues = subject.getNewValues(AttributeTypes.MNT_BY);
         assertThat(newValues, contains(ciString("DEV-MNT-1"), ciString("dev-MNT-2")));
     }
 
@@ -105,7 +105,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.MODIFY);
 
-        final Set<CIString> newValues = subject.getNewValues(AttributeType.MNT_BY);
+        final Set<CIString> newValues = subject.getNewValues(AttributeTypes.MNT_BY);
         assertThat(newValues, contains(ciString("dev-MNT-2")));
     }
 
@@ -122,7 +122,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.MODIFY);
 
-        final Set<CIString> newValues = subject.getNewValues(AttributeType.MNT_IRT);
+        final Set<CIString> newValues = subject.getNewValues(AttributeTypes.MNT_IRT);
         assertThat(newValues, hasSize(0));
     }
 
@@ -139,7 +139,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.MODIFY);
 
-        final Set<CIString> newValues = subject.getNewValues(AttributeType.MNT_BY);
+        final Set<CIString> newValues = subject.getNewValues(AttributeTypes.MNT_BY);
         assertThat(newValues, hasSize(0));
     }
 
@@ -155,7 +155,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-1\n"),
                 Action.DELETE);
 
-        final Set<CIString> newValues = subject.getNewValues(AttributeType.MNT_BY);
+        final Set<CIString> newValues = subject.getNewValues(AttributeTypes.MNT_BY);
         assertThat(newValues, hasSize(0));
     }
 
@@ -170,7 +170,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.CREATE);
 
-        final Set<CIString> differences = subject.getDifferences(AttributeType.MNT_BY);
+        final Set<CIString> differences = subject.getDifferences(AttributeTypes.MNT_BY);
         assertThat(differences, contains(ciString("DEV-MNT-1"), ciString("dev-MNT-2")));
     }
 
@@ -187,7 +187,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.MODIFY);
 
-        final Set<CIString> differences = subject.getDifferences(AttributeType.MNT_BY);
+        final Set<CIString> differences = subject.getDifferences(AttributeTypes.MNT_BY);
         assertThat(differences, contains(ciString("dev-MNT-2")));
     }
 
@@ -204,7 +204,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.MODIFY);
 
-        final Set<CIString> differences = subject.getDifferences(AttributeType.MNT_IRT);
+        final Set<CIString> differences = subject.getDifferences(AttributeTypes.MNT_IRT);
         assertThat(differences, hasSize(0));
     }
 
@@ -221,7 +221,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.MODIFY);
 
-        final Set<CIString> differences = subject.getDifferences(AttributeType.MNT_BY);
+        final Set<CIString> differences = subject.getDifferences(AttributeTypes.MNT_BY);
         assertThat(differences, contains(ciString("DEV-MNT-1")));
     }
 
@@ -239,7 +239,7 @@ public class PreparedUpdateTest {
                         "mnt-by:   DEV-MNT-2\n"),
                 Action.DELETE);
 
-        final Set<CIString> differences = subject.getDifferences(AttributeType.MNT_BY);
+        final Set<CIString> differences = subject.getDifferences(AttributeTypes.MNT_BY);
         assertThat(differences, contains(ciString("DEV-MNT-1"), ciString("DEV-MNT-2")));
     }
 }

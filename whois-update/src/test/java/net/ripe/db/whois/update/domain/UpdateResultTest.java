@@ -1,6 +1,10 @@
 package net.ripe.db.whois.update.domain;
 
-import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.ObjectMessages;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -24,7 +28,7 @@ public class UpdateResultTest {
         objectMessages.addMessage(UpdateMessages.filteredNotAllowed());
         objectMessages.addMessage(updatedObject.getAttributes().get(0), UpdateMessages.objectInUse(updatedObject));
         objectMessages.addMessage(updatedObject.getAttributes().get(2), ValidationMessages.unknownAttribute("invalid"));
-        objectMessages.addMessage(updatedObject.getAttributes().get(3), UpdateMessages.referencedObjectMissingAttribute(ObjectType.MNTNER, "MNT2", AttributeType.DESCR));
+        objectMessages.addMessage(updatedObject.getAttributes().get(3), UpdateMessages.referencedObjectMissingAttribute(ObjectType.MNTNER, "MNT2", AttributeTypes.DESCR));
 
         final UpdateResult subject = new UpdateResult(null, updatedObject, Action.MODIFY, UpdateStatus.FAILED, objectMessages, 0, false);
 

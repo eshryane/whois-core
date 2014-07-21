@@ -2,10 +2,11 @@ package net.ripe.db.whois.common.query.planner;
 
 import com.google.common.base.Function;
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectTemplate;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ class ToKeysFunction implements Function<ResponseObject, ResponseObject> {
             for (final RpslAttribute attribute : attributes) {
                 final AttributeType attributeType = attribute.getType();
 
-                if (keyAttributes.contains(attributeType) || (template.isSet() && (AttributeType.MEMBERS.equals(attributeType) || AttributeType.MP_MEMBERS.equals(attributeType)))) {
+                if (keyAttributes.contains(attributeType) || (template.isSet() && (AttributeTypes.MEMBERS.equals(attributeType) || AttributeTypes.MP_MEMBERS.equals(attributeType)))) {
                     newAttributes.add(attribute);
                 }
             }

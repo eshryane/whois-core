@@ -1,8 +1,8 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,7 +17,7 @@ public class IndexWithNameTest extends IndexTestBase {
 
     @Before
     public void setUp() throws Exception {
-        subject = IndexStrategies.get(AttributeType.ORG_NAME);
+        subject = IndexStrategies.get(AttributeTypes.ORG_NAME);
     }
 
     @Test

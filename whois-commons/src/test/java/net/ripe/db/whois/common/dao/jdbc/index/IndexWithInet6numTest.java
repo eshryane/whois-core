@@ -2,9 +2,9 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class IndexWithInet6numTest extends IndexTestBase {
 
     @Before
     public void setup() {
-        subject = new IndexWithInet6num(AttributeType.INET6NUM);
+        subject = new IndexWithInet6num(AttributeTypes.INET6NUM);
         rpslObjectInfo = new RpslObjectInfo(1, ObjectType.INET6NUM, "2001::/64");
     }
 

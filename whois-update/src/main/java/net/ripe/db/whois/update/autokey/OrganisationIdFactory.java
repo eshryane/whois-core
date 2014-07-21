@@ -1,8 +1,9 @@
 package net.ripe.db.whois.update.autokey;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.autokey.dao.OrganisationIdRepository;
 import net.ripe.db.whois.update.domain.OrganisationId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,12 @@ public class OrganisationIdFactory extends AbstractAutoKeyFactory<OrganisationId
 
     @Override
     public AttributeType getAttributeType() {
-        return AttributeType.ORGANISATION;
+        return AttributeTypes.ORGANISATION;
     }
 
     @Override
     public OrganisationId generate(final String keyPlaceHolder, final RpslObject object) {
-        return generateForName(keyPlaceHolder, object.getValueForAttribute(AttributeType.ORG_NAME).toString());
+        return generateForName(keyPlaceHolder, object.getValueForAttribute(AttributeTypes.ORG_NAME).toString());
     }
 
     @Override

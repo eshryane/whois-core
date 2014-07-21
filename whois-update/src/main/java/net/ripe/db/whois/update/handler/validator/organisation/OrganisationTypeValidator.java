@@ -3,9 +3,9 @@ package net.ripe.db.whois.update.handler.validator.organisation;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.domain.Action;
@@ -41,7 +41,7 @@ public class OrganisationTypeValidator implements BusinessRuleValidator {
             return;
         }
 
-        final RpslAttribute attribute = update.getUpdatedObject().findAttribute(AttributeType.ORG_TYPE);
+        final RpslAttribute attribute = update.getUpdatedObject().findAttribute(AttributeTypes.ORG_TYPE);
         final CIString orgType = attribute.getCleanValue();
 
         if (!OTHER.equals(orgType) && orgTypeHasChanged(update, orgType) && !subject.hasPrincipal(Principal.POWER_MAINTAINER)) {
@@ -54,6 +54,6 @@ public class OrganisationTypeValidator implements BusinessRuleValidator {
             return true;
         }
 
-        return !update.getReferenceObject().getValueForAttribute(AttributeType.ORG_TYPE).equals(orgTypeUpdatedObject);
+        return !update.getReferenceObject().getValueForAttribute(AttributeTypes.ORG_TYPE).equals(orgTypeUpdatedObject);
     }
 }

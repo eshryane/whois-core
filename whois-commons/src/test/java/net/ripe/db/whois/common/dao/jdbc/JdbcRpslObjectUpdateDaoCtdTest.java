@@ -5,9 +5,9 @@ import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.support.AbstractDaoTest;
 import org.junit.After;
 import org.junit.Before;
@@ -18,9 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static net.ripe.db.whois.common.domain.CIString.ciString;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class JdbcRpslObjectUpdateDaoCtdTest extends AbstractDaoTest {
@@ -41,8 +39,8 @@ public class JdbcRpslObjectUpdateDaoCtdTest extends AbstractDaoTest {
         final RpslObject maintainer = RpslObject.parse("mntner: TEST-MNT\nmnt-by:TEST-MNT\nadmin-c:NIC-TEST");
 
         final Map<RpslAttribute, Set<CIString>> invalidReferences = subject.getInvalidReferences(maintainer);
-        assertThat(invalidReferences.keySet(), contains(maintainer.findAttribute(AttributeType.ADMIN_C)));
-        assertThat(invalidReferences.get(maintainer.findAttribute(AttributeType.ADMIN_C)), contains(ciString("NIC-TEST")));
+        assertThat(invalidReferences.keySet(), contains(maintainer.findAttribute(AttributeTypes.ADMIN_C)));
+        assertThat(invalidReferences.get(maintainer.findAttribute(AttributeTypes.ADMIN_C)), contains(ciString("NIC-TEST")));
     }
 
     @Test
@@ -92,7 +90,7 @@ public class JdbcRpslObjectUpdateDaoCtdTest extends AbstractDaoTest {
         final RpslObject inet = RpslObject.parse("inetnum: 192.168.0.0 - 192.168.0.255\norg:ORG-TEST\nnetname: TEST-RIPE");
         subject.createObject(inet);
 
-        final RpslObjectInfo attributeReference = subject.getAttributeReference(AttributeType.ORG, ciString("ORG-TEST"));
+        final RpslObjectInfo attributeReference = subject.getAttributeReference(AttributeTypes.ORG, ciString("ORG-TEST"));
         assertThat(attributeReference.getObjectId(), is(object.getObjectId()));
     }
 

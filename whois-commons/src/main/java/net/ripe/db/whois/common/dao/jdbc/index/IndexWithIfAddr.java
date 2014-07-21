@@ -4,8 +4,8 @@ import com.google.common.base.Splitter;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectInfoResultSetExtractor;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Collections;

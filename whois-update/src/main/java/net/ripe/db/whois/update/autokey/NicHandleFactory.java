@@ -1,8 +1,9 @@
 package net.ripe.db.whois.update.autokey;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.autokey.dao.NicHandleRepository;
 import net.ripe.db.whois.update.dao.CountryCodeRepository;
 import net.ripe.db.whois.update.domain.NicHandle;
@@ -27,7 +28,7 @@ public class NicHandleFactory extends AbstractAutoKeyFactory<NicHandle> {
 
     @Override
     public AttributeType getAttributeType() {
-        return AttributeType.NIC_HDL;
+        return AttributeTypes.NIC_HDL;
     }
 
     @Override

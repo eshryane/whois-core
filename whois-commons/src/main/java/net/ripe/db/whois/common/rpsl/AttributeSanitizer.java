@@ -8,6 +8,8 @@ import net.ripe.db.whois.common.DateTimeProvider;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.rpsl.attrs.Changed;
 import net.ripe.db.whois.common.rpsl.attrs.DsRdata;
 import net.ripe.db.whois.common.rpsl.attrs.NServer;
@@ -32,19 +34,19 @@ public class AttributeSanitizer {
     public AttributeSanitizer(DateTimeProvider dateTimeProvider) {
         this.dateTimeProvider = dateTimeProvider;
 
-        SANITIZER_MAP = Maps.newEnumMap(AttributeType.class);
-        SANITIZER_MAP.put(AttributeType.DOMAIN, new DomainSanitizer());
-        SANITIZER_MAP.put(AttributeType.INETNUM, new InetnumSanitizer());
-        SANITIZER_MAP.put(AttributeType.INET6NUM, new Inet6numSanitizer());
-        SANITIZER_MAP.put(AttributeType.INET_RTR, new InetrtrSanitizer());
-        SANITIZER_MAP.put(AttributeType.NSERVER, new NServerSanitizer());
-        SANITIZER_MAP.put(AttributeType.ROUTE, new RouteSanitizer());
-        SANITIZER_MAP.put(AttributeType.ROUTE6, new Route6Sanitizer());
-        SANITIZER_MAP.put(AttributeType.ALIAS, new AliasSanitizer());
-        SANITIZER_MAP.put(AttributeType.CHANGED, new ChangedSanitizer());
-        SANITIZER_MAP.put(AttributeType.DS_RDATA, new DsRdataSanitizer());
-        SANITIZER_MAP.put(AttributeType.SOURCE, new UppercaseSanitizer());
-        SANITIZER_MAP.put(AttributeType.STATUS, new UppercaseSanitizer());
+        SANITIZER_MAP = Maps.newHashMap();
+        SANITIZER_MAP.put(AttributeTypes.DOMAIN, new DomainSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.INETNUM, new InetnumSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.INET6NUM, new Inet6numSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.INET_RTR, new InetrtrSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.NSERVER, new NServerSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.ROUTE, new RouteSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.ROUTE6, new Route6Sanitizer());
+        SANITIZER_MAP.put(AttributeTypes.ALIAS, new AliasSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.CHANGED, new ChangedSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.DS_RDATA, new DsRdataSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.SOURCE, new UppercaseSanitizer());
+        SANITIZER_MAP.put(AttributeTypes.STATUS, new UppercaseSanitizer());
 
         // add the default sanitizer for keys and primary attributes
         for (ObjectTemplate objectTemplate : ObjectTemplate.getTemplates()) {

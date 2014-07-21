@@ -3,9 +3,13 @@ package net.ripe.db.whois.update.handler.validator.common;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.ObjectTemplate;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslAttribute;
+import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.rpsl.attrs.AttributeParseException;
 import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
-import net.ripe.db.whois.common.rpsl.*;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -27,7 +31,7 @@ public class MntRoutesValidator implements BusinessRuleValidator {
         final List<ObjectType> types = Lists.newArrayList();
 
         for (final ObjectType objectType : ObjectType.values()) {
-            if (ObjectTemplate.getTemplate(objectType).hasAttribute(AttributeType.MNT_ROUTES)) {
+            if (ObjectTemplate.getTemplate(objectType).hasAttribute(AttributeTypes.MNT_ROUTES)) {
                 types.add(objectType);
             }
         }
@@ -39,7 +43,7 @@ public class MntRoutesValidator implements BusinessRuleValidator {
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
         final Map<MntRoutes, RpslAttribute> mntRoutesMap = Maps.newHashMap();
 
-        for (final RpslAttribute attribute : update.getUpdatedObject().findAttributes(AttributeType.MNT_ROUTES)) {
+        for (final RpslAttribute attribute : update.getUpdatedObject().findAttributes(AttributeTypes.MNT_ROUTES)) {
             for (final CIString mntRoutesValue : attribute.getCleanValues()) {
                 try {
                     final MntRoutes mntRoutes = MntRoutes.parse(mntRoutesValue);

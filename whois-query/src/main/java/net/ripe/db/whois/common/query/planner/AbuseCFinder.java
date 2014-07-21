@@ -9,9 +9,9 @@ import net.ripe.db.whois.common.ip.Ipv6Resource;
 import net.ripe.db.whois.common.iptree.IpEntry;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class AbuseCFinder {
     @Nullable
     public String getAbuseContact(final RpslObject object){
         final RpslObject role = getAbuseContactRole(object);
-        return (role != null) ? role.getValueForAttribute(AttributeType.ABUSE_MAILBOX).toString() : null;
+        return (role != null) ? role.getValueForAttribute(AttributeTypes.ABUSE_MAILBOX).toString() : null;
     }
 
     @CheckForNull
@@ -77,11 +77,11 @@ public class AbuseCFinder {
     @Nullable
     private RpslObject getAbuseContactRoleInternal(final RpslObject object) {
         try {
-            if (object.containsAttribute(AttributeType.ORG)) {
-                final RpslObject organisation = objectDao.getByKey(ObjectType.ORGANISATION, object.getValueForAttribute(AttributeType.ORG));
-                if (organisation.containsAttribute(AttributeType.ABUSE_C)) {
-                    final RpslObject abuseCRole = objectDao.getByKey(ObjectType.ROLE, organisation.getValueForAttribute(AttributeType.ABUSE_C));
-                    if (abuseCRole.containsAttribute(AttributeType.ABUSE_MAILBOX)) {
+            if (object.containsAttribute(AttributeTypes.ORG)) {
+                final RpslObject organisation = objectDao.getByKey(ObjectType.ORGANISATION, object.getValueForAttribute(AttributeTypes.ORG));
+                if (organisation.containsAttribute(AttributeTypes.ABUSE_C)) {
+                    final RpslObject abuseCRole = objectDao.getByKey(ObjectType.ROLE, organisation.getValueForAttribute(AttributeTypes.ABUSE_C));
+                    if (abuseCRole.containsAttribute(AttributeTypes.ABUSE_MAILBOX)) {
                         return abuseCRole;
                     }
                 }
@@ -93,7 +93,7 @@ public class AbuseCFinder {
     }
 
     private boolean isMaintainedByRs(final RpslObject inetObject) {
-        return !Sets.intersection(this.maintainers.getRsMaintainers(), inetObject.getValuesForAttribute(AttributeType.MNT_BY, AttributeType.MNT_LOWER)).isEmpty();
+        return !Sets.intersection(this.maintainers.getRsMaintainers(), inetObject.getValuesForAttribute(AttributeTypes.MNT_BY, AttributeTypes.MNT_LOWER)).isEmpty();
     }
 
     @Nullable

@@ -4,21 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.api.AbstractIntegrationTest;
 import net.ripe.db.whois.api.RestTest;
-import net.ripe.db.whois.api.rest.domain.Attribute;
-import net.ripe.db.whois.api.rest.domain.Flag;
-import net.ripe.db.whois.api.rest.domain.Flags;
-import net.ripe.db.whois.api.rest.domain.InverseAttributes;
-import net.ripe.db.whois.api.rest.domain.Link;
-import net.ripe.db.whois.api.rest.domain.Parameters;
-import net.ripe.db.whois.api.rest.domain.QueryStrings;
-import net.ripe.db.whois.api.rest.domain.Source;
-import net.ripe.db.whois.api.rest.domain.Sources;
-import net.ripe.db.whois.api.rest.domain.TypeFilters;
-import net.ripe.db.whois.api.rest.domain.WhoisObject;
-import net.ripe.db.whois.api.rest.domain.WhoisResources;
-import net.ripe.db.whois.api.rest.domain.WhoisTag;
-import net.ripe.db.whois.api.rest.domain.WhoisVersion;
-import net.ripe.db.whois.api.rest.domain.WhoisVersions;
+import net.ripe.db.whois.api.rest.domain.*;
 import net.ripe.db.whois.api.rest.mapper.DirtyClientAttributeMapper;
 import net.ripe.db.whois.api.rest.mapper.FormattedClientAttributeMapper;
 import net.ripe.db.whois.api.rest.mapper.WhoisObjectMapper;
@@ -27,12 +13,8 @@ import net.ripe.db.whois.common.MaintenanceMode;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
 import net.ripe.db.whois.common.domain.User;
 import net.ripe.db.whois.common.domain.io.Downloader;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
-import net.ripe.db.whois.common.rpsl.RpslObjectFilter;
+import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.support.DummyWhoisClient;
 import net.ripe.db.whois.update.mail.MailSenderStub;
 import org.glassfish.jersey.client.ClientProperties;
@@ -47,12 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.NotAllowedException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ServiceUnavailableException;
+import javax.ws.rs.*;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -65,20 +42,8 @@ import java.util.List;
 import java.util.Map;
 
 import static net.ripe.db.whois.common.support.StringMatchesRegexp.stringMatchesRegexp;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 // FIXME: make this into a suite that runs twice: once with XML, once with JSON
 @Category(IntegrationTest.class)
@@ -2150,7 +2115,7 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
     @Test
     public void update_succeeds() {
         databaseHelper.addObject(PAULETH_PALTHEN);
-        final RpslObject updatedObject = new RpslObjectBuilder(PAULETH_PALTHEN).append(new RpslAttribute(AttributeType.REMARKS, "updated")).sort().get();
+        final RpslObject updatedObject = new RpslObjectBuilder(PAULETH_PALTHEN).append(new RpslAttribute(AttributeTypes.REMARKS, "updated")).sort().get();
 
         WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/person/PP1-TEST?password=test")
                 .request(MediaType.APPLICATION_XML)
@@ -2452,7 +2417,7 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
 
     @Test
     public void update_missing_mandatory_fields() {
-        final RpslObject updatedObject = new RpslObjectBuilder(PAULETH_PALTHEN).removeAttributeType(AttributeType.CHANGED).get();
+        final RpslObject updatedObject = new RpslObjectBuilder(PAULETH_PALTHEN).removeAttributeType(AttributeTypes.CHANGED).get();
 
         try {
             RestTest.target(getPort(), "whois/test/person/PP1-TEST?password=test")
@@ -2473,16 +2438,16 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
 
     @Test
     public void update_comment_is_noop_and_returns_old_object() {
-        assertThat(TEST_PERSON.findAttributes(AttributeType.REMARKS), hasSize(0));
+        assertThat(TEST_PERSON.findAttributes(AttributeTypes.REMARKS), hasSize(0));
         final RpslObjectBuilder builder = new RpslObjectBuilder(TEST_PERSON);
-        final RpslAttribute remarks = new RpslAttribute(AttributeType.REMARKS, "updated # comment");
+        final RpslAttribute remarks = new RpslAttribute(AttributeTypes.REMARKS, "updated # comment");
         builder.append(remarks);
 
         RestTest.target(getPort(), "whois/test/person/TP1-TEST?password=test")
                 .request(MediaType.APPLICATION_XML)
                 .put(Entity.entity(whoisObjectMapper.mapRpslObjects(FormattedClientAttributeMapper.class, builder.sort().get()), MediaType.APPLICATION_XML), WhoisResources.class);
 
-        builder.replaceAttribute(remarks, new RpslAttribute(AttributeType.REMARKS, "updated # new comment"));
+        builder.replaceAttribute(remarks, new RpslAttribute(AttributeTypes.REMARKS, "updated # new comment"));
 
         final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/person/TP1-TEST?password=test")
                 .request(MediaType.APPLICATION_XML)
@@ -2497,7 +2462,7 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
         databaseHelper.addObject(PAULETH_PALTHEN);
         databaseHelper.insertUser(User.createWithPlainTextPassword("agoston", "zoh", ObjectType.PERSON));
 
-        final RpslObject updatedObject = new RpslObjectBuilder(PAULETH_PALTHEN).append(new RpslAttribute(AttributeType.REMARKS, "updated")).sort().get();
+        final RpslObject updatedObject = new RpslObjectBuilder(PAULETH_PALTHEN).append(new RpslAttribute(AttributeTypes.REMARKS, "updated")).sort().get();
 
         WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/person/PP1-TEST?override=agoston,zoh,reason")
                 .request(MediaType.APPLICATION_XML)
@@ -2550,7 +2515,7 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                         "source:        TEST\n"
         );
         databaseHelper.addObject(person);
-        final RpslObject updatedPerson = new RpslObjectBuilder(person).append(new RpslAttribute(AttributeType.REMARKS, "updated")).get();
+        final RpslObject updatedPerson = new RpslObjectBuilder(person).append(new RpslAttribute(AttributeTypes.REMARKS, "updated")).get();
 
         RestTest.target(getPort(), "whois/test/person/PP1-TEST?password=123")
                 .request()
@@ -2588,7 +2553,7 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                         "source:        TEST\n"
         );
         databaseHelper.addObject(person);
-        final RpslObject updatedPerson = new RpslObjectBuilder(person).append(new RpslAttribute(AttributeType.REMARKS, "updated")).get();
+        final RpslObject updatedPerson = new RpslObjectBuilder(person).append(new RpslAttribute(AttributeTypes.REMARKS, "updated")).get();
 
         try {
             RestTest.target(getPort(), "whois/test/person/PP1-TEST?password=invalid")
@@ -2630,7 +2595,7 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                         "source:        TEST\n"
         );
         databaseHelper.addObject(person);
-        final RpslObject updatedPerson = new RpslObjectBuilder(person).append(new RpslAttribute(AttributeType.REMARKS, "updated")).get();
+        final RpslObject updatedPerson = new RpslObjectBuilder(person).append(new RpslAttribute(AttributeTypes.REMARKS, "updated")).get();
 
         RestTest.target(getPort(), "whois/test/person/PP1-TEST?override=agoston,zoh,reason")
                 .request()
@@ -2669,7 +2634,7 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
                         "source:        TEST\n"
         );
         databaseHelper.addObject(person);
-        final RpslObject updatedPerson = new RpslObjectBuilder(person).append(new RpslAttribute(AttributeType.REMARKS, "updated")).get();
+        final RpslObject updatedPerson = new RpslObjectBuilder(person).append(new RpslAttribute(AttributeTypes.REMARKS, "updated")).get();
 
         RestTest.target(getPort(), "whois/test/person/PP1-TEST")
                 .queryParam("override", encode("agoston,zoh,reason {notify=false}"))
@@ -2697,7 +2662,7 @@ public class WhoisRestServiceTestIntegration extends AbstractIntegrationTest {
 
         databaseHelper.addObject(rpslObject);
 
-        final RpslObject updatedObject = new RpslObjectBuilder(rpslObject).append(new RpslAttribute(AttributeType.FAX_NO, "+30 123")).get();
+        final RpslObject updatedObject = new RpslObjectBuilder(rpslObject).append(new RpslAttribute(AttributeTypes.FAX_NO, "+30 123")).get();
 
         final WhoisResources whoisResources = RestTest.target(getPort(), "whois/test/person/PP1-TEST?password=test&unformatted")
                 .request()

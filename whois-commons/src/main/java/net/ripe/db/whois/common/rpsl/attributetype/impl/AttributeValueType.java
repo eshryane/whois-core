@@ -1,4 +1,4 @@
-package net.ripe.db.whois.common.rpsl;
+package net.ripe.db.whois.common.rpsl.attributetype.impl;
 
 import com.google.common.base.Splitter;
 

@@ -2,17 +2,14 @@ package net.ripe.db.whois.common.rpsl;
 
 import net.ripe.db.whois.common.IntegrationTest;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.zip.GZIPInputStream;
 
 // TODO: [AH] make this rely on downloader (or make it more visible if those files are missing and no tests are actually run)
@@ -25,13 +22,13 @@ public class AttributeParserTestIntegration {
     public void parseAutnumAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.aut-num.gz",
                 new AttributeType[]{
-                        AttributeType.EXPORT,
-                        AttributeType.IMPORT,
-                        AttributeType.DEFAULT,
-                        AttributeType.MP_EXPORT,
-                        AttributeType.MP_IMPORT,
-                        AttributeType.MP_DEFAULT,
-                        AttributeType.MNT_ROUTES
+                        AttributeTypes.EXPORT,
+                        AttributeTypes.IMPORT,
+                        AttributeTypes.DEFAULT,
+                        AttributeTypes.MP_EXPORT,
+                        AttributeTypes.MP_IMPORT,
+                        AttributeTypes.MP_DEFAULT,
+                        AttributeTypes.MNT_ROUTES
                 }
         );
     }
@@ -40,11 +37,11 @@ public class AttributeParserTestIntegration {
     public void parseInetRtrAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.inet-rtr.gz",
                 new AttributeType[]{
-                        AttributeType.ALIAS,
-                        AttributeType.IFADDR,
-                        AttributeType.INTERFACE,
-                        AttributeType.PEER,
-                        AttributeType.MP_PEER
+                        AttributeTypes.ALIAS,
+                        AttributeTypes.IFADDR,
+                        AttributeTypes.INTERFACE,
+                        AttributeTypes.PEER,
+                        AttributeTypes.MP_PEER
                 }
         );
     }
@@ -53,7 +50,7 @@ public class AttributeParserTestIntegration {
     public void parseAsSetAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.as-set.gz",
                 new AttributeType[]{
-                        AttributeType.MEMBERS
+                        AttributeTypes.MEMBERS
                 }
         );
     }
@@ -62,8 +59,8 @@ public class AttributeParserTestIntegration {
     public void parseRouteSetAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.route-set.gz",
                 new AttributeType[]{
-                        AttributeType.MEMBERS,
-                        AttributeType.MP_MEMBERS
+                        AttributeTypes.MEMBERS,
+                        AttributeTypes.MP_MEMBERS
                 }
         );
     }
@@ -72,8 +69,8 @@ public class AttributeParserTestIntegration {
     public void parseRtrSetAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.rtr-set.gz",
                 new AttributeType[]{
-                        AttributeType.MEMBERS,
-                        AttributeType.MP_MEMBERS
+                        AttributeTypes.MEMBERS,
+                        AttributeTypes.MP_MEMBERS
                 }
         );
     }
@@ -82,8 +79,8 @@ public class AttributeParserTestIntegration {
     public void parseFilterSetAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.filter-set.gz",
                 new AttributeType[]{
-                        AttributeType.FILTER,
-                        AttributeType.MP_FILTER
+                        AttributeTypes.FILTER,
+                        AttributeTypes.MP_FILTER
                 }
         );
     }
@@ -92,8 +89,8 @@ public class AttributeParserTestIntegration {
     public void parsePeeringSetAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.peering-set.gz",
                 new AttributeType[]{
-                        AttributeType.PEERING,
-                        AttributeType.MP_PEERING
+                        AttributeTypes.PEERING,
+                        AttributeTypes.MP_PEERING
                 }
         );
     }
@@ -102,12 +99,12 @@ public class AttributeParserTestIntegration {
     public void parseRouteAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.route.gz",
                 new AttributeType[]{
-                        AttributeType.INJECT,
-                        AttributeType.AGGR_MTD,
-                        AttributeType.AGGR_BNDRY,
-                        AttributeType.COMPONENTS,
-                        AttributeType.EXPORT_COMPS,
-                        AttributeType.MNT_ROUTES
+                        AttributeTypes.INJECT,
+                        AttributeTypes.AGGR_MTD,
+                        AttributeTypes.AGGR_BNDRY,
+                        AttributeTypes.COMPONENTS,
+                        AttributeTypes.EXPORT_COMPS,
+                        AttributeTypes.MNT_ROUTES
                 }
         );
     }
@@ -116,12 +113,12 @@ public class AttributeParserTestIntegration {
     public void parseRoute6Attributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.route6.gz",
                 new AttributeType[]{
-                        AttributeType.INJECT,
-                        AttributeType.AGGR_MTD,
-                        AttributeType.AGGR_BNDRY,
-                        AttributeType.COMPONENTS,
-                        AttributeType.EXPORT_COMPS,
-                        AttributeType.MNT_ROUTES
+                        AttributeTypes.INJECT,
+                        AttributeTypes.AGGR_MTD,
+                        AttributeTypes.AGGR_BNDRY,
+                        AttributeTypes.COMPONENTS,
+                        AttributeTypes.EXPORT_COMPS,
+                        AttributeTypes.MNT_ROUTES
                 }
         );
     }
@@ -130,7 +127,7 @@ public class AttributeParserTestIntegration {
     public void parseInetnumAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.inetnum.gz",
                 new AttributeType[]{
-                        AttributeType.MNT_ROUTES
+                        AttributeTypes.MNT_ROUTES
                 }
         );
     }
@@ -139,7 +136,7 @@ public class AttributeParserTestIntegration {
     public void parseInet6numAttributes() throws Exception {
         parseAttributes("/export/opt/ripe.db.inet6num.gz",
                 new AttributeType[]{
-                        AttributeType.MNT_ROUTES
+                        AttributeTypes.MNT_ROUTES
                 }
         );
     }

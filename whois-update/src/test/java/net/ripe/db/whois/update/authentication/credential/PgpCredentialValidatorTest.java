@@ -1,14 +1,12 @@
 package net.ripe.db.whois.update.authentication.credential;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.DateTimeProvider;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
-import net.ripe.db.whois.common.rpsl.RpslObjectFilter;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.PgpCredential;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.Update;
@@ -224,7 +222,7 @@ public class PgpCredentialValidatorTest {
         final PgpCredential offeredCredential = PgpCredential.createOfferedCredential(message);
         final PgpCredential knownCredential = PgpCredential.createKnownCredential("PGPKEY-67ABAB48");
 
-        keycertObject = new RpslObjectBuilder(keycertObject).removeAttributeType(AttributeType.CERTIF).get();
+        keycertObject = new RpslObjectBuilder(keycertObject).removeAttributeType(AttributeTypes.CERTIF).get();
 
         when(rpslObjectDao.getByKey(ObjectType.KEY_CERT, keycertObject.getKey().toString())).thenReturn(keycertObject);
 

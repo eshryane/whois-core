@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,12 +16,12 @@ public class UnindexedTest {
 
     @Before
     public void setUp() throws Exception {
-        subject = new Unindexed(AttributeType.ALIAS);
+        subject = new Unindexed(AttributeTypes.ALIAS);
     }
 
     @Test
     public void getAttributeType() {
-        assertThat(subject.getAttributeType(), is(AttributeType.ALIAS));
+        assertThat(subject.getAttributeType(), is(AttributeTypes.ALIAS));
     }
 
     @Test

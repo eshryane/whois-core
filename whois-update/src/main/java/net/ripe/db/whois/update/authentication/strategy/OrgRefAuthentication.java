@@ -6,9 +6,9 @@ import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -33,7 +33,7 @@ public class OrgRefAuthentication extends AuthenticationStrategyBase {
 
     @Override
     public boolean supports(final PreparedUpdate update) {
-        return !update.getNewValues(AttributeType.ORG).isEmpty();
+        return !update.getNewValues(AttributeTypes.ORG).isEmpty();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class OrgRefAuthentication extends AuthenticationStrategyBase {
 
             if (authenticatedBy.isEmpty()) {
                 final RpslObject organisation = organisationEntry.getKey();
-                authenticationMessages.add(UpdateMessages.authenticationFailed(organisation, AttributeType.MNT_REF, candidates));
+                authenticationMessages.add(UpdateMessages.authenticationFailed(organisation, AttributeTypes.MNT_REF, candidates));
             } else {
                 authenticatedOrganisations.addAll(authenticatedBy);
             }
@@ -68,7 +68,7 @@ public class OrgRefAuthentication extends AuthenticationStrategyBase {
     private Map<RpslObject, List<RpslObject>> getCandidatesForOrganisations(final PreparedUpdate update, final UpdateContext updateContext) {
         final Map<RpslObject, List<RpslObject>> candidates = new LinkedHashMap<>();
 
-        final Collection<CIString> newOrgReferences = update.getNewValues(AttributeType.ORG);
+        final Collection<CIString> newOrgReferences = update.getNewValues(AttributeTypes.ORG);
         final List<RpslObject> organisations = rpslObjectDao.getByKeys(ObjectType.ORGANISATION, newOrgReferences);
         if (isSelfReference(update, newOrgReferences)) {
             organisations.add(update.getUpdatedObject());
@@ -77,7 +77,7 @@ public class OrgRefAuthentication extends AuthenticationStrategyBase {
         for (final RpslObject organisation : organisations) {
             final List<RpslObject> maintainers = Lists.newArrayList();
 
-            for (final CIString mntRef : organisation.getValuesForAttribute(AttributeType.MNT_REF)) {
+            for (final CIString mntRef : organisation.getValuesForAttribute(AttributeTypes.MNT_REF)) {
                 try {
                     maintainers.add(rpslObjectDao.getByKey(ObjectType.MNTNER, mntRef.toString()));
                 } catch (EmptyResultDataAccessException e) {

@@ -3,10 +3,10 @@ package net.ripe.db.whois.update.handler.validator.inetnum;
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
-import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -34,7 +34,7 @@ public class SubAllocationValidator implements BusinessRuleValidator {
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
         final RpslObject updatedObject = update.getUpdatedObject();
 
-        final CIString statusValue = updatedObject.getValueForAttribute(AttributeType.STATUS);
+        final CIString statusValue = updatedObject.getValueForAttribute(AttributeTypes.STATUS);
         if (InetnumStatus.SUB_ALLOCATED_PA.equals(InetStatusHelper.getStatus(statusValue, updatedObject))) {
             final Ipv4Resource ipv4Resource = Ipv4Resource.parse(updatedObject.getKey());
             if (ipv4Resource.getPrefixLength() > SUB_ALLOCATED_PA_MAX_PREFIX) {

@@ -2,9 +2,9 @@ package net.ripe.db.whois.update.handler.validator.common;
 
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.domain.Action;
@@ -59,7 +59,7 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mntner: DEV-MNT\n" +
                 "mnt-by: DEV-MNT\n"));
 
-        when(update.getDifferences(AttributeType.MNT_BY)).thenReturn(ciSet("DEV-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_BY)).thenReturn(ciSet("DEV-MNT"));
 
         subject.validate(update, updateContext);
 
@@ -74,7 +74,7 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mntner: DEV-MNT\n" +
                 "mnt-by: RS-MNT\n"));
 
-        when(update.getDifferences(AttributeType.MNT_BY)).thenReturn(ciSet("RS-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_BY)).thenReturn(ciSet("RS-MNT"));
 
         subject.validate(update, updateContext);
 
@@ -89,7 +89,7 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mntner: DEV-MNT\n" +
                 "mnt-domains: RS-MNT\n"));
 
-        when(update.getDifferences(AttributeType.MNT_DOMAINS)).thenReturn(ciSet("RS-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_DOMAINS)).thenReturn(ciSet("RS-MNT"));
 
         subject.validate(update, updateContext);
 
@@ -104,7 +104,7 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mntner: DEV-MNT\n" +
                 "mnt-lower: RS-MNT\n"));
 
-        when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("RS-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_LOWER)).thenReturn(ciSet("RS-MNT"));
 
         subject.validate(update, updateContext);
 
@@ -119,7 +119,7 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mntner: DEV-MNT\n" +
                 "mnt-routes: RS-MNT ANY\n"));
 
-        when(update.getDifferences(AttributeType.MNT_ROUTES)).thenReturn(ciSet("RS-MNT ANY"));
+        when(update.getDifferences(AttributeTypes.MNT_ROUTES)).thenReturn(ciSet("RS-MNT ANY"));
 
         subject.validate(update, updateContext);
 
@@ -134,7 +134,7 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mntner: DEV-MNT\n" +
                 "mnt-by: RS-MNT\n"));
 
-        when(update.getDifferences(AttributeType.MNT_BY)).thenReturn(ciSet("RS-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_BY)).thenReturn(ciSet("RS-MNT"));
 
         subject.validate(update, updateContext);
 
@@ -151,8 +151,8 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mnt-by: DBM-MNT\n" +
                 "mnt-lower: HM-MNT\n"));
 
-        when(update.getDifferences(AttributeType.MNT_BY)).thenReturn(ciSet("DBM-MNT"));
-        when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("HM-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_BY)).thenReturn(ciSet("DBM-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_LOWER)).thenReturn(ciSet("HM-MNT"));
 
         subject.validate(update, updateContext);
 
@@ -169,8 +169,8 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mnt-by: DBM-MNT\n" +
                 "mnt-lower: HM-MNT\n"));
 
-        when(update.getDifferences(AttributeType.MNT_BY)).thenReturn(ciSet("DBM-MNT"));
-        when(update.getDifferences(AttributeType.MNT_LOWER)).thenReturn(ciSet("HM-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_BY)).thenReturn(ciSet("DBM-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_LOWER)).thenReturn(ciSet("HM-MNT"));
 
         subject.validate(update, updateContext);
 
@@ -186,7 +186,7 @@ public class AddOrRemoveRipeNccMaintainerValidatorTest {
                 "mntner: DEV-MNT\n" +
                 "mnt-routes: RS-MNT ANY\n"));
 
-        when(update.getDifferences(AttributeType.MNT_ROUTES)).thenReturn(ciSet("RS-MNT"));
+        when(update.getDifferences(AttributeTypes.MNT_ROUTES)).thenReturn(ciSet("RS-MNT"));
 
         subject.validate(update, updateContext);
 

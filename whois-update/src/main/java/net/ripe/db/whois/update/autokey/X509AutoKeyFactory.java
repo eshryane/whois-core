@@ -2,9 +2,10 @@ package net.ripe.db.whois.update.autokey;
 
 
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.autokey.dao.X509Repository;
 import net.ripe.db.whois.update.domain.X509KeycertId;
 import net.ripe.db.whois.update.keycert.X509CertificateWrapper;
@@ -33,7 +34,7 @@ public class X509AutoKeyFactory implements AutoKeyFactory<X509KeycertId> {
 
     @Override
     public AttributeType getAttributeType() {
-        return AttributeType.KEY_CERT;
+        return AttributeTypes.KEY_CERT;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class X509AutoKeyFactory implements AutoKeyFactory<X509KeycertId> {
 
     @Override
     public X509KeycertId generate(final String keyPlaceHolder, final RpslObject object) {
-        Validate.notEmpty(object.getValueForAttribute(AttributeType.KEY_CERT).toString(), "Name must not be empty");
+        Validate.notEmpty(object.getValueForAttribute(AttributeTypes.KEY_CERT).toString(), "Name must not be empty");
 
         final Matcher matcher = AUTO_PATTERN.matcher(keyPlaceHolder);
         if (!matcher.matches()) {

@@ -3,17 +3,13 @@ package net.ripe.db.whois.update.handler.validator.inetnum;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
-import net.ripe.db.whois.update.domain.Action;
-import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.UpdateContainer;
-import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.domain.UpdateMessages;
+import net.ripe.db.whois.update.domain.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +18,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static net.ripe.db.whois.common.domain.CIString.ciString;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReferenceCheckTest {
@@ -73,7 +66,7 @@ public class ReferenceCheckTest {
     public void modify_org_reference_not_found_in_db() {
         when(update.getAction()).thenReturn(Action.MODIFY);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(null);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(null);
 
         subject.validate(update, updateContext);
 
@@ -85,7 +78,7 @@ public class ReferenceCheckTest {
         when(updateSubject.hasPrincipal(Principal.OVERRIDE_MAINTAINER)).thenReturn(true);
         when(update.getAction()).thenReturn(Action.MODIFY);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(null);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(null);
 
         subject.validate(update, updateContext);
 
@@ -97,7 +90,7 @@ public class ReferenceCheckTest {
     public void modify_wrong_orgtype_on_found_org() {
         when(update.getAction()).thenReturn(Action.MODIFY);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
         when(rpslObjectInfo.getKey()).thenReturn("ORG1");
         when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG1")).thenReturn(RpslObject.parse("organisation: ORG1\norg-type: OTHER"));
 
@@ -111,7 +104,7 @@ public class ReferenceCheckTest {
         when(updateSubject.hasPrincipal(Principal.OVERRIDE_MAINTAINER)).thenReturn(true);
         when(update.getAction()).thenReturn(Action.MODIFY);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
         when(rpslObjectInfo.getKey()).thenReturn("ORG1");
         when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG1")).thenReturn(RpslObject.parse("organisation: ORG1\norg-type: OTHER"));
 
@@ -125,7 +118,7 @@ public class ReferenceCheckTest {
     public void modify_right_orgtype_on_found_org() {
         when(update.getAction()).thenReturn(Action.MODIFY);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
         when(rpslObjectInfo.getKey()).thenReturn("ORG1");
         when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG1")).thenReturn(RpslObject.parse("organisation: ORG1\norg-type: LIR"));
 
@@ -161,7 +154,7 @@ public class ReferenceCheckTest {
     public void create_org_reference_not_found_in_db() {
         when(update.getAction()).thenReturn(Action.CREATE);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(null);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(null);
 
         subject.validate(update, updateContext);
 
@@ -173,7 +166,7 @@ public class ReferenceCheckTest {
         when(updateSubject.hasPrincipal(Principal.OVERRIDE_MAINTAINER)).thenReturn(true);
         when(update.getAction()).thenReturn(Action.CREATE);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(null);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(null);
 
         subject.validate(update, updateContext);
 
@@ -185,7 +178,7 @@ public class ReferenceCheckTest {
     public void create_wrong_orgtype_on_found_org() {
         when(update.getAction()).thenReturn(Action.CREATE);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
         when(rpslObjectInfo.getKey()).thenReturn("ORG1");
         when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG1")).thenReturn(RpslObject.parse("organisation: ORG1\norg-type: OTHER"));
 
@@ -198,7 +191,7 @@ public class ReferenceCheckTest {
     public void create_wrong_orgtype_on_found_org_direct_assignment() {
         when(update.getAction()).thenReturn(Action.CREATE);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PI\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
         when(rpslObjectInfo.getKey()).thenReturn("ORG1");
         when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG1")).thenReturn(RpslObject.parse("organisation: ORG1\norg-type: DIRECT_ASSIGNMENT"));
 
@@ -212,7 +205,7 @@ public class ReferenceCheckTest {
         when(updateSubject.hasPrincipal(Principal.OVERRIDE_MAINTAINER)).thenReturn(true);
         when(update.getAction()).thenReturn(Action.CREATE);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
         when(rpslObjectInfo.getKey()).thenReturn("ORG1");
         when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG1")).thenReturn(RpslObject.parse("organisation: ORG1\norg-type: OTHER"));
 
@@ -226,7 +219,7 @@ public class ReferenceCheckTest {
     public void create_right_orgtype_on_found_org() {
         when(update.getAction()).thenReturn(Action.CREATE);
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("inetnum: 192.0/24\nstatus: ALLOCATED PA\norg: ORG1"));
-        when(rpslObjectUpdateDao.getAttributeReference(AttributeType.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
+        when(rpslObjectUpdateDao.getAttributeReference(AttributeTypes.ORG, ciString("ORG1"))).thenReturn(rpslObjectInfo);
         when(rpslObjectInfo.getKey()).thenReturn("ORG1");
         when(rpslObjectDao.getByKey(ObjectType.ORGANISATION, "ORG1")).thenReturn(RpslObject.parse("organisation: ORG1\norg-type: LIR"));
 

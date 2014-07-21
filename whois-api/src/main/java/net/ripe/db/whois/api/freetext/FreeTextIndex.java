@@ -8,9 +8,10 @@ import net.ripe.db.whois.api.search.RebuildableIndex;
 import net.ripe.db.whois.common.dao.jdbc.JdbcRpslObjectOperations;
 import net.ripe.db.whois.common.dao.jdbc.JdbcStreamingHelper;
 import net.ripe.db.whois.common.domain.serials.SerialEntry;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -67,14 +68,14 @@ public class FreeTextIndex extends RebuildableIndex {
 
     static final String[] FIELD_NAMES;
 
-    private static final Set<AttributeType> SKIPPED_ATTRIBUTES = Sets.newEnumSet(Sets.newHashSet(AttributeType.AUTH, AttributeType.CERTIF, AttributeType.CHANGED, AttributeType.SOURCE), AttributeType.class);
+    private static final Set<AttributeType> SKIPPED_ATTRIBUTES = Sets.newHashSet(AttributeTypes.AUTH, AttributeTypes.CERTIF, AttributeTypes.CHANGED, AttributeTypes.SOURCE);
 
     private static final FieldType INDEXED_AND_TOKENIZED;
     private static final FieldType INDEXED_NOT_TOKENIZED;
 
     static {
-        final List<String> names = newArrayListWithExpectedSize(AttributeType.values().length);
-        for (final AttributeType attributeType : AttributeType.values()) {
+        final List<String> names = newArrayListWithExpectedSize(AttributeTypes.values().size());
+        for (final AttributeType attributeType : AttributeTypes.values()) {
             if (!SKIPPED_ATTRIBUTES.contains(attributeType)) {
                 names.add(attributeType.getName());
             }

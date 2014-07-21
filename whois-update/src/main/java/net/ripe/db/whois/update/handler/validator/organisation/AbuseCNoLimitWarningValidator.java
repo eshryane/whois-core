@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.handler.validator.organisation;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -26,8 +26,8 @@ public class AbuseCNoLimitWarningValidator implements BusinessRuleValidator {
 
     @Override
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
-        if (update.getUpdatedObject().containsAttribute(AttributeType.ABUSE_MAILBOX)
-                && (!update.hasOriginalObject() || !update.getReferenceObject().containsAttribute(AttributeType.ABUSE_MAILBOX))) {
+        if (update.getUpdatedObject().containsAttribute(AttributeTypes.ABUSE_MAILBOX)
+                && (!update.hasOriginalObject() || !update.getReferenceObject().containsAttribute(AttributeTypes.ABUSE_MAILBOX))) {
             updateContext.addMessage(update, UpdateMessages.abuseCNoLimitWarning());
         }
     }

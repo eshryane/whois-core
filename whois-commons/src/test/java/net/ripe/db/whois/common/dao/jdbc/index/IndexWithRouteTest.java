@@ -1,8 +1,8 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class IndexWithRouteTest extends IndexTestBase {
 
     @Before
     public void setup() {
-        subject = new IndexWithRoute(AttributeType.ROUTE);
+        subject = new IndexWithRoute(AttributeTypes.ROUTE);
 
         route = RpslObject.parse("" +
                 "route:           193.254.30.0/24\n" +

@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -54,11 +54,11 @@ public class AddOrRemoveRipeNccMaintainerValidator implements BusinessRuleValida
         }
 
         final Set<CIString> differentMaintainers = Sets.newLinkedHashSet();
-        differentMaintainers.addAll(update.getDifferences(AttributeType.MNT_BY));
-        differentMaintainers.addAll(update.getDifferences(AttributeType.MNT_DOMAINS));
-        differentMaintainers.addAll(update.getDifferences(AttributeType.MNT_LOWER));
+        differentMaintainers.addAll(update.getDifferences(AttributeTypes.MNT_BY));
+        differentMaintainers.addAll(update.getDifferences(AttributeTypes.MNT_DOMAINS));
+        differentMaintainers.addAll(update.getDifferences(AttributeTypes.MNT_LOWER));
 
-        for (final CIString mntRouteString : update.getDifferences(AttributeType.MNT_ROUTES)) {
+        for (final CIString mntRouteString : update.getDifferences(AttributeTypes.MNT_ROUTES)) {
             differentMaintainers.add(MntRoutes.parse(mntRouteString).getMaintainer());
         }
 

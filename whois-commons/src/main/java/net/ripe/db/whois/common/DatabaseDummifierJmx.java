@@ -6,13 +6,8 @@ import net.ripe.db.whois.common.dao.jdbc.JdbcStreamingHelper;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.jdbc.SimpleDataSourceFactory;
 import net.ripe.db.whois.common.jmx.JmxBase;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.DummifierCurrent;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.PasswordHelper;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
+import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -32,11 +27,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
@@ -180,11 +171,11 @@ public class DatabaseDummifierJmx extends JmxBase {
             RpslObjectBuilder builder = new RpslObjectBuilder(rpslObject);
             for (int i = 0; i < builder.size(); i++) {
                 RpslAttribute attribute = builder.get(i);
-                if (AttributeType.AUTH.equals(attribute.getType()) && (attribute.getCleanValue().startsWith("md5-pw"))) {
+                if (AttributeTypes.AUTH.equals(attribute.getType()) && (attribute.getCleanValue().startsWith("md5-pw"))) {
                     if (foundPassword) {
                         builder.remove(i);
                     } else {
-                        builder.set(i, new RpslAttribute(AttributeType.AUTH, "MD5-PW " + PasswordHelper.hashMd5Password(rpslObject.getKey().toString())));
+                        builder.set(i, new RpslAttribute(AttributeTypes.AUTH, "MD5-PW " + PasswordHelper.hashMd5Password(rpslObject.getKey().toString())));
                         foundPassword = true;
                     }
                 }
@@ -198,7 +189,7 @@ public class DatabaseDummifierJmx extends JmxBase {
         }
 
         static boolean hasPassword(RpslObject rpslObject) {
-            for (CIString auth : rpslObject.getValuesForAttribute(AttributeType.AUTH)) {
+            for (CIString auth : rpslObject.getValuesForAttribute(AttributeTypes.AUTH)) {
                 if (auth.startsWith("md5-pw")) {
                     return true;
                 }

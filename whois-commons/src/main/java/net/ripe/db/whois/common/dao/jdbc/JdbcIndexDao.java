@@ -9,12 +9,9 @@ import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategy;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.ConcurrentState;
-import net.ripe.db.whois.common.rpsl.AttributeSanitizer;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectMessages;
-import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,7 +188,7 @@ public class JdbcIndexDao implements IndexDao {
     }
 
     private void deleteIndexesForMissingObjects() {
-        for (final AttributeType attributeType : AttributeType.values()) {
+        for (final AttributeType attributeType : AttributeTypes.values()) {
             deleteIndexForMissingObjects(attributeType);
         }
     }

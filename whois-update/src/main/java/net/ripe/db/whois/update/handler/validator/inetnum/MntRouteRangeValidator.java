@@ -1,14 +1,13 @@
 package net.ripe.db.whois.update.handler.validator.inetnum;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.ip.IpInterval;
-import net.ripe.db.whois.common.rpsl.attrs.AddressPrefixRange;
-import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.AddressPrefixRange;
+import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -35,7 +34,7 @@ public class MntRouteRangeValidator implements BusinessRuleValidator {
         final RpslObject updatedObject = update.getUpdatedObject();
         final IpInterval<?> ipInterval = IpInterval.parse(updatedObject.getKey());
 
-        for (final RpslAttribute attribute : updatedObject.findAttributes(AttributeType.MNT_ROUTES)) {
+        for (final RpslAttribute attribute : updatedObject.findAttributes(AttributeTypes.MNT_ROUTES)) {
             final MntRoutes mntRoutes = MntRoutes.parse(attribute.getCleanValue());
             if (mntRoutes.isAnyRange()) {
                 return;

@@ -4,8 +4,9 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectInfoResultSetExtractor;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Collections;
@@ -21,7 +22,7 @@ class IndexWithRoute6 extends IndexStrategyWithSingleLookupTable {
     @Override
     public int addToIndex(final JdbcTemplate jdbcTemplate, final RpslObjectInfo objectInfo, final RpslObject object, final String value) {
         final Ipv6Resource resource = Ipv6Resource.parse(value);
-        final String origin = object.getValueForAttribute(AttributeType.ORIGIN).toString();
+        final String origin = object.getValueForAttribute(AttributeTypes.ORIGIN).toString();
 
         return jdbcTemplate.update(
                 "INSERT INTO route6 (object_id, r6_msb, r6_lsb, prefix_length, origin) VALUES (?, ?, ?, ?, ?)",

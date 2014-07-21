@@ -4,12 +4,12 @@ import net.ripe.db.whois.api.AbstractIntegrationTest;
 import net.ripe.db.whois.api.rest.client.RestClient;
 import net.ripe.db.whois.api.rest.client.RestClientException;
 import net.ripe.db.whois.common.IntegrationTest;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.query.QueryFlag;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
-import net.ripe.db.whois.common.query.QueryFlag;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,15 +21,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @Category(IntegrationTest.class)
 public class RestClientTestIntegration extends AbstractIntegrationTest {
@@ -104,31 +99,31 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
 
     @Test
     public void update_person_with_empty_remarks_has_remarks() throws Exception {
-        final RpslObject object = new RpslObjectBuilder(TEST_PERSON).append(new RpslAttribute(AttributeType.REMARKS, "")).sort().get();
+        final RpslObject object = new RpslObjectBuilder(TEST_PERSON).append(new RpslAttribute(AttributeTypes.REMARKS, "")).sort().get();
 
         final RpslObject updatedResult = restClient.request()
                 .addParam("password", "test")
                 .update(object);
 
-        assertThat(updatedResult.findAttributes(AttributeType.REMARKS), hasSize(1));
+        assertThat(updatedResult.findAttributes(AttributeTypes.REMARKS), hasSize(1));
     }
 
     @Test
     public void lookup_without_password() throws Exception {
         final RpslObject object = restClient.request().lookup(ObjectType.MNTNER, OWNER_MNT.getKey().toString());
 
-        assertThat(object.findAttribute(AttributeType.AUTH).getValue(), is("MD5-PW # Filtered"));
-        assertThat(object.findAttribute(AttributeType.AUTH).getCleanComment(), is("Filtered"));
+        assertThat(object.findAttribute(AttributeTypes.AUTH).getValue(), is("MD5-PW # Filtered"));
+        assertThat(object.findAttribute(AttributeTypes.AUTH).getCleanComment(), is("Filtered"));
     }
 
     @Test
     public void lookup_with_wrong_password() throws Exception {
         final RpslObject object = restClient.request().lookup(ObjectType.MNTNER, OWNER_MNT.getKey().toString());
 
-        assertThat(object.getValueForAttribute(AttributeType.SOURCE).toString(), is("TEST"));
-        assertThat(object.findAttribute(AttributeType.SOURCE).getCleanComment(), is("Filtered"));
-        assertThat(object.getValueForAttribute(AttributeType.AUTH).toString(), is("MD5-PW"));
-        assertThat(object.findAttribute(AttributeType.AUTH).getCleanComment(), is("Filtered"));
+        assertThat(object.getValueForAttribute(AttributeTypes.SOURCE).toString(), is("TEST"));
+        assertThat(object.findAttribute(AttributeTypes.SOURCE).getCleanComment(), is("Filtered"));
+        assertThat(object.getValueForAttribute(AttributeTypes.AUTH).toString(), is("MD5-PW"));
+        assertThat(object.findAttribute(AttributeTypes.AUTH).getCleanComment(), is("Filtered"));
     }
 
     @Test
@@ -137,10 +132,10 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
                 .addParam("password", "test")
                 .lookup(ObjectType.MNTNER, OWNER_MNT.getKey().toString());
 
-        assertThat(object.findAttribute(AttributeType.AUTH).getValue(), is("MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ # test"));
-        assertThat(object.findAttribute(AttributeType.AUTH).getCleanComment(), is("test"));
-        assertThat(object.findAttribute(AttributeType.SOURCE).getCleanComment(), not(is("Filtered")));
-        assertThat(object.findAttribute(AttributeType.SOURCE).getCleanComment(), is(nullValue()));
+        assertThat(object.findAttribute(AttributeTypes.AUTH).getValue(), is("MD5-PW $1$d9fKeTr2$Si7YudNf4rUGmR71n/cqk/ # test"));
+        assertThat(object.findAttribute(AttributeTypes.AUTH).getCleanComment(), is("test"));
+        assertThat(object.findAttribute(AttributeTypes.SOURCE).getCleanComment(), not(is("Filtered")));
+        assertThat(object.findAttribute(AttributeTypes.SOURCE).getCleanComment(), is(nullValue()));
     }
 
     @Test
@@ -148,8 +143,8 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
         final RpslObject object = restClient.request()
                 .lookup(ObjectType.PERSON, TEST_PERSON.getKey().toString());
 
-        assertThat(object.findAttribute(AttributeType.SOURCE).getCleanComment(), not(is("Filtered")));
-        assertThat(object.findAttribute(AttributeType.SOURCE).getCleanComment(), is(nullValue()));
+        assertThat(object.findAttribute(AttributeTypes.SOURCE).getCleanComment(), not(is("Filtered")));
+        assertThat(object.findAttribute(AttributeTypes.SOURCE).getCleanComment(), is(nullValue()));
     }
 
     @Test
@@ -160,8 +155,8 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
                 .addParam("password", "test")
                 .lookup(SECOND_MNT.getType(), SECOND_MNT.getKey().toString());
 
-        assertThat(obj.getValueForAttribute(AttributeType.AUTH).toString(), startsWith("MD5-PW"));
-        assertThat(obj.getValueForAttribute(AttributeType.AUTH).toString(), not(is("MD5-PW")));
+        assertThat(obj.getValueForAttribute(AttributeTypes.AUTH).toString(), startsWith("MD5-PW"));
+        assertThat(obj.getValueForAttribute(AttributeTypes.AUTH).toString(), not(is("MD5-PW")));
     }
 
     @Test
@@ -185,8 +180,8 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
                 .addParam("password", "secondmnt")
                 .lookup(THIRD_MNT.getType(), THIRD_MNT.getKey().toString());
 
-        assertThat(obj.getValueForAttribute(AttributeType.AUTH).toString(), startsWith("MD5-PW"));
-        assertThat(obj.getValueForAttribute(AttributeType.AUTH).toString(), not(is("MD5-PW")));
+        assertThat(obj.getValueForAttribute(AttributeTypes.AUTH).toString(), startsWith("MD5-PW"));
+        assertThat(obj.getValueForAttribute(AttributeTypes.AUTH).toString(), not(is("MD5-PW")));
     }
 
     @Test
@@ -210,7 +205,7 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
 
         final RpslObject response = restClient.request().lookup(ObjectType.PERSON, "WW");
 
-        assertThat(response.getValueForAttribute(AttributeType.NIC_HDL).toString(), is("WW"));
+        assertThat(response.getValueForAttribute(AttributeTypes.NIC_HDL).toString(), is("WW"));
     }
 
     @Test
@@ -270,8 +265,8 @@ public class RestClientTestIntegration extends AbstractIntegrationTest {
 
         // primary key is fully specified (one match)
         final RpslObject responseWithOrgin = restClient.request().lookup(ObjectType.ROUTE, "193.0.0.0/21AS3334");
-        assertThat(responseWithOrgin.getValueForAttribute(AttributeType.ROUTE).toString(), is("193.0.0.0/21"));
-        assertThat(responseWithOrgin.getValueForAttribute(AttributeType.ORIGIN).toString(), is("AS3334"));
+        assertThat(responseWithOrgin.getValueForAttribute(AttributeTypes.ROUTE).toString(), is("193.0.0.0/21"));
+        assertThat(responseWithOrgin.getValueForAttribute(AttributeTypes.ORIGIN).toString(), is("AS3334"));
     }
 
     @Test

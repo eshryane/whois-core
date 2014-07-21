@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.handler.validator.domain;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -66,7 +66,7 @@ public class NServerValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeType.NSERVER), UpdateMessages.invalidGlueForEnumDomain("193.46.210.1/32"));
+        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeTypes.NSERVER), UpdateMessages.invalidGlueForEnumDomain("193.46.210.1/32"));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class NServerValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeType.NSERVER), UpdateMessages.hostNameMustEndWith("144.102.5.in-addr.arpa"));
+        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeTypes.NSERVER), UpdateMessages.hostNameMustEndWith("144.102.5.in-addr.arpa"));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class NServerValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeType.NSERVER), UpdateMessages.glueRecordMandatory("144.102.5.in-addr.arpa"));
+        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeTypes.NSERVER), UpdateMessages.glueRecordMandatory("144.102.5.in-addr.arpa"));
     }
 
     @Test

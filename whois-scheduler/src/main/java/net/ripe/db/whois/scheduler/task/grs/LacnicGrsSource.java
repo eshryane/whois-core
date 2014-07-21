@@ -12,9 +12,9 @@ import net.ripe.db.whois.common.grs.AuthoritativeResourceData;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.source.SourceContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
@@ -30,11 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
@@ -161,7 +157,7 @@ class LacnicGrsSource extends GrsSource {
             @Nullable
             @Override
             public RpslAttribute apply(@Nullable RpslAttribute input) {
-                return new RpslAttribute(AttributeType.AUT_NUM, "AS" + input.getCleanValue());
+                return new RpslAttribute(AttributeTypes.AUT_NUM, "AS" + input.getCleanValue());
             }
         }, "aut-num");
 
@@ -171,7 +167,7 @@ class LacnicGrsSource extends GrsSource {
             public RpslAttribute apply(@Nullable RpslAttribute input) {
                 final String date = input.getCleanValue().toString().replaceAll("-", "");
                 final String value = String.format("unread@ripe.net %s # %s", date, input.getKey());
-                return new RpslAttribute(AttributeType.CHANGED, value);
+                return new RpslAttribute(AttributeTypes.CHANGED, value);
             }
         }, "changed", "created");
 
@@ -181,9 +177,9 @@ class LacnicGrsSource extends GrsSource {
             public RpslAttribute apply(@Nullable RpslAttribute input) {
                 final IpInterval<?> ipInterval = IpInterval.parse(input.getCleanValue());
                 if (ipInterval instanceof Ipv4Resource) {
-                    return new RpslAttribute(AttributeType.INETNUM, input.getValue());
+                    return new RpslAttribute(AttributeTypes.INETNUM, input.getValue());
                 } else if (ipInterval instanceof Ipv6Resource) {
-                    return new RpslAttribute(AttributeType.INET6NUM, input.getValue());
+                    return new RpslAttribute(AttributeTypes.INET6NUM, input.getValue());
                 } else {
                     throw new IllegalArgumentException(String.format("Unexpected input: %s", input.getCleanValue()));
                 }
@@ -194,7 +190,7 @@ class LacnicGrsSource extends GrsSource {
             @Nullable
             @Override
             public RpslAttribute apply(@Nullable RpslAttribute input) {
-                return new RpslAttribute(AttributeType.DESCR, input.getValue());
+                return new RpslAttribute(AttributeTypes.DESCR, input.getValue());
             }
         }, "owner");
     }

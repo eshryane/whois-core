@@ -4,8 +4,8 @@ import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 
 class MatchOperationValidator implements QueryValidator {
     @Override
@@ -23,7 +23,7 @@ class MatchOperationValidator implements QueryValidator {
                 return;
             }
 
-            final IpInterval<?> maxRange = AttributeType.INETNUM.equals(ipKey.getAttributeType()) ? Ipv4Resource.MAX_RANGE : Ipv6Resource.MAX_RANGE;
+            final IpInterval<?> maxRange = AttributeTypes.INETNUM.equals(ipKey.getAttributeType()) ? Ipv4Resource.MAX_RANGE : Ipv6Resource.MAX_RANGE;
             if (maxRange.equals(ipKey)) {
                 messages.add(QueryMessages.illegalRange());
             }

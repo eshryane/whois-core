@@ -2,8 +2,8 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class IndexWithAuthTest extends IndexTestBase {
 
     @Before
     public void startupWhoisServer() throws Exception {
-        subject = new IndexWithAuth(AttributeType.AUTH, "auth", "auth");
+        subject = new IndexWithAuth(AttributeTypes.AUTH, "auth", "auth");
         objectUpdateInfoMap = databaseHelper.addObjects(PAULETH_PALTHEN, OWNER_MNT);
     }
 

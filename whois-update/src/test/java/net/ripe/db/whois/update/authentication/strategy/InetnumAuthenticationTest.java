@@ -8,9 +8,9 @@ import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.iptree.Ipv6Entry;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -81,7 +81,7 @@ public class InetnumAuthenticationTest {
         final RpslObject lowerMaintainer = RpslObject.parse("mntner: LWR-MNT");
 
         final ArrayList<RpslObject> lowerMaintainers = Lists.newArrayList(lowerMaintainer);
-        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, parent.getValuesForAttribute(AttributeType.MNT_LOWER))).thenReturn(lowerMaintainers);
+        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, parent.getValuesForAttribute(AttributeTypes.MNT_LOWER))).thenReturn(lowerMaintainers);
 
         when(authenticationModule.authenticate(update, updateContext, lowerMaintainers)).thenReturn(lowerMaintainers);
 
@@ -103,7 +103,7 @@ public class InetnumAuthenticationTest {
         final RpslObject maintainer = RpslObject.parse("mntner: TEST-MNT");
 
         final ArrayList<RpslObject> maintainers = Lists.newArrayList(maintainer);
-        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, parent.getValuesForAttribute(AttributeType.MNT_BY))).thenReturn(maintainers);
+        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, parent.getValuesForAttribute(AttributeTypes.MNT_BY))).thenReturn(maintainers);
 
         when(authenticationModule.authenticate(update, updateContext, maintainers)).thenReturn(maintainers);
 
@@ -125,7 +125,7 @@ public class InetnumAuthenticationTest {
         final RpslObject maintainer = RpslObject.parse("mntner: LWR-MNT");
 
         final ArrayList<RpslObject> maintainers = Lists.newArrayList(maintainer);
-        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, parent.getValuesForAttribute(AttributeType.MNT_LOWER))).thenReturn(maintainers);
+        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, parent.getValuesForAttribute(AttributeTypes.MNT_LOWER))).thenReturn(maintainers);
 
         when(authenticationModule.authenticate(update, updateContext, maintainers)).thenReturn(Lists.<RpslObject>newArrayList());
 
@@ -143,7 +143,7 @@ public class InetnumAuthenticationTest {
         final RpslObject maintainer = RpslObject.parse("mntner: LWR-MNT");
 
         final ArrayList<RpslObject> maintainers = Lists.newArrayList(maintainer);
-        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, parent.getValuesForAttribute(AttributeType.MNT_LOWER))).thenReturn(maintainers);
+        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, parent.getValuesForAttribute(AttributeTypes.MNT_LOWER))).thenReturn(maintainers);
 
         when(authenticationModule.authenticate(update, updateContext, maintainers)).thenReturn(Lists.<RpslObject>newArrayList(maintainer));
 

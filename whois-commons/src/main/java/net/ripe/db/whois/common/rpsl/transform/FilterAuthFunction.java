@@ -6,21 +6,12 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.PasswordHelper;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
-import net.ripe.db.whois.common.rpsl.RpslObjectFilter;
+import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /*
 password and cookie parameters are used in rest api lookup ONLY, so the port43 netty worker pool is not affected by any SSO
@@ -45,7 +36,7 @@ public class FilterAuthFunction implements FilterFunction {
 
     @Override
     public RpslObject apply(final RpslObject rpslObject) {
-        final List<RpslAttribute> authAttributes = rpslObject.findAttributes(AttributeType.AUTH);
+        final List<RpslAttribute> authAttributes = rpslObject.findAttributes(AttributeTypes.AUTH);
         if (authAttributes.isEmpty()) {
             return rpslObject;
         }
@@ -59,7 +50,7 @@ public class FilterAuthFunction implements FilterFunction {
 
             if (!authenticated) {
                 if (passwordType.endsWith("-PW")) {     // history table has CRYPT-PW, dummify that too!
-                    replace.put(authAttribute, new RpslAttribute(AttributeType.AUTH, passwordType + FILTERED_APPENDIX));
+                    replace.put(authAttribute, new RpslAttribute(AttributeTypes.AUTH, passwordType + FILTERED_APPENDIX));
                 }
             }
         }
@@ -79,14 +70,14 @@ public class FilterAuthFunction implements FilterFunction {
             return false;
         }
 
-        final List<RpslAttribute> extendedAuthAttributes = Lists.newArrayList(rpslObject.findAttributes(AttributeType.AUTH));
+        final List<RpslAttribute> extendedAuthAttributes = Lists.newArrayList(rpslObject.findAttributes(AttributeTypes.AUTH));
         extendedAuthAttributes.addAll(getMntByAuthAttributes(rpslObject));
 
         return passwordAuthentication(extendedAuthAttributes);
     }
 
     private Set<RpslAttribute> getMntByAuthAttributes(final RpslObject rpslObject) {
-        final Set<CIString> maintainers = rpslObject.getValuesForAttribute(AttributeType.MNT_BY);
+        final Set<CIString> maintainers = rpslObject.getValuesForAttribute(AttributeTypes.MNT_BY);
         maintainers.remove(rpslObject.getKey());
 
         if (maintainers.isEmpty()) {
@@ -97,7 +88,7 @@ public class FilterAuthFunction implements FilterFunction {
         final List<RpslObject> mntByMntners = rpslObjectDao.getByKeys(ObjectType.MNTNER, maintainers);
 
         for (RpslObject mntner : mntByMntners) {
-            auths.addAll(mntner.findAttributes(AttributeType.AUTH));
+            auths.addAll(mntner.findAttributes(AttributeTypes.AUTH));
         }
 
         return auths;

@@ -7,15 +7,16 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.DateTimeProvider;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.domain.io.Downloader;
+import net.ripe.db.whois.common.grs.AuthoritativeResourceData;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.grs.AuthoritativeResourceData;
-import net.ripe.db.whois.common.domain.io.Downloader;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.source.SourceContext;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,7 @@ class ArinGrsSource extends GrsSource {
                                 final int end = Integer.parseInt(rangeMatcher.group(2));
 
                                 for (int index = begin; index <= end; index++) {
-                                    attributes.set(0, new RpslAttribute(AttributeType.AUT_NUM, String.format("AS%d", index)));
+                                    attributes.set(0, new RpslAttribute(AttributeTypes.AUT_NUM, String.format("AS%d", index)));
                                     objects.add(new RpslObject(transform(attributes)));
                                 }
 
@@ -130,7 +131,7 @@ class ArinGrsSource extends GrsSource {
                         final AttributeType attributeType = attribute.getType();
                         if (attributeType == null) {
                             continue;
-                        } else if (AttributeType.INETNUM.equals(attributeType) || AttributeType.INET6NUM.equals(attributeType)) {
+                        } else if (AttributeTypes.INETNUM.equals(attributeType) || AttributeTypes.INET6NUM.equals(attributeType)) {
                             newAttributes.add(0, attribute);
                         } else {
                             newAttributes.add(attribute);
@@ -169,23 +170,23 @@ class ArinGrsSource extends GrsSource {
 
     static {
         for (final Object[] mapped : new Object[][]{
-                {"ASHandle", AttributeType.AUT_NUM},
+                {"ASHandle", AttributeTypes.AUT_NUM},
 
-                {"AbuseHandle", AttributeType.TECH_C},
-                {"NOCHandle", AttributeType.TECH_C},
-                {"OrgAbuseHandle", AttributeType.TECH_C},
-                {"OrgAdminHandle", AttributeType.TECH_C},
-                {"OrgNOCHandle", AttributeType.TECH_C},
-                {"OrgTechHandle", AttributeType.TECH_C},
-                {"TechHandle", AttributeType.TECH_C},
+                {"AbuseHandle", AttributeTypes.TECH_C},
+                {"NOCHandle", AttributeTypes.TECH_C},
+                {"OrgAbuseHandle", AttributeTypes.TECH_C},
+                {"OrgAdminHandle", AttributeTypes.TECH_C},
+                {"OrgNOCHandle", AttributeTypes.TECH_C},
+                {"OrgTechHandle", AttributeTypes.TECH_C},
+                {"TechHandle", AttributeTypes.TECH_C},
 
-                {"ASName", AttributeType.AS_NAME},
-                {"OrgID", AttributeType.ORG},
-                {"OrgName", AttributeType.ORG_NAME},
-                {"Comment", AttributeType.REMARKS},
-                {"NetName", AttributeType.NETNAME},
-                {"NetType", AttributeType.STATUS},
-                {"Source", AttributeType.SOURCE},
+                {"ASName", AttributeTypes.AS_NAME},
+                {"OrgID", AttributeTypes.ORG},
+                {"OrgName", AttributeTypes.ORG_NAME},
+                {"Comment", AttributeTypes.REMARKS},
+                {"NetName", AttributeTypes.NETNAME},
+                {"NetType", AttributeTypes.STATUS},
+                {"Source", AttributeTypes.SOURCE},
         }) {
             addTransformFunction(new Function<RpslAttribute, RpslAttribute>() {
                 @Nullable
@@ -200,7 +201,7 @@ class ArinGrsSource extends GrsSource {
             @Nullable
             @Override
             public RpslAttribute apply(final @Nullable RpslAttribute input) {
-                return new RpslAttribute(AttributeType.ADDRESS, String.format("%s # %s", input.getValue(), input.getKey()));
+                return new RpslAttribute(AttributeTypes.ADDRESS, String.format("%s # %s", input.getValue(), input.getKey()));
             }
         }, "City", "Country", "PostalCode", "Street", "State/Prov");
 
@@ -210,7 +211,7 @@ class ArinGrsSource extends GrsSource {
             public RpslAttribute apply(final @Nullable RpslAttribute input) {
                 String date = input.getCleanValue().toString().replaceAll("[^0-9]", "");
                 final String value = String.format("unread@ripe.net %s", date);
-                return new RpslAttribute(AttributeType.CHANGED, value);
+                return new RpslAttribute(AttributeTypes.CHANGED, value);
             }
         }, "Updated");
 
@@ -228,15 +229,15 @@ class ArinGrsSource extends GrsSource {
                         final Ipv6Resource endResource = Ipv6Resource.parse(matcher.group(2));
                         final Ipv6Resource ipv6Resource = new Ipv6Resource(beginResource.begin(), endResource.end());
 
-                        return new RpslAttribute(AttributeType.INET6NUM, ipv6Resource.toString());
+                        return new RpslAttribute(AttributeTypes.INET6NUM, ipv6Resource.toString());
                     }
                 }
 
                 final IpInterval<?> ipInterval = IpInterval.parse(value);
                 if (ipInterval instanceof Ipv4Resource) {
-                    return new RpslAttribute(AttributeType.INETNUM, input.getValue());
+                    return new RpslAttribute(AttributeTypes.INETNUM, input.getValue());
                 } else if (ipInterval instanceof Ipv6Resource) {
-                    return new RpslAttribute(AttributeType.INET6NUM, input.getValue());
+                    return new RpslAttribute(AttributeTypes.INET6NUM, input.getValue());
                 } else {
                     throw new IllegalArgumentException(String.format("Unexpected input: %s", input.getCleanValue()));
                 }

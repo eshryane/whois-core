@@ -2,10 +2,10 @@ package net.ripe.db.whois.common.query.planner;
 
 import com.google.common.base.Function;
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslAttributeFilter;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

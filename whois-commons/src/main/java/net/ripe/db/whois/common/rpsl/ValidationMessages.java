@@ -2,6 +2,7 @@ package net.ripe.db.whois.common.rpsl;
 
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 
 public final class ValidationMessages {
     private ValidationMessages() {

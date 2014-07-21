@@ -1,9 +1,9 @@
 package net.ripe.db.whois.update.handler.validator.route;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -44,7 +44,7 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, times(1)).addMessage(update, route.findAttribute(AttributeType.HOLES), UpdateMessages.invalidRouteRange("94.73.128.0/24"));
+        verify(updateContext, times(1)).addMessage(update, route.findAttribute(AttributeTypes.HOLES), UpdateMessages.invalidRouteRange("94.73.128.0/24"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        List<RpslAttribute> rpslAttributes = route.findAttributes(AttributeType.HOLES);
+        List<RpslAttribute> rpslAttributes = route.findAttributes(AttributeTypes.HOLES);
 
         verify(updateContext, times(1)).addMessage(update, rpslAttributes.get(0), UpdateMessages.invalidRouteRange("94.73.128.0/24"));
         verify(updateContext, times(1)).addMessage(update, rpslAttributes.get(1), UpdateMessages.invalidRouteRange("94.73.134.0/24"));
@@ -67,8 +67,8 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, times(1)).addMessage(update, route.findAttribute(AttributeType.HOLES), UpdateMessages.invalidRouteRange("94.73.128.0/24"));
-        verify(updateContext, times(1)).addMessage(update, route.findAttribute(AttributeType.HOLES), UpdateMessages.invalidRouteRange("94.73.134.0/24"));
+        verify(updateContext, times(1)).addMessage(update, route.findAttribute(AttributeTypes.HOLES), UpdateMessages.invalidRouteRange("94.73.128.0/24"));
+        verify(updateContext, times(1)).addMessage(update, route.findAttribute(AttributeTypes.HOLES), UpdateMessages.invalidRouteRange("94.73.134.0/24"));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, times(1)).addMessage(update, route6.findAttribute(AttributeType.HOLES), UpdateMessages.invalidRouteRange("2a01:568:4000::/36"));
+        verify(updateContext, times(1)).addMessage(update, route6.findAttribute(AttributeTypes.HOLES), UpdateMessages.invalidRouteRange("2a01:568:4000::/36"));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        List<RpslAttribute> rpslAttributes = route6.findAttributes(AttributeType.HOLES);
+        List<RpslAttribute> rpslAttributes = route6.findAttributes(AttributeTypes.HOLES);
 
         verify(updateContext, times(1)).addMessage(update, rpslAttributes.get(0), UpdateMessages.invalidRouteRange("2a01:758:4000::/48"));
         verify(updateContext, times(1)).addMessage(update, rpslAttributes.get(1), UpdateMessages.invalidRouteRange("2a01:758:5000::/48"));
@@ -111,8 +111,8 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, times(1)).addMessage(update, route6.findAttribute(AttributeType.HOLES), UpdateMessages.invalidRouteRange("2a01:758:4000::/48"));
-        verify(updateContext, times(1)).addMessage(update, route6.findAttribute(AttributeType.HOLES), UpdateMessages.invalidRouteRange("2a01:758:5000::/48"));
+        verify(updateContext, times(1)).addMessage(update, route6.findAttribute(AttributeTypes.HOLES), UpdateMessages.invalidRouteRange("2a01:758:4000::/48"));
+        verify(updateContext, times(1)).addMessage(update, route6.findAttribute(AttributeTypes.HOLES), UpdateMessages.invalidRouteRange("2a01:758:5000::/48"));
     }
 
     @Test
@@ -133,7 +133,7 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, times(1)).addMessage(update, route6.findAttribute(AttributeType.PINGABLE), UpdateMessages.invalidRouteRange("2a00:9e80::1"));
+        verify(updateContext, times(1)).addMessage(update, route6.findAttribute(AttributeTypes.PINGABLE), UpdateMessages.invalidRouteRange("2a00:9e80::1"));
     }
 
     @Test
@@ -143,7 +143,7 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        List<RpslAttribute> pingableAttribute = route6.findAttributes(AttributeType.PINGABLE);
+        List<RpslAttribute> pingableAttribute = route6.findAttributes(AttributeTypes.PINGABLE);
 
         verify(updateContext, times(1)).addMessage(update, pingableAttribute.get(0), UpdateMessages.invalidRouteRange("2a00:1e88:e::4"));
         verify(updateContext, times(1)).addMessage(update, pingableAttribute.get(1), UpdateMessages.invalidRouteRange("2a00:1e88:e::5"));
@@ -166,7 +166,7 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext, times(1)).addMessage(update, route.findAttribute(AttributeType.PINGABLE), UpdateMessages.invalidRouteRange("93.191.209.1"));
+        verify(updateContext, times(1)).addMessage(update, route.findAttribute(AttributeTypes.PINGABLE), UpdateMessages.invalidRouteRange("93.191.209.1"));
     }
 
     @Test
@@ -176,7 +176,7 @@ public class ValueWithinPrefixValidatorTest {
 
         subject.validate(update, updateContext);
 
-        List<RpslAttribute> pingableAttribute = route.findAttributes(AttributeType.PINGABLE);
+        List<RpslAttribute> pingableAttribute = route.findAttributes(AttributeTypes.PINGABLE);
 
         verify(updateContext, times(1)).addMessage(update, pingableAttribute.get(0), UpdateMessages.invalidRouteRange("95.180.201.1"));
         verify(updateContext, times(1)).addMessage(update, pingableAttribute.get(1), UpdateMessages.invalidRouteRange("93.191.209.1"));

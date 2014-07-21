@@ -2,14 +2,11 @@ package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 import org.apache.commons.lang.Validate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RpslObjectBuilder {
     private RpslObject original;
@@ -208,8 +205,8 @@ public class RpslObjectBuilder {
     }
 
     // TODO: [AH] this should be pre-initialized in ObjectTemplate
-    private EnumSet<AttributeType> getAttributeTypesAfter(final ObjectTemplate objectTemplate, final AttributeType attributeType) {
-        final EnumSet<AttributeType> beforeAttributes = EnumSet.noneOf(AttributeType.class);
+    private Set<AttributeType> getAttributeTypesAfter(final ObjectTemplate objectTemplate, final AttributeType attributeType) {
+        final Set<AttributeType> beforeAttributes = Sets.newHashSet();
         final List<AttributeTemplate> attributeTemplates = objectTemplate.getAttributeTemplates();
 
         for (int i = 0; i < attributeTemplates.size(); i++) {
@@ -228,7 +225,7 @@ public class RpslObjectBuilder {
     public RpslObjectBuilder addAttributeSorted(final RpslAttribute newAttribute) {
         final ObjectType objectType = getType();
         final ObjectTemplate objectTemplate = ObjectTemplate.getTemplate(objectType);
-        final EnumSet<AttributeType> attributesAfter = getAttributeTypesAfter(objectTemplate, newAttribute.getType());
+        final Set<AttributeType> attributesAfter = getAttributeTypesAfter(objectTemplate, newAttribute.getType());
 
         for (int i = 0; i < attributes.size(); i++) {
             if (attributesAfter.contains(attributes.get(i).getType())) {

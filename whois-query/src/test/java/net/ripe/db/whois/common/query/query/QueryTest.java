@@ -1,31 +1,19 @@
 package net.ripe.db.whois.common.query.query;
 
 import com.google.common.collect.Sets;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.query.QueryFlag;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.domain.QueryCompletionInfo;
 import net.ripe.db.whois.common.query.domain.QueryException;
-import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.Set;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class QueryTest {
     private Query subject;
@@ -397,7 +385,7 @@ public class QueryTest {
         final Query query = Query.parse("-i mnt-by aardvark-mnt");
 
         assertThat(query.isInverse(), is(true));
-        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeType.MNT_BY));
+        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeTypes.MNT_BY));
         assertThat(query.getSearchValue(), is("aardvark-mnt"));
         assertNull(query.matchOperation());
     }
@@ -407,7 +395,7 @@ public class QueryTest {
         final Query query = Query.parse("-i mnt-by aardvark-mnt -T inetnum");
 
         assertThat(query.isInverse(), is(true));
-        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeType.MNT_BY));
+        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeTypes.MNT_BY));
         assertThat(query.getSearchValue(), is("aardvark-mnt"));
         assertNull(query.matchOperation());
     }
@@ -417,7 +405,7 @@ public class QueryTest {
         final Query query = Query.parse("-i mb aardvark-mnt");
 
         assertThat(query.isInverse(), is(true));
-        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeType.MNT_BY));
+        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeTypes.MNT_BY));
         assertThat(query.getSearchValue(), is("aardvark-mnt"));
     }
 
@@ -436,7 +424,7 @@ public class QueryTest {
         final Query query = Query.parse("-i mb,mz aardvark-mnt");
 
         assertThat(query.isInverse(), is(true));
-        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeType.MNT_REF, AttributeType.MNT_BY));
+        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeTypes.MNT_REF, AttributeTypes.MNT_BY));
         assertThat(query.getSearchValue(), is("aardvark-mnt"));
     }
 
@@ -459,7 +447,7 @@ public class QueryTest {
     public void testMultipleSeparatedAttributeTypes() {
         final Query query = Query.parse("-i mnt-by -i mnt-ref,mnt-lower foo");
 
-        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeType.MNT_BY, AttributeType.MNT_REF, AttributeType.MNT_LOWER));
+        assertThat(query.getAttributeTypes(), containsInAnyOrder(AttributeTypes.MNT_BY, AttributeTypes.MNT_REF, AttributeTypes.MNT_LOWER));
     }
 
     @Test
@@ -500,14 +488,14 @@ public class QueryTest {
     public void attributes_person() {
         final Query query = Query.parse("-i person name");
 
-        assertThat(query.getAttributeTypes(), contains(AttributeType.ADMIN_C, AttributeType.TECH_C, AttributeType.ZONE_C, AttributeType.AUTHOR, AttributeType.PING_HDL));
+        assertThat(query.getAttributeTypes(), contains(AttributeTypes.ADMIN_C, AttributeTypes.TECH_C, AttributeTypes.ZONE_C, AttributeTypes.AUTHOR, AttributeTypes.PING_HDL));
     }
 
     @Test
     public void attributes_person_and_others() {
         final Query query = Query.parse("-i mb,person,ml name");
 
-        assertThat(query.getAttributeTypes(), contains(AttributeType.MNT_BY, AttributeType.ADMIN_C, AttributeType.TECH_C, AttributeType.ZONE_C, AttributeType.AUTHOR, AttributeType.PING_HDL, AttributeType.MNT_LOWER));
+        assertThat(query.getAttributeTypes(), contains(AttributeTypes.MNT_BY, AttributeTypes.ADMIN_C, AttributeTypes.TECH_C, AttributeTypes.ZONE_C, AttributeTypes.AUTHOR, AttributeTypes.PING_HDL, AttributeTypes.MNT_LOWER));
     }
 
     @Test

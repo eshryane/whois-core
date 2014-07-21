@@ -14,11 +14,12 @@ import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategies;
 import net.ripe.db.whois.common.dao.jdbc.index.IndexStrategy;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Identifiable;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectTemplate;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.source.IllegalSourceException;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceContext;
@@ -41,21 +42,20 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 @RetryFor(RecoverableDataAccessException.class)
 public class JdbcRpslObjectDao implements RpslObjectDao {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcRpslObjectDao.class);
 
-    private static final List<AttributeType> RELATED_TO_ATTRIBUTES = Lists.newArrayList(AttributeType.ADMIN_C, AttributeType.AUTHOR, AttributeType.ORG, AttributeType.PING_HDL, AttributeType.TECH_C, AttributeType.ZONE_C);
+    private static final List<AttributeType> RELATED_TO_ATTRIBUTES = new ArrayList<AttributeType>(Lists.newArrayList( // dirty trick to get a static list of AttributeType
+            AttributeTypes.ADMIN_C,
+            AttributeTypes.AUTHOR,
+            AttributeTypes.ORG,
+            AttributeTypes.PING_HDL,
+            AttributeTypes.TECH_C,
+            AttributeTypes.ZONE_C));
 
     private final JdbcTemplate jdbcTemplate;
     private final SourceContext sourceContext;

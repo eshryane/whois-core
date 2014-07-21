@@ -2,9 +2,9 @@ package net.ripe.db.whois.update.domain;
 
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;

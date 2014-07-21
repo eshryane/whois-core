@@ -2,21 +2,17 @@ package net.ripe.db.whois.api.rest.mapper;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.api.rest.ReferencedTypeResolver;
-import net.ripe.db.whois.api.rest.domain.Attribute;
-import net.ripe.db.whois.api.rest.domain.Link;
-import net.ripe.db.whois.api.rest.domain.WhoisObject;
-import net.ripe.db.whois.api.rest.domain.WhoisTag;
-import net.ripe.db.whois.api.rest.domain.WhoisVersion;
+import net.ripe.db.whois.api.rest.domain.*;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.domain.serials.Operation;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.query.VersionDateTime;
 import net.ripe.db.whois.common.query.domain.DeletedVersionResponseObject;
 import net.ripe.db.whois.common.query.domain.TagResponseObject;
 import net.ripe.db.whois.common.query.domain.VersionResponseObject;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,12 +24,7 @@ import java.util.List;
 
 import static net.ripe.db.whois.common.domain.CIString.ciString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -59,10 +50,10 @@ public class WhoisObjectServerMapperTest {
 
     @Test
     public void map_rpsl_mntner() throws Exception {
-        when(referencedTypeResolver.getReferencedType(AttributeType.ADMIN_C, ciString("TP1-TEST"))).thenReturn("person");
-        when(referencedTypeResolver.getReferencedType(AttributeType.AUTH, ciString("PGPKEY-28F6CD6C"))).thenReturn("key-cert");
-        when(referencedTypeResolver.getReferencedType(AttributeType.MNT_BY, ciString("TST-MNT"))).thenReturn("mntner");
-        when(referencedTypeResolver.getReferencedType(AttributeType.REFERRAL_BY, ciString("TST-MNT"))).thenReturn("mntner");
+        when(referencedTypeResolver.getReferencedType(AttributeTypes.ADMIN_C, ciString("TP1-TEST"))).thenReturn("person");
+        when(referencedTypeResolver.getReferencedType(AttributeTypes.AUTH, ciString("PGPKEY-28F6CD6C"))).thenReturn("key-cert");
+        when(referencedTypeResolver.getReferencedType(AttributeTypes.MNT_BY, ciString("TST-MNT"))).thenReturn("mntner");
+        when(referencedTypeResolver.getReferencedType(AttributeTypes.REFERRAL_BY, ciString("TST-MNT"))).thenReturn("mntner");
 
         final RpslObject rpslObject = RpslObject.parse(
                 "mntner:      TST-MNT\n" +
@@ -102,10 +93,10 @@ public class WhoisObjectServerMapperTest {
 
     @Test
     public void map_rpsl_as_set_members_multiple_values() throws Exception {
-        when(referencedTypeResolver.getReferencedType(eq(AttributeType.TECH_C), any(CIString.class))).thenReturn("person");
-        when(referencedTypeResolver.getReferencedType(eq(AttributeType.ADMIN_C), any(CIString.class))).thenReturn("person");
-        when(referencedTypeResolver.getReferencedType(eq(AttributeType.MEMBERS), any(CIString.class))).thenReturn("aut-num");
-        when(referencedTypeResolver.getReferencedType(eq(AttributeType.MNT_BY), any(CIString.class))).thenReturn("mntner");
+        when(referencedTypeResolver.getReferencedType(eq(AttributeTypes.TECH_C), any(CIString.class))).thenReturn("person");
+        when(referencedTypeResolver.getReferencedType(eq(AttributeTypes.ADMIN_C), any(CIString.class))).thenReturn("person");
+        when(referencedTypeResolver.getReferencedType(eq(AttributeTypes.MEMBERS), any(CIString.class))).thenReturn("aut-num");
+        when(referencedTypeResolver.getReferencedType(eq(AttributeTypes.MNT_BY), any(CIString.class))).thenReturn("mntner");
 
 
         final RpslObject rpslObject = RpslObject.parse("" +

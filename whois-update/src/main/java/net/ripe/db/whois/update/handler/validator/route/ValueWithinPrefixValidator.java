@@ -5,10 +5,11 @@ import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.rpsl.attrs.AddressPrefixRange;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -37,21 +38,21 @@ public class ValueWithinPrefixValidator implements BusinessRuleValidator {
         final AttributeType attributeType = findAttributeType(updatedRouteObject);
 
         final CIString prefix = updatedRouteObject.findAttribute(attributeType).getCleanValue();
-        for (final RpslAttribute holeAttribute : updatedRouteObject.findAttributes(AttributeType.HOLES)) {
+        for (final RpslAttribute holeAttribute : updatedRouteObject.findAttributes(AttributeTypes.HOLES)) {
             for (final CIString hole : holeAttribute.getCleanValues()) {
                 validatePrefixForHolesAttribute(update, updateContext, AddressPrefixRange.parse(hole), prefix, holeAttribute);
             }
         }
 
-        for (final RpslAttribute pingableAttribute : updatedRouteObject.findAttributes(AttributeType.PINGABLE)) {
+        for (final RpslAttribute pingableAttribute : updatedRouteObject.findAttributes(AttributeTypes.PINGABLE)) {
             for (final CIString pingable : pingableAttribute.getCleanValues()) {
                 validatePrefixForPingableAttribute(update, updateContext, pingable, prefix, pingableAttribute);
             }
         }
 
         final IpInterval ipInterval = IpInterval.parse(prefix);
-        if ((ipInterval.getPrefixLength() < 8 && attributeType == AttributeType.ROUTE) ||
-             (ipInterval.getPrefixLength() < 12 && attributeType == AttributeType.ROUTE6)) {
+        if ((ipInterval.getPrefixLength() < 8 && attributeType == AttributeTypes.ROUTE) ||
+             (ipInterval.getPrefixLength() < 12 && attributeType == AttributeTypes.ROUTE6)) {
             updateContext.addMessage(update, UpdateMessages.invalidRoutePrefix(attributeType.getName()));
         }
     }
@@ -60,10 +61,10 @@ public class ValueWithinPrefixValidator implements BusinessRuleValidator {
         AttributeType attributeType;
         switch (updatedRouteObject.getType()) {
             case ROUTE:
-                attributeType = AttributeType.ROUTE;
+                attributeType = AttributeTypes.ROUTE;
                 break;
             case ROUTE6:
-                attributeType = AttributeType.ROUTE6;
+                attributeType = AttributeTypes.ROUTE6;
                 break;
             default:
                 throw new IllegalArgumentException("can't validate other than route / route6 objects");

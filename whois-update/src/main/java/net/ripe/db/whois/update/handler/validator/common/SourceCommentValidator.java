@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static net.ripe.db.whois.common.rpsl.AttributeType.SOURCE;
+import static net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes.SOURCE;
 
 @Component
 public class SourceCommentValidator implements BusinessRuleValidator {

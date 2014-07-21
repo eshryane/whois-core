@@ -1,8 +1,8 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class IndexWithMntRoutesTest extends IndexTestBase {
         maintainer = RpslObject.parse("mntner: DEV-MNT");
         databaseHelper.addObject(maintainer);
 
-        subject = IndexStrategies.get(AttributeType.MNT_ROUTES);
+        subject = IndexStrategies.get(AttributeTypes.MNT_ROUTES);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class IndexWithMntRoutesTest extends IndexTestBase {
                 "mnt-routes: DEV-MNT ANY\n");
 
         final RpslObjectInfo rpslObjectInfo = new RpslObjectInfo(2, rpslObject.getType(), rpslObject.getKey());
-        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeType.MNT_ROUTES));
+        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeTypes.MNT_ROUTES));
 
         assertThat(getNrMntRoutes(), is(1));
     }
@@ -45,7 +45,7 @@ public class IndexWithMntRoutesTest extends IndexTestBase {
                 "mnt-routes: DEV-MNT {2a00:c00::/48}\n");
 
         final RpslObjectInfo rpslObjectInfo = new RpslObjectInfo(2, rpslObject.getType(), rpslObject.getKey());
-        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeType.MNT_ROUTES));
+        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeTypes.MNT_ROUTES));
 
         assertThat(getNrMntRoutes(), is(1));
     }
@@ -58,7 +58,7 @@ public class IndexWithMntRoutesTest extends IndexTestBase {
                 "mnt-routes: UNKNOWN-MNT ANY\n");
 
         final RpslObjectInfo rpslObjectInfo = new RpslObjectInfo(2, rpslObject.getType(), rpslObject.getKey());
-        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeType.MNT_ROUTES));
+        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeTypes.MNT_ROUTES));
     }
 
     @Test

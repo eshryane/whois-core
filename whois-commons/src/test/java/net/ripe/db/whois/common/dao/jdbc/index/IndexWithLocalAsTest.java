@@ -1,9 +1,9 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class IndexWithLocalAsTest extends IndexTestBase {
 
     @Before
     public void setup() {
-        subject = new IndexWithLocalAs(AttributeType.LOCAL_AS);
+        subject = new IndexWithLocalAs(AttributeTypes.LOCAL_AS);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class IndexWithLocalAsTest extends IndexTestBase {
     }
 
     private int addObject(final RpslObject rpslObject) {
-        databaseHelper.addObject("inet-rtr: " + rpslObject.findAttribute(AttributeType.INET_RTR).getValue());
+        databaseHelper.addObject("inet-rtr: " + rpslObject.findAttribute(AttributeTypes.INET_RTR).getValue());
         return getObjectId(rpslObject);
     }
 

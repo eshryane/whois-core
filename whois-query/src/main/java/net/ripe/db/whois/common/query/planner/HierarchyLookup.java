@@ -7,9 +7,9 @@ import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.iptree.IpEntry;
 import net.ripe.db.whois.common.iptree.IpTree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -51,7 +51,7 @@ abstract class HierarchyLookup<K extends IpInterval<K>, V extends IpEntry<K>> {
 
     private Collection<RpslObjectInfo> getReferencedIrts(final RpslObject object) {
         final List<RpslObjectInfo> result = Lists.newArrayList();
-        for (final CIString irt : object.getValuesForAttribute(AttributeType.MNT_IRT)) {
+        for (final CIString irt : object.getValuesForAttribute(AttributeTypes.MNT_IRT)) {
             result.add(rpslObjectDao.findByKey(ObjectType.IRT, irt.toString()));
         }
 

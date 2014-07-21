@@ -1,8 +1,8 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class IndexWithAsBlockTest extends IndexTestBase {
 
     @Before
     public void setup() {
-        subject = new IndexWithAsBlock(AttributeType.AS_BLOCK);
+        subject = new IndexWithAsBlock(AttributeTypes.AS_BLOCK);
 
         asBlock = RpslObject.parse("as-block:AS31066-AS31066");
         asBlockInfo = new RpslObjectInfo(1, asBlock.getType(), asBlock.getKey());

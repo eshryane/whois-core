@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.generator;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Update;
 import net.ripe.db.whois.update.domain.UpdateContext;
 import net.ripe.db.whois.update.keycert.KeyWrapper;
@@ -41,9 +41,9 @@ public class KeycertAttributeGenerator extends AttributeGenerator {
 
         final RpslObjectBuilder builder = new RpslObjectBuilder(object);
 
-        cleanupAttributeType(update, updateContext, builder, AttributeType.METHOD, keyWrapper.getMethod());
-        cleanupAttributeType(update, updateContext, builder, AttributeType.OWNER, keyWrapper.getOwners());
-        cleanupAttributeType(update, updateContext, builder, AttributeType.FINGERPR, keyWrapper.getFingerprint());
+        cleanupAttributeType(update, updateContext, builder, AttributeTypes.METHOD, keyWrapper.getMethod());
+        cleanupAttributeType(update, updateContext, builder, AttributeTypes.OWNER, keyWrapper.getOwners());
+        cleanupAttributeType(update, updateContext, builder, AttributeTypes.FINGERPR, keyWrapper.getFingerprint());
 
         return builder.get();
     }

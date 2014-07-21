@@ -1,10 +1,10 @@
 package net.ripe.db.whois.update.handler.validator.common;
 
 import net.ripe.db.whois.common.dao.RpslObjectDao;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectMessages;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.UpdateMessages;
 import org.junit.Before;
@@ -87,8 +87,8 @@ public class MaintainedReferencedPersonRolesValidatorTest {
         final ObjectMessages messages = validateUpdate(subject, null, RpslObject.parse("mntner: foo\ntech-c: " + personName + "\nadmin-c: " + roleName));
 
         assertThat(messages.getMessages().getAllMessages(), hasItems(
-                UpdateMessages.referencedObjectMissingAttribute(ObjectType.PERSON, personName, AttributeType.MNT_BY),
-                UpdateMessages.referencedObjectMissingAttribute(ObjectType.ROLE, roleName, AttributeType.MNT_BY)
+                UpdateMessages.referencedObjectMissingAttribute(ObjectType.PERSON, personName, AttributeTypes.MNT_BY),
+                UpdateMessages.referencedObjectMissingAttribute(ObjectType.ROLE, roleName, AttributeTypes.MNT_BY)
         ));
     }
 }

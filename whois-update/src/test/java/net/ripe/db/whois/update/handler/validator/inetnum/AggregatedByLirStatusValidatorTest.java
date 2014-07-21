@@ -6,10 +6,10 @@ import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
 import net.ripe.db.whois.common.iptree.Ipv6Entry;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -79,7 +79,7 @@ public class AggregatedByLirStatusValidatorTest {
         when(update.getAction()).thenReturn(Action.CREATE);
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, object.findAttribute(AttributeType.ASSIGNMENT_SIZE), UpdateMessages.attributeAssignmentSizeNotAllowed());
+        verify(updateContext).addMessage(update, object.findAttribute(AttributeTypes.ASSIGNMENT_SIZE), UpdateMessages.attributeAssignmentSizeNotAllowed());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class AggregatedByLirStatusValidatorTest {
         validate_assignment(RpslObject.parse("" +
                 "inet6num:        2001:0658:021A::/48\n" +
                 "status:          AGGREGATED-BY-LIR"),
-                ValidationMessages.missingConditionalRequiredAttribute(AttributeType.ASSIGNMENT_SIZE));
+                ValidationMessages.missingConditionalRequiredAttribute(AttributeTypes.ASSIGNMENT_SIZE));
     }
 
     @Test
@@ -352,7 +352,7 @@ public class AggregatedByLirStatusValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeType.ASSIGNMENT_SIZE), UpdateMessages.attributeAssignmentSizeNotAllowed());
+        verify(updateContext).addMessage(update, rpslObject.findAttribute(AttributeTypes.ASSIGNMENT_SIZE), UpdateMessages.attributeAssignmentSizeNotAllowed());
     }
 
     @Test

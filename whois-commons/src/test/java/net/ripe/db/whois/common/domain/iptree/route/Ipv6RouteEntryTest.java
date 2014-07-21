@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.domain.iptree.route;
 
 import net.ripe.db.whois.common.iptree.Ipv6RouteEntry;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -22,7 +22,7 @@ public class Ipv6RouteEntryTest {
     public void testParse_valid() {
         final Ipv6RouteEntry entry = Ipv6RouteEntry.parse("::0/128AS1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INET6NUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INET6NUM));
         assertThat(entry.getKey().toString(), is("::/128"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));
@@ -32,7 +32,7 @@ public class Ipv6RouteEntryTest {
     public void testParse_valid_lowercase() {
         final Ipv6RouteEntry entry = Ipv6RouteEntry.parse("::0/128as1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INET6NUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INET6NUM));
         assertThat(entry.getKey().toString(), is("::/128"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));
@@ -42,7 +42,7 @@ public class Ipv6RouteEntryTest {
     public void testParse_valid_mixedcase() {
         final Ipv6RouteEntry entry = Ipv6RouteEntry.parse("::0/128aS1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INET6NUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INET6NUM));
         assertThat(entry.getKey().toString(), is("::/128"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));
@@ -67,7 +67,7 @@ public class Ipv6RouteEntryTest {
     public void testParse_with_spaces() {
         final Ipv6RouteEntry entry = Ipv6RouteEntry.parse("::0/128 AS1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INET6NUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INET6NUM));
         assertThat(entry.getKey().toString(), is("::/128"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));

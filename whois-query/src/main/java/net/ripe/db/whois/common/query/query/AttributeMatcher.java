@@ -3,7 +3,8 @@ package net.ripe.db.whois.common.query.query;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.ip.IpInterval;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 
 import java.util.Collection;
 import java.util.Map;
@@ -38,7 +39,7 @@ abstract class AttributeMatcher { // TODO [AK] Figure out what can be delegated 
         @Override
         public boolean matches(final Query query) {
             final IpInterval<?> ipKeyOrNull = query.getIpKeyOrNull();
-            return query.getRouteOrigin() == null && ipKeyOrNull != null && ipKeyOrNull.getAttributeType().equals(AttributeType.INETNUM);
+            return query.getRouteOrigin() == null && ipKeyOrNull != null && ipKeyOrNull.getAttributeType().equals(AttributeTypes.INETNUM);
         }
     };
 
@@ -46,21 +47,21 @@ abstract class AttributeMatcher { // TODO [AK] Figure out what can be delegated 
         @Override
         public boolean matches(final Query query) {
             final IpInterval<?> ipKeyOrNull = query.getIpKeyOrNull();
-            return query.getRouteOrigin() == null && ipKeyOrNull != null && ipKeyOrNull.getAttributeType().equals(AttributeType.INET6NUM);
+            return query.getRouteOrigin() == null && ipKeyOrNull != null && ipKeyOrNull.getAttributeType().equals(AttributeTypes.INET6NUM);
         }
     };
 
     static final AttributeMatcher ROUTE4_MATCHER = new AttributeMatcher() {
         @Override
         public boolean matches(final Query query) {
-            return query.getRouteOrigin() != null && query.getIpKeyOrNull().getAttributeType().equals(AttributeType.INETNUM);
+            return query.getRouteOrigin() != null && query.getIpKeyOrNull().getAttributeType().equals(AttributeTypes.INETNUM);
         }
     };
 
     static final AttributeMatcher ROUTE6_MATCHER = new AttributeMatcher() {
         @Override
         public boolean matches(final Query query) {
-            return query.getRouteOrigin() != null && query.getIpKeyOrNull().getAttributeType().equals(AttributeType.INET6NUM);
+            return query.getRouteOrigin() != null && query.getIpKeyOrNull().getAttributeType().equals(AttributeTypes.INET6NUM);
         }
     };
 
@@ -77,34 +78,34 @@ abstract class AttributeMatcher { // TODO [AK] Figure out what can be delegated 
         }
     }
 
-    static Map<AttributeType, Collection<AttributeMatcher>> attributeMatchers = Maps.newEnumMap(AttributeType.class);
+    static Map<AttributeType, Collection<AttributeMatcher>> attributeMatchers = Maps.newHashMap();
 
     static {
-        attributeMatchers.put(AttributeType.AS_BLOCK, Sets.newHashSet(AttributeMatcher.AS_BLOCK_MATCHER));
-        attributeMatchers.put(AttributeType.AS_SET, Sets.newHashSet(AttributeMatcher.AS_SET_MATCHER));
-        attributeMatchers.put(AttributeType.AUT_NUM, Sets.newHashSet(AttributeMatcher.AS_NUMBER_MATCHER));
-        attributeMatchers.put(AttributeType.DOMAIN, Sets.newHashSet(AttributeMatcher.DOMAIN_MATCHER, AttributeMatcher.IPV4_MATCHER, AttributeMatcher.IPV6_MATCHER));
-        attributeMatchers.put(AttributeType.E_MAIL, Sets.newHashSet(AttributeMatcher.EMAIL_MATCHER));
-        attributeMatchers.put(AttributeType.FILTER_SET, Sets.newHashSet(AttributeMatcher.FILTER_SET_MATCHER));
-        attributeMatchers.put(AttributeType.INET6NUM, Sets.newHashSet(AttributeMatcher.IPV6_MATCHER, AttributeMatcher.NETNAME_MATCHER));
-        attributeMatchers.put(AttributeType.INETNUM, Sets.newHashSet(AttributeMatcher.IPV4_MATCHER, AttributeMatcher.NETNAME_MATCHER));
-        attributeMatchers.put(AttributeType.INET_RTR, Sets.newHashSet(AttributeMatcher.DOMAIN_MATCHER));
-        attributeMatchers.put(AttributeType.IRT, Sets.newHashSet(AttributeMatcher.IRT_MATCHER));
-        attributeMatchers.put(AttributeType.KEY_CERT, Sets.newHashSet(AttributeMatcher.KEY_CERT_MATCHER));
-        attributeMatchers.put(AttributeType.MNTNER, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
-        attributeMatchers.put(AttributeType.NETNAME, Sets.newHashSet(AttributeMatcher.NETNAME_MATCHER));
-        attributeMatchers.put(AttributeType.NIC_HDL, Sets.newHashSet(AttributeMatcher.NIC_HANDLE_MATCHER));
-        attributeMatchers.put(AttributeType.ORG_NAME, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
-        attributeMatchers.put(AttributeType.ORGANISATION, Sets.newHashSet(AttributeMatcher.ORGANISATION_MATCHER));
-        attributeMatchers.put(AttributeType.PEERING_SET, Sets.newHashSet(AttributeMatcher.PEERING_SET_MATCHER));
-        attributeMatchers.put(AttributeType.PERSON, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
-        attributeMatchers.put(AttributeType.POEM, Sets.newHashSet(AttributeMatcher.POEM_MATCHER));
-        attributeMatchers.put(AttributeType.POETIC_FORM, Sets.newHashSet(AttributeMatcher.POETIC_FORM_MATCHER));
-        attributeMatchers.put(AttributeType.ROLE, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
-        attributeMatchers.put(AttributeType.ROUTE, Sets.newHashSet(AttributeMatcher.IPV4_MATCHER, AttributeMatcher.ROUTE4_MATCHER));
-        attributeMatchers.put(AttributeType.ROUTE6, Sets.newHashSet(AttributeMatcher.IPV6_MATCHER, AttributeMatcher.ROUTE6_MATCHER));
-        attributeMatchers.put(AttributeType.ROUTE_SET, Sets.newHashSet(AttributeMatcher.ROUTE_SET_MATCHER));
-        attributeMatchers.put(AttributeType.RTR_SET, Sets.newHashSet(AttributeMatcher.RTR_SET_MATCHER));
+        attributeMatchers.put(AttributeTypes.AS_BLOCK, Sets.newHashSet(AttributeMatcher.AS_BLOCK_MATCHER));
+        attributeMatchers.put(AttributeTypes.AS_SET, Sets.newHashSet(AttributeMatcher.AS_SET_MATCHER));
+        attributeMatchers.put(AttributeTypes.AUT_NUM, Sets.newHashSet(AttributeMatcher.AS_NUMBER_MATCHER));
+        attributeMatchers.put(AttributeTypes.DOMAIN, Sets.newHashSet(AttributeMatcher.DOMAIN_MATCHER, AttributeMatcher.IPV4_MATCHER, AttributeMatcher.IPV6_MATCHER));
+        attributeMatchers.put(AttributeTypes.E_MAIL, Sets.newHashSet(AttributeMatcher.EMAIL_MATCHER));
+        attributeMatchers.put(AttributeTypes.FILTER_SET, Sets.newHashSet(AttributeMatcher.FILTER_SET_MATCHER));
+        attributeMatchers.put(AttributeTypes.INET6NUM, Sets.newHashSet(AttributeMatcher.IPV6_MATCHER, AttributeMatcher.NETNAME_MATCHER));
+        attributeMatchers.put(AttributeTypes.INETNUM, Sets.newHashSet(AttributeMatcher.IPV4_MATCHER, AttributeMatcher.NETNAME_MATCHER));
+        attributeMatchers.put(AttributeTypes.INET_RTR, Sets.newHashSet(AttributeMatcher.DOMAIN_MATCHER));
+        attributeMatchers.put(AttributeTypes.IRT, Sets.newHashSet(AttributeMatcher.IRT_MATCHER));
+        attributeMatchers.put(AttributeTypes.KEY_CERT, Sets.newHashSet(AttributeMatcher.KEY_CERT_MATCHER));
+        attributeMatchers.put(AttributeTypes.MNTNER, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
+        attributeMatchers.put(AttributeTypes.NETNAME, Sets.newHashSet(AttributeMatcher.NETNAME_MATCHER));
+        attributeMatchers.put(AttributeTypes.NIC_HDL, Sets.newHashSet(AttributeMatcher.NIC_HANDLE_MATCHER));
+        attributeMatchers.put(AttributeTypes.ORG_NAME, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
+        attributeMatchers.put(AttributeTypes.ORGANISATION, Sets.newHashSet(AttributeMatcher.ORGANISATION_MATCHER));
+        attributeMatchers.put(AttributeTypes.PEERING_SET, Sets.newHashSet(AttributeMatcher.PEERING_SET_MATCHER));
+        attributeMatchers.put(AttributeTypes.PERSON, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
+        attributeMatchers.put(AttributeTypes.POEM, Sets.newHashSet(AttributeMatcher.POEM_MATCHER));
+        attributeMatchers.put(AttributeTypes.POETIC_FORM, Sets.newHashSet(AttributeMatcher.POETIC_FORM_MATCHER));
+        attributeMatchers.put(AttributeTypes.ROLE, Sets.newHashSet(AttributeMatcher.ANYTHING_CONTAINING_ALPHA_MATCHER));
+        attributeMatchers.put(AttributeTypes.ROUTE, Sets.newHashSet(AttributeMatcher.IPV4_MATCHER, AttributeMatcher.ROUTE4_MATCHER));
+        attributeMatchers.put(AttributeTypes.ROUTE6, Sets.newHashSet(AttributeMatcher.IPV6_MATCHER, AttributeMatcher.ROUTE6_MATCHER));
+        attributeMatchers.put(AttributeTypes.ROUTE_SET, Sets.newHashSet(AttributeMatcher.ROUTE_SET_MATCHER));
+        attributeMatchers.put(AttributeTypes.RTR_SET, Sets.newHashSet(AttributeMatcher.RTR_SET_MATCHER));
     }
 
     static boolean fetchableBy(final AttributeType attributeType, final Query query) {

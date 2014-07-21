@@ -1,24 +1,16 @@
 package net.ripe.db.whois.api.rest.mapper;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.api.rest.domain.Attribute;
-import net.ripe.db.whois.api.rest.domain.Link;
-import net.ripe.db.whois.api.rest.domain.Source;
-import net.ripe.db.whois.api.rest.domain.WhoisObject;
-import net.ripe.db.whois.api.rest.domain.WhoisResources;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.api.rest.domain.*;
 import net.ripe.db.whois.common.rpsl.ObjectTemplate;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class WhoisObjectMapper {
@@ -73,7 +65,7 @@ public class WhoisObjectMapper {
     }
 
     public WhoisObject map(final RpslObject rpslObject, final Class<?> mapFunction) {
-        final String source = rpslObject.getValueForAttribute(AttributeType.SOURCE).toString().toLowerCase();
+        final String source = rpslObject.getValueForAttribute(AttributeTypes.SOURCE).toString().toLowerCase();
         final String type = rpslObject.getType().getName();
         final AttributeMapper attributeMapper = objectMapperFunctions.get(mapFunction);
 
@@ -96,7 +88,7 @@ public class WhoisObjectMapper {
     }
 
     protected Link createLink(final RpslObject rpslObject) {
-        final String source = rpslObject.getValueForAttribute(AttributeType.SOURCE).toString().toLowerCase();
+        final String source = rpslObject.getValueForAttribute(AttributeTypes.SOURCE).toString().toLowerCase();
         final String type = rpslObject.getType().getName();
         final String key = rpslObject.getKey().toString();
         return createLink(source, type, key);

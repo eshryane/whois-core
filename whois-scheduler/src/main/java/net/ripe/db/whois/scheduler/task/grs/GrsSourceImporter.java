@@ -4,14 +4,9 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
-import net.ripe.db.whois.common.rpsl.AttributeSanitizer;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectMessages;
-import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslAttribute;
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
+import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.source.SourceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +71,7 @@ class GrsSourceImporter {
         final Logger logger = grsSource.getLogger();
 
         new Runnable() {
-            private final RpslAttribute sourceAttribute = new RpslAttribute(AttributeType.SOURCE, grsSource.getName().toUpperCase());
+            private final RpslAttribute sourceAttribute = new RpslAttribute(AttributeTypes.SOURCE, grsSource.getName().toUpperCase());
 
             private int nrCreated;
             private int nrUpdated;
@@ -170,7 +165,7 @@ class GrsSourceImporter {
                                 logger.debug("Ignoring attribute in object {}: {}", rpslObject.getFormattedKey(), rpslAttribute);
                                 builder.remove(i--);
 
-                            } else  if (attributeType.equals(AttributeType.SOURCE)) {
+                            } else  if (attributeType.equals(AttributeTypes.SOURCE)) {
                                 builder.remove(i--);
                             }
                         }

@@ -8,10 +8,10 @@ import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
 import net.ripe.db.whois.common.iptree.*;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -54,13 +54,13 @@ public class RouteIpAddressAuthentication extends RouteAuthentication {
         final List<Message> authenticationMessages = Lists.newArrayList();
 
         for (final RpslObject ipObject : ipObjects) {
-            if (ipObject.containsAttribute(AttributeType.MNT_ROUTES)) {
+            if (ipObject.containsAttribute(AttributeTypes.MNT_ROUTES)) {
                 final List<RpslObject> candidates = getCandidatesForMntRoutesAuthentication(ipObject, update);
                 allCandidates.addAll(candidates);
 
                 final List<RpslObject> authenticated = authenticationModule.authenticate(update, updateContext, candidates);
                 if (authenticated.isEmpty()) {
-                    authenticationMessages.add(UpdateMessages.authenticationFailed(ipObject, AttributeType.MNT_ROUTES, candidates));
+                    authenticationMessages.add(UpdateMessages.authenticationFailed(ipObject, AttributeTypes.MNT_ROUTES, candidates));
                 } else {
                     return authenticated;
                 }
@@ -74,13 +74,13 @@ public class RouteIpAddressAuthentication extends RouteAuthentication {
 
         for (final RpslObject ipObject : ipObjects) {
             final IpInterval ipInterval = IpInterval.parse(ipObject.getTypeAttribute().getCleanValue());
-            if (!addressPrefix.equals(ipInterval) && ipObject.containsAttribute(AttributeType.MNT_LOWER)) {
-                final List<RpslObject> candidates = objectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeType.MNT_LOWER));
+            if (!addressPrefix.equals(ipInterval) && ipObject.containsAttribute(AttributeTypes.MNT_LOWER)) {
+                final List<RpslObject> candidates = objectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeTypes.MNT_LOWER));
                 allCandidates.addAll(candidates);
 
                 final List<RpslObject> authenticated = authenticationModule.authenticate(update, updateContext, candidates);
                 if (authenticated.isEmpty()) {
-                    authenticationMessages.add(UpdateMessages.authenticationFailed(ipObject, AttributeType.MNT_LOWER, candidates));
+                    authenticationMessages.add(UpdateMessages.authenticationFailed(ipObject, AttributeTypes.MNT_LOWER, candidates));
                 } else {
                     return authenticated;
                 }
@@ -92,13 +92,13 @@ public class RouteIpAddressAuthentication extends RouteAuthentication {
         }
 
         for (final RpslObject ipObject : ipObjects) {
-            if (ipObject.containsAttribute(AttributeType.MNT_BY)) {
-                final List<RpslObject> candidates = objectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeType.MNT_BY));
+            if (ipObject.containsAttribute(AttributeTypes.MNT_BY)) {
+                final List<RpslObject> candidates = objectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeTypes.MNT_BY));
                 allCandidates.addAll(candidates);
 
                 final List<RpslObject> authenticated = authenticationModule.authenticate(update, updateContext, candidates);
                 if (authenticated.isEmpty()) {
-                    authenticationMessages.add(UpdateMessages.authenticationFailed(ipObject, AttributeType.MNT_BY, candidates));
+                    authenticationMessages.add(UpdateMessages.authenticationFailed(ipObject, AttributeTypes.MNT_BY, candidates));
                 } else {
                     return authenticated;
                 }

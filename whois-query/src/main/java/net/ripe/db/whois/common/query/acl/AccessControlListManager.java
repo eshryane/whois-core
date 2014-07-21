@@ -6,11 +6,11 @@ import net.ripe.db.whois.common.domain.IpRanges;
 import net.ripe.db.whois.common.ip.IpInterval;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.query.dao.AccessControlListDao;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.source.Source;
-import net.ripe.db.whois.common.query.dao.AccessControlListDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class AccessControlListManager {
 
         final ObjectType objectType = rpslObject.getType();
         return ObjectType.PERSON.equals(objectType)
-                || (ObjectType.ROLE.equals(objectType) && rpslObject.findAttributes(AttributeType.ABUSE_MAILBOX).isEmpty());
+                || (ObjectType.ROLE.equals(objectType) && rpslObject.findAttributes(AttributeTypes.ABUSE_MAILBOX).isEmpty());
     }
 
     public boolean isDenied(final InetAddress remoteAddress) {

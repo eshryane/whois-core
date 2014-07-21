@@ -1,9 +1,9 @@
 package net.ripe.db.whois.update.handler.validator.common;
 
 import net.ripe.db.whois.common.dao.RpslObjectDao;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +59,7 @@ public class MaintainedReferencedMaintainerPersonRolesValidatorTest {
         final RpslObject object = RpslObject.parse("mntner: foo\nmnt-by: one\nmnt-by: two, three\t, four");
         validateUpdate(subject, null, object);
 
-        final int nrMaintainers = object.getValuesForAttribute(AttributeType.MNT_BY).size();
+        final int nrMaintainers = object.getValuesForAttribute(AttributeTypes.MNT_BY).size();
         verify(subject, times(nrMaintainers)).validateReferencedPersonsAndRoles(any(RpslObject.class));
     }
 }

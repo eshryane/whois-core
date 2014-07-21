@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.collect.CollectionHelper;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 import net.ripe.db.whois.update.domain.*;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class AutoKeyResolver {
 
     @Autowired
     public AutoKeyResolver(final AutoKeyFactory... autoKeyFactories) {
-        factoryByKeyMap = Maps.newEnumMap(AttributeType.class);
+        factoryByKeyMap = Maps.newHashMap();
 
         for (final AutoKeyFactory autoKeyFactory : autoKeyFactories) {
             final AttributeType attributeType = autoKeyFactory.getAttributeType();

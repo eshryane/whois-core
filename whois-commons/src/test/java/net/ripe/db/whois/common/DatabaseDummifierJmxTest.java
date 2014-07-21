@@ -1,9 +1,9 @@
 package net.ripe.db.whois.common;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.PasswordHelper;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -27,7 +27,7 @@ public class DatabaseDummifierJmxTest {
     @Test
     public void replacePasswordTest() {
         RpslObject rpslObject = DatabaseDummifierJmx.DatabaseObjectProcessor.replaceWithMntnerNamePassword(mntnerAfterDummy);
-        RpslAttribute authAttr = rpslObject.findAttribute(AttributeType.AUTH);
+        RpslAttribute authAttr = rpslObject.findAttribute(AttributeTypes.AUTH);
         assertThat(PasswordHelper.authenticateMd5Passwords(authAttr.getCleanValue().toString(), "NINJA"), is(true));
     }
 

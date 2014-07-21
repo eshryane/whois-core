@@ -7,9 +7,9 @@ import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -33,9 +33,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyCollection;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
@@ -74,7 +72,7 @@ public class MntByAuthenticationTest {
         when(update.getUpdatedObject()).thenReturn(RpslObject.parse("organisation: ORG1\nmnt-by: TEST-MNT\nnotify: TEST-MNT"));
         final RpslObject maintainer = RpslObject.parse("mntner: TEST-MNT");
         final ArrayList<RpslObject> candidates = Lists.newArrayList(maintainer);
-        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, org.getValuesForAttribute(AttributeType.MNT_BY))).thenReturn(candidates);
+        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, org.getValuesForAttribute(AttributeTypes.MNT_BY))).thenReturn(candidates);
 
         when(credentialValidators.authenticate(update, updateContext, candidates)).thenReturn(candidates);
 
@@ -94,7 +92,7 @@ public class MntByAuthenticationTest {
         when(update.getUpdatedObject()).thenReturn(person);
         final RpslObject maintainer = RpslObject.parse("mntner: TEST-MNT");
         final ArrayList<RpslObject> candidates = Lists.newArrayList(maintainer);
-        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, person.getValuesForAttribute(AttributeType.MNT_BY))).thenReturn(candidates);
+        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, person.getValuesForAttribute(AttributeTypes.MNT_BY))).thenReturn(candidates);
         when(credentialValidators.authenticate(update, updateContext, candidates)).thenReturn(Lists.<RpslObject>newArrayList());
 
         subject.authenticate(update, updateContext);
@@ -110,7 +108,7 @@ public class MntByAuthenticationTest {
         when(update.getAction()).thenReturn(Action.CREATE);
 
         final ArrayList<RpslObject> candidates = Lists.newArrayList(mntner);
-        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, mntner.getValuesForAttribute(AttributeType.MNT_BY))).thenReturn(Lists.<RpslObject>newArrayList());
+        when(rpslObjectDao.getByKeys(ObjectType.MNTNER, mntner.getValuesForAttribute(AttributeTypes.MNT_BY))).thenReturn(Lists.<RpslObject>newArrayList());
 
         when(credentialValidators.authenticate(update, updateContext, candidates)).thenReturn(candidates);
 
@@ -180,7 +178,7 @@ public class MntByAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected exception");
         } catch (AuthenticationFailedException e) {
-            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(inetnum, AttributeType.MNT_BY, Lists.newArrayList(maintainer))));
+            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(inetnum, AttributeTypes.MNT_BY, Lists.newArrayList(maintainer))));
         }
     }
 
@@ -216,9 +214,9 @@ public class MntByAuthenticationTest {
             fail("Expected exception");
         } catch (AuthenticationFailedException e) {
             assertThat(e.getAuthenticationMessages(), contains(
-                    UpdateMessages.authenticationFailed(inetnum, AttributeType.MNT_BY, mntByCandidates),
-                    UpdateMessages.authenticationFailed(ipObject, AttributeType.MNT_LOWER, Lists.<RpslObject>newArrayList()),
-                    UpdateMessages.authenticationFailed(ipObject, AttributeType.MNT_BY, parentCandidates)));
+                    UpdateMessages.authenticationFailed(inetnum, AttributeTypes.MNT_BY, mntByCandidates),
+                    UpdateMessages.authenticationFailed(ipObject, AttributeTypes.MNT_LOWER, Lists.<RpslObject>newArrayList()),
+                    UpdateMessages.authenticationFailed(ipObject, AttributeTypes.MNT_BY, parentCandidates)));
         }
     }
 

@@ -2,9 +2,9 @@ package net.ripe.db.whois.update.handler.validator.inetnum;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.domain.Action;
@@ -48,9 +48,9 @@ public class MntLowerAddedRemoved implements BusinessRuleValidator {
             return;
         }
 
-        final Set<CIString> differences = update.getDifferences(AttributeType.MNT_LOWER);
+        final Set<CIString> differences = update.getDifferences(AttributeTypes.MNT_LOWER);
         if (!differences.isEmpty() && !subject.hasPrincipal(Principal.RS_MAINTAINER)) {
-            updateContext.addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeType.MNT_LOWER));
+            updateContext.addMessage(update, UpdateMessages.authorisationRequiredForAttrChange(AttributeTypes.MNT_LOWER));
         }
     }
 }

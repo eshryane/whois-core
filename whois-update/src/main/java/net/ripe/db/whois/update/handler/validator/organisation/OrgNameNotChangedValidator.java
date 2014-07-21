@@ -6,10 +6,10 @@ import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.RpslObjectUpdateDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.domain.Action;
@@ -53,9 +53,9 @@ public class OrgNameNotChangedValidator implements BusinessRuleValidator {
     @Override
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
         final RpslObject original = update.getReferenceObject();
-        final CIString storedOrgName = original.getValueOrNullForAttribute(AttributeType.ORG_NAME);
+        final CIString storedOrgName = original.getValueOrNullForAttribute(AttributeTypes.ORG_NAME);
 
-        final RpslAttribute orgNameAttribute = update.getUpdatedObject().findAttribute(AttributeType.ORG_NAME);
+        final RpslAttribute orgNameAttribute = update.getUpdatedObject().findAttribute(AttributeTypes.ORG_NAME);
         final CIString updateOrgName = orgNameAttribute.getCleanValue();
 
         if (Objects.equals(storedOrgName, updateOrgName)) {
@@ -82,7 +82,7 @@ public class OrgNameNotChangedValidator implements BusinessRuleValidator {
     }
 
     private boolean isMaintainedByRs(final RpslObject resourceObject) {
-        final Set<CIString> objectMaintainers = resourceObject.getValuesForAttribute(AttributeType.MNT_BY);
+        final Set<CIString> objectMaintainers = resourceObject.getValuesForAttribute(AttributeTypes.MNT_BY);
         return !Sets.intersection(this.maintainers.getRsMaintainers(), objectMaintainers).isEmpty();
     }
 }

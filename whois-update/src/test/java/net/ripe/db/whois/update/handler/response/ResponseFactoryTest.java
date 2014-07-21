@@ -2,22 +2,10 @@ package net.ripe.db.whois.update.handler.response;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.DateTimeProvider;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectMessages;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.update.domain.Ack;
-import net.ripe.db.whois.update.domain.Action;
-import net.ripe.db.whois.update.domain.Notification;
-import net.ripe.db.whois.update.domain.Operation;
-import net.ripe.db.whois.update.domain.Origin;
-import net.ripe.db.whois.update.domain.Paragraph;
-import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.ResponseMessage;
-import net.ripe.db.whois.update.domain.Update;
-import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.domain.UpdateMessages;
-import net.ripe.db.whois.update.domain.UpdateResult;
-import net.ripe.db.whois.update.domain.UpdateStatus;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.update.domain.*;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -32,9 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static net.ripe.db.whois.common.support.StringMatchesRegexp.stringMatchesRegexp;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -271,7 +257,7 @@ public class ResponseFactoryTest {
 
         final ObjectMessages objectMessages = new ObjectMessages();
 
-        objectMessages.addMessage(rpslObject.findAttribute(AttributeType.SOURCE), UpdateMessages.unrecognizedSource("RIPE"));
+        objectMessages.addMessage(rpslObject.findAttribute(AttributeTypes.SOURCE), UpdateMessages.unrecognizedSource("RIPE"));
 
         updateResults.add(new UpdateResult(rpslObject, rpslObject, Action.DELETE, UpdateStatus.FAILED, objectMessages, 0, false));
 

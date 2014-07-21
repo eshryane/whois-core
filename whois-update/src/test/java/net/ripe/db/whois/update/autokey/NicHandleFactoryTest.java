@@ -1,9 +1,9 @@
 package net.ripe.db.whois.update.autokey;
 
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.autokey.dao.NicHandleRepository;
 import net.ripe.db.whois.update.dao.CountryCodeRepository;
 import net.ripe.db.whois.update.domain.NicHandle;
@@ -106,7 +106,7 @@ public class NicHandleFactoryTest {
 
     @Test
     public void getAttributeType() {
-        assertThat(subject.getAttributeType(), is(AttributeType.NIC_HDL));
+        assertThat(subject.getAttributeType(), is(AttributeTypes.NIC_HDL));
     }
 
     @Test

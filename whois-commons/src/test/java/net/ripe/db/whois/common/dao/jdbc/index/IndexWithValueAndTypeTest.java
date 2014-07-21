@@ -1,8 +1,8 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -12,7 +12,7 @@ public class IndexWithValueAndTypeTest extends IndexTestBase {
 
     @Test
     public void addToIndex() throws Exception {
-        IndexWithValueAndType subject = new IndexWithValueAndType(AttributeType.NOTIFY, "notify", "notify");
+        IndexWithValueAndType subject = new IndexWithValueAndType(AttributeTypes.NOTIFY, "notify", "notify");
         RpslObjectInfo maintainer = new RpslObjectInfo(1, ObjectType.MNTNER, "MNT-TEST");
 
         final int added = subject.addToIndex(whoisTemplate, maintainer, null, "MNT-TEST");

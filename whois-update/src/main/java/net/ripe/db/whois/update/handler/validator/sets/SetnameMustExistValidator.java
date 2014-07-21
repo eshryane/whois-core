@@ -4,9 +4,10 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.collect.CollectionHelper;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.Action;
@@ -75,11 +76,11 @@ public class SetnameMustExistValidator implements BusinessRuleValidator {
     }
 
     ObjectType findObjectType(final ObjectType objectType, final CIString value) {
-        if (AttributeType.AUT_NUM.isValidValue(objectType, value)) {
+        if (AttributeTypes.AUT_NUM.isValidValue(objectType, value)) {
             return ObjectType.AUT_NUM;
         }
 
-        if (AttributeType.AS_SET.isValidValue(objectType, value)) {
+        if (AttributeTypes.AS_SET.isValidValue(objectType, value)) {
             return ObjectType.AS_SET;
         }
 
@@ -87,14 +88,14 @@ public class SetnameMustExistValidator implements BusinessRuleValidator {
     }
 
     private AttributeType findAttributeType(final RpslObject object) {
-        final Set<CIString> maintainers = object.getValuesForAttribute(AttributeType.MNT_LOWER);
-        return maintainers.isEmpty() ? AttributeType.MNT_BY : AttributeType.MNT_LOWER;
+        final Set<CIString> maintainers = object.getValuesForAttribute(AttributeTypes.MNT_LOWER);
+        return maintainers.isEmpty() ? AttributeTypes.MNT_BY : AttributeTypes.MNT_LOWER;
     }
 
     private List<RpslObject> findMaintainers(final RpslObject object) {
-        Set<CIString> maintainers = object.getValuesForAttribute(AttributeType.MNT_LOWER);
+        Set<CIString> maintainers = object.getValuesForAttribute(AttributeTypes.MNT_LOWER);
         if (maintainers.isEmpty()) {
-            maintainers = object.getValuesForAttribute(AttributeType.MNT_BY);
+            maintainers = object.getValuesForAttribute(AttributeTypes.MNT_BY);
         }
 
         return objectDao.getByKeys(ObjectType.MNTNER, maintainers);

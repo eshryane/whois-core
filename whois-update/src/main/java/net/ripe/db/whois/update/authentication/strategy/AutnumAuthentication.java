@@ -3,9 +3,10 @@ package net.ripe.db.whois.update.authentication.strategy;
 
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -45,10 +46,10 @@ public class AutnumAuthentication extends AuthenticationStrategyBase {
             throw new AuthenticationFailedException(UpdateMessages.noParentAsBlockFound(pkey), Collections.<RpslObject>emptyList());
         }
 
-        AttributeType attributeType = AttributeType.MNT_LOWER;
+        AttributeType attributeType = AttributeTypes.MNT_LOWER;
         Collection<CIString> parentMnts = asBlock.getValuesForAttribute(attributeType);
         if (parentMnts.isEmpty()) {
-            attributeType = AttributeType.MNT_BY;
+            attributeType = AttributeTypes.MNT_BY;
             parentMnts = asBlock.getValuesForAttribute(attributeType);
         }
 

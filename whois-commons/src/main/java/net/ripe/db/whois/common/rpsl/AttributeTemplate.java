@@ -1,6 +1,7 @@
 package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.collect.Sets;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;

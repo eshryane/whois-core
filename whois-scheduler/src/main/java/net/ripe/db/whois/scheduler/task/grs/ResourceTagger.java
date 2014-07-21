@@ -10,9 +10,9 @@ import net.ripe.db.whois.common.dao.jdbc.domain.ObjectTypeIds;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Tag;
 import net.ripe.db.whois.common.grs.AuthoritativeResource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,15 +161,15 @@ class ResourceTagger {
                     }
 
                     private boolean isAutnumMaintainedByRir(final RpslObject object) {
-                        return authoritativeResource.isMaintainedByRir(ObjectType.AUT_NUM, object.getValueForAttribute(AttributeType.ORIGIN));
+                        return authoritativeResource.isMaintainedByRir(ObjectType.AUT_NUM, object.getValueForAttribute(AttributeTypes.ORIGIN));
                     }
 
                     private boolean isRouteMaintainedInRirSpace(final RpslObject object) {
                         switch (object.getType()) {
                             case ROUTE:
-                                return authoritativeResource.isMaintainedInRirSpace(ObjectType.INETNUM, object.getValueForAttribute(AttributeType.ROUTE));
+                                return authoritativeResource.isMaintainedInRirSpace(ObjectType.INETNUM, object.getValueForAttribute(AttributeTypes.ROUTE));
                             case ROUTE6:
-                                return authoritativeResource.isMaintainedInRirSpace(ObjectType.INET6NUM, object.getValueForAttribute(AttributeType.ROUTE6));
+                                return authoritativeResource.isMaintainedInRirSpace(ObjectType.INET6NUM, object.getValueForAttribute(AttributeTypes.ROUTE6));
                             default:
                                 throw new IllegalArgumentException("Unhandled type " + object.getType());
                         }

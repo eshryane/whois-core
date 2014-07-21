@@ -10,9 +10,9 @@ import net.ripe.db.whois.api.rest.mapper.FormattedClientAttributeMapper;
 import net.ripe.db.whois.api.rest.mapper.WhoisObjectMapper;
 import net.ripe.db.whois.common.EndToEndTest;
 import net.ripe.db.whois.common.profiles.WhoisProfile;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.support.TestUpdateLog;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -136,7 +136,7 @@ public class WhoisRestServiceEndToEndTest extends AbstractIntegrationTest {
     @Test
     public void create_inetnum_with_parent_without_status_to_check_error_message_beginning_with_percent_is_handled_correctly() {
         databaseHelper.addObjects(
-                new RpslObjectBuilder(makeInetnum("10.0.0.0 - 10.255.255.255")).removeAttributeType(AttributeType.STATUS).get()
+                new RpslObjectBuilder(makeInetnum("10.0.0.0 - 10.255.255.255")).removeAttributeType(AttributeTypes.STATUS).get()
         );
 
         final RpslObject assignment = makeInetnum("10.0.0.0 - 10.0.255.255");

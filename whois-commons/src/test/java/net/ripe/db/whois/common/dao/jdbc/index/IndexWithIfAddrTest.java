@@ -2,9 +2,9 @@ package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class IndexWithIfAddrTest extends IndexTestBase {
 
     @Before
     public void setup() {
-        subject = new IndexWithIfAddr(AttributeType.IFADDR);
+        subject = new IndexWithIfAddr(AttributeTypes.IFADDR);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class IndexWithIfAddrTest extends IndexTestBase {
     //
 
     private int addObject(final RpslObject rpslObject) {
-        databaseHelper.addObject("inet-rtr: " + rpslObject.findAttribute(AttributeType.INET_RTR).getValue());
+        databaseHelper.addObject("inet-rtr: " + rpslObject.findAttribute(AttributeTypes.INET_RTR).getValue());
         final int objectId = getObjectId(rpslObject);
         final long ifAddr = Ipv4Resource.parse(getIfAddrAttributeAsString(rpslObject)).begin();
         whoisTemplate.update("INSERT INTO ifaddr (object_id, ifaddr) VALUES (?, ?)",
@@ -125,6 +125,6 @@ public class IndexWithIfAddrTest extends IndexTestBase {
     }
 
     private String getIfAddrAttributeAsString(final RpslObject rpslObject) {
-        return rpslObject.findAttribute(AttributeType.IFADDR).getCleanValue().toString().split(" ")[0];
+        return rpslObject.findAttribute(AttributeTypes.IFADDR).getCleanValue().toString().split(" ")[0];
     }
 }

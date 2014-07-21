@@ -4,10 +4,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.domain.Action;
@@ -44,18 +44,18 @@ public class OrgAttributeNotChangedValidator implements BusinessRuleValidator {
     @Override
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
         final RpslObject originalObject = update.getReferenceObject();
-        final CIString originalOrg = originalObject.getValueOrNullForAttribute(AttributeType.ORG);
-        final CIString updatedOrg = update.getUpdatedObject().getValueOrNullForAttribute(AttributeType.ORG);
+        final CIString originalOrg = originalObject.getValueOrNullForAttribute(AttributeTypes.ORG);
+        final CIString updatedOrg = update.getUpdatedObject().getValueOrNullForAttribute(AttributeTypes.ORG);
 
         if (Objects.equals(originalOrg, updatedOrg)) {
             return;
         }
 
-        boolean rsMaintained = !Sets.intersection(this.maintainers.getRsMaintainers(), originalObject.getValuesForAttribute(AttributeType.MNT_BY)).isEmpty();
+        boolean rsMaintained = !Sets.intersection(this.maintainers.getRsMaintainers(), originalObject.getValuesForAttribute(AttributeTypes.MNT_BY)).isEmpty();
 
         final Subject subject = updateContext.getSubject(update);
         if (rsMaintained && !(subject.hasPrincipal(Principal.RS_MAINTAINER) || subject.hasPrincipal(Principal.OVERRIDE_MAINTAINER))) {
-            final List<RpslAttribute> org = update.getUpdatedObject().findAttributes(AttributeType.ORG);
+            final List<RpslAttribute> org = update.getUpdatedObject().findAttributes(AttributeTypes.ORG);
             if (org.isEmpty()) {
                 updateContext.addMessage(update, UpdateMessages.cantRemoveOrgAttribute());
             } else {

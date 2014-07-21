@@ -9,24 +9,19 @@ import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.Messages;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.ip.IpInterval;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.attrs.AsBlockRange;
 import net.ripe.db.whois.common.query.QueryFlag;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.QueryParser;
 import net.ripe.db.whois.common.query.domain.QueryCompletionInfo;
 import net.ripe.db.whois.common.query.domain.QueryException;
+import net.ripe.db.whois.common.rpsl.ObjectTemplate;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.AsBlockRange;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 // TODO: [AH] further separate concerns of query parsing and business logic
 // TODO: [AH] merge QueryBuilder and Query to cooperate better
@@ -511,9 +506,9 @@ public class Query {
         final Set<AttributeType> ret = Sets.newLinkedHashSet();
         for (final String attributeType : attributeTypes) {
             try {
-                final AttributeType type = AttributeType.getByName(attributeType);
-                if (AttributeType.PERSON.equals(type)) {
-                    ret.addAll(Arrays.asList(AttributeType.ADMIN_C, AttributeType.TECH_C, AttributeType.ZONE_C, AttributeType.AUTHOR, AttributeType.PING_HDL));
+                final AttributeType type = AttributeTypes.getByName(attributeType);
+                if (AttributeTypes.PERSON.equals(type)) {
+                    ret.addAll(Arrays.asList(AttributeTypes.ADMIN_C, AttributeTypes.TECH_C, AttributeTypes.ZONE_C, AttributeTypes.AUTHOR, AttributeTypes.PING_HDL));
                 } else {
                     ret.add(type);
                 }

@@ -8,9 +8,10 @@ import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.iptree.Ipv6Entry;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -104,7 +105,7 @@ public class DomainAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected exception");
         } catch (AuthenticationFailedException ignored) {
-            assertThat(ignored.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(rpslObject, AttributeType.DOMAIN, Collections.<RpslObject>emptySet())));
+            assertThat(ignored.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(rpslObject, AttributeTypes.DOMAIN, Collections.<RpslObject>emptySet())));
         }
 
         verify(ipv4Tree).findExactOrFirstLessSpecific(any(Ipv4Resource.class));
@@ -121,7 +122,7 @@ public class DomainAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected exception");
         } catch (AuthenticationFailedException ignored) {
-            assertThat(ignored.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(rpslObject, AttributeType.DOMAIN, Collections.<RpslObject>emptySet())));
+            assertThat(ignored.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(rpslObject, AttributeTypes.DOMAIN, Collections.<RpslObject>emptySet())));
         }
 
         verify(ipv6Tree).findExactOrFirstLessSpecific(any(Ipv6Resource.class));
@@ -141,7 +142,7 @@ public class DomainAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected exception");
         } catch (AuthenticationFailedException ignored) {
-            assertThat(ignored.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(rpslObject, AttributeType.DOMAIN, Collections.<RpslObject>emptySet())));
+            assertThat(ignored.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(rpslObject, AttributeTypes.DOMAIN, Collections.<RpslObject>emptySet())));
         }
 
         verify(ipv6Tree).findExactOrFirstLessSpecific(any(Ipv6Resource.class));
@@ -230,7 +231,7 @@ public class DomainAuthenticationTest {
                 "inet6num:  2001:7f8::/32\n" +
                 "mnt-by:    DEV-MNT\n");
 
-        authenticate_ipv6_domain_parent_failed(ipObject, AttributeType.MNT_BY);
+        authenticate_ipv6_domain_parent_failed(ipObject, AttributeTypes.MNT_BY);
     }
 
     @Test
@@ -239,7 +240,7 @@ public class DomainAuthenticationTest {
                 "inet6num:  2001:7f8::/48\n" +
                 "mnt-by:    DEV-MNT\n");
 
-        authenticate_ipv6_domain_parent_failed(ipObject, AttributeType.MNT_BY);
+        authenticate_ipv6_domain_parent_failed(ipObject, AttributeTypes.MNT_BY);
     }
 
     @Test
@@ -249,7 +250,7 @@ public class DomainAuthenticationTest {
                 "mnt-by:    DEV-MNT\n" +
                 "mnt-lower: DEV-MNT\n");
 
-        authenticate_ipv6_domain_parent_failed(ipObject, AttributeType.MNT_LOWER);
+        authenticate_ipv6_domain_parent_failed(ipObject, AttributeTypes.MNT_LOWER);
     }
 
     @Test
@@ -259,7 +260,7 @@ public class DomainAuthenticationTest {
                 "mnt-by:    DEV-MNT\n" +
                 "mnt-lower: DEV-MNT\n");
 
-        authenticate_ipv6_domain_parent_failed(ipObject, AttributeType.MNT_BY);
+        authenticate_ipv6_domain_parent_failed(ipObject, AttributeTypes.MNT_BY);
     }
 
     @Test
@@ -270,7 +271,7 @@ public class DomainAuthenticationTest {
                 "mnt-lower:   DEV-MNT\n" +
                 "mnt-domains: DEV-MNT\n");
 
-        authenticate_ipv6_domain_parent_failed(ipObject, AttributeType.MNT_DOMAINS);
+        authenticate_ipv6_domain_parent_failed(ipObject, AttributeTypes.MNT_DOMAINS);
     }
 
     @Test
@@ -281,7 +282,7 @@ public class DomainAuthenticationTest {
                 "mnt-lower:   DEV-MNT\n" +
                 "mnt-domains: DEV-MNT\n");
 
-        authenticate_ipv6_domain_parent_failed(ipObject, AttributeType.MNT_DOMAINS);
+        authenticate_ipv6_domain_parent_failed(ipObject, AttributeTypes.MNT_DOMAINS);
     }
 
     void authenticate_ipv6_domain_parent_failed(final RpslObject ipObject, final AttributeType attributeType) {

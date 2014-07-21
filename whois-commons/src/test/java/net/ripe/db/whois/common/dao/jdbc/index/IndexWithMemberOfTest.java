@@ -1,8 +1,8 @@
 package net.ripe.db.whois.common.dao.jdbc.index;
 
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +19,7 @@ public class IndexWithMemberOfTest extends IndexTestBase {
 
     @Before
     public void setUp() throws Exception {
-        subject = IndexStrategies.get(AttributeType.MEMBER_OF);
+        subject = IndexStrategies.get(AttributeTypes.MEMBER_OF);
 
         asSet = RpslObject.parse("" +
                 "as-set:          AS-BOGUS\n" +
@@ -35,7 +35,7 @@ public class IndexWithMemberOfTest extends IndexTestBase {
                 "member-of:       AS-BOGUS");
 
         final RpslObjectInfo rpslObjectInfo = new RpslObjectInfo(2, rpslObject.getType(), rpslObject.getKey());
-        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeType.MEMBER_OF));
+        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeTypes.MEMBER_OF));
 
         assertThat(getNrMemberOf(), is(1));
     }
@@ -48,7 +48,7 @@ public class IndexWithMemberOfTest extends IndexTestBase {
                 "member-of: AS-BOGUS");
 
         final RpslObjectInfo rpslObjectInfo = new RpslObjectInfo(2, rpslObject.getType(), rpslObject.getKey());
-        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeType.MEMBER_OF));
+        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeTypes.MEMBER_OF));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -58,7 +58,7 @@ public class IndexWithMemberOfTest extends IndexTestBase {
                 "member-of:       AS-UNKNOWN");
 
         final RpslObjectInfo rpslObjectInfo = new RpslObjectInfo(2, rpslObject.getType(), rpslObject.getKey());
-        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeType.MEMBER_OF));
+        subject.addToIndex(whoisTemplate, rpslObjectInfo, rpslObject, rpslObject.getValueForAttribute(AttributeTypes.MEMBER_OF));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class IndexWithMemberOfTest extends IndexTestBase {
 
         assertThat(getNrMemberOf(), is(1));
 
-        subject.removeFromIndex(whoisTemplate, new RpslObjectInfo(autnum.getObjectId(), autnum.getType(), autnum.getValueForAttribute(AttributeType.MEMBER_OF)));
+        subject.removeFromIndex(whoisTemplate, new RpslObjectInfo(autnum.getObjectId(), autnum.getType(), autnum.getValueForAttribute(AttributeTypes.MEMBER_OF)));
 
         assertThat(getNrMemberOf(), is(0));
     }

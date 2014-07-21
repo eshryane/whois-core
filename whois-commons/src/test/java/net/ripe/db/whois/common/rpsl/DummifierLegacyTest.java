@@ -1,6 +1,8 @@
 package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.collect.Lists;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,16 +24,16 @@ public class DummifierLegacyTest {
     private static RpslObject makeObject(ObjectType type, String pkey, RpslAttribute... rpslAttributes) {
         final List<RpslAttribute> attributeList = Lists.newArrayList();
 
-        attributeList.add(new RpslAttribute(AttributeType.getByName(type.getName()), pkey));
+        attributeList.add(new RpslAttribute(AttributeTypes.getByName(type.getName()), pkey));
 
         switch (type) {
             case ROUTE:
             case ROUTE6:
-                attributeList.add(new RpslAttribute(AttributeType.ORIGIN, "AS3333"));
+                attributeList.add(new RpslAttribute(AttributeTypes.ORIGIN, "AS3333"));
                 break;
             case PERSON:
             case ROLE:
-                attributeList.add(new RpslAttribute(AttributeType.NIC_HDL, pkey));
+                attributeList.add(new RpslAttribute(AttributeTypes.NIC_HDL, pkey));
                 break;
         }
 
@@ -47,7 +49,7 @@ public class DummifierLegacyTest {
     @Test
     public void skip_objects_version_1_2() {
         for (ObjectType objectType : DummifierLegacy.SKIPPED_OBJECT_TYPES) {
-            RpslObject object = makeObject(objectType, "YAY", new RpslAttribute(AttributeType.REMARKS, "Remark!"), new RpslAttribute(AttributeType.SOURCE, "TEST"));
+            RpslObject object = makeObject(objectType, "YAY", new RpslAttribute(AttributeTypes.REMARKS, "Remark!"), new RpslAttribute(AttributeTypes.SOURCE, "TEST"));
 
             assertTrue(subject.isAllowed(1, object));
             assertTrue(subject.isAllowed(2, object));
@@ -65,7 +67,7 @@ public class DummifierLegacyTest {
     @Test
     public void skip_objects_version_3() {
         for (ObjectType objectType : DummifierLegacy.SKIPPED_OBJECT_TYPES) {
-            RpslObject object = makeObject(objectType, "YAY", new RpslAttribute(AttributeType.REMARKS, "Remark!"));
+            RpslObject object = makeObject(objectType, "YAY", new RpslAttribute(AttributeTypes.REMARKS, "Remark!"));
 
             assertFalse(subject.isAllowed(3, object));
             try {
@@ -83,7 +85,7 @@ public class DummifierLegacyTest {
                 continue;
             }
 
-            assertTrue(subject.isAllowed(3, makeObject(objectType, "YAY", new RpslAttribute(AttributeType.REMARKS, "Remark!"))));
+            assertTrue(subject.isAllowed(3, makeObject(objectType, "YAY", new RpslAttribute(AttributeTypes.REMARKS, "Remark!"))));
         }
     }
 
@@ -101,7 +103,7 @@ public class DummifierLegacyTest {
 
         assertThat(attributes, hasSize(1 + 2 * DummifierLegacy.PERSON_ROLE_REFERENCES.size()));
 
-        attributes.add(new RpslAttribute(AttributeType.SOURCE, "TEST"));
+        attributes.add(new RpslAttribute(AttributeTypes.SOURCE, "TEST"));
 
         final RpslObject rpslObject = new RpslObject(0, attributes);
         final RpslObject dummifiedObject = subject.dummify(3, rpslObject);
@@ -115,19 +117,19 @@ public class DummifierLegacyTest {
 
     @Test
     public void dummify_adds_remarks() {
-        RpslObject dummifiedObject = subject.dummify(3, makeObject(ObjectType.ROUTE, "10/8", new RpslAttribute(AttributeType.SOURCE, "TEST")));
+        RpslObject dummifiedObject = subject.dummify(3, makeObject(ObjectType.ROUTE, "10/8", new RpslAttribute(AttributeTypes.SOURCE, "TEST")));
 
-        assertThat(dummifiedObject.findAttributes(AttributeType.REMARKS), hasSize(7));
+        assertThat(dummifiedObject.findAttributes(AttributeTypes.REMARKS), hasSize(7));
     }
 
     @Test
     public void strip_optional_from_org_and_mntner() {
         for (ObjectType objectType : DummifierLegacy.STRIPPED_OBJECT_TYPES) {
             // Make a list of RpslAttributes that do not match my ObjectType
-            AttributeType objectAttributeType = AttributeType.getByName(objectType.getName());
+            AttributeType objectAttributeType = AttributeTypes.getByName(objectType.getName());
 
             List<RpslAttribute> optionalAttributes = Lists.newArrayList();
-            for (AttributeType attributeType : AttributeType.values()) {
+            for (AttributeType attributeType : AttributeTypes.values()) {
                 if (!attributeType.equals(objectAttributeType)) {
                     final RpslAttribute rpslAttribute = new RpslAttribute(attributeType, "FOO");
                     optionalAttributes.add(rpslAttribute);
@@ -138,7 +140,7 @@ public class DummifierLegacyTest {
             final RpslObject dummifiedObject = subject.dummify(3, rpslObject);
 
             assertThat(dummifiedObject.getAttributes(), hasSize(ObjectTemplate.getTemplate(objectType).getMandatoryAttributes().size() + 1));
-            assertThat(dummifiedObject.findAttributes(AttributeType.ABUSE_C), hasSize(1));
+            assertThat(dummifiedObject.findAttributes(AttributeTypes.ABUSE_C), hasSize(1));
         }
     }
 
@@ -148,7 +150,7 @@ public class DummifierLegacyTest {
 
         for (ObjectType objectType : DummifierLegacy.STRIPPED_OBJECT_TYPES) {
             // Make a list of RpslAttributes that do not match my ObjectType
-            AttributeType objectAttributeType = AttributeType.getByName(objectType.getName());
+            AttributeType objectAttributeType = AttributeTypes.getByName(objectType.getName());
 
             List<RpslAttribute> optionalAttributes = Lists.newArrayList();
             for (AttributeType attributeType : DummifierLegacy.DUMMIFICATION_REPLACEMENTS.keySet()) {
@@ -159,7 +161,7 @@ public class DummifierLegacyTest {
                 }
             }
 
-            optionalAttributes.add(new RpslAttribute(AttributeType.SOURCE, "TEST"));
+            optionalAttributes.add(new RpslAttribute(AttributeTypes.SOURCE, "TEST"));
 
             final RpslObject rpslObject = makeObject(objectType, "FOO", optionalAttributes.toArray(new RpslAttribute[optionalAttributes.size()]));
             final RpslObject dummifiedObject = subject.dummify(3, rpslObject);
@@ -227,6 +229,6 @@ public class DummifierLegacyTest {
         final RpslObject dummified = subject.dummify(3, mntner);
 
         RpslAttribute expectedDummifiedAuth = new RpslAttribute("auth", "MD5-PW $1$SaltSalt$DummifiedMD5HashValue.");
-        assertThat(dummified.findAttribute(AttributeType.AUTH), is(expectedDummifiedAuth));
+        assertThat(dummified.findAttribute(AttributeTypes.AUTH), is(expectedDummifiedAuth));
     }
 }

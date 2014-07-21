@@ -2,15 +2,16 @@ package net.ripe.db.whois.common.query.executor;
 
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.query.QueryMessages;
+import net.ripe.db.whois.common.query.domain.MessageObject;
+import net.ripe.db.whois.common.query.domain.QueryException;
+import net.ripe.db.whois.common.query.planner.RpslResponseDecorator;
+import net.ripe.db.whois.common.query.query.Query;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.source.IllegalSourceException;
 import net.ripe.db.whois.common.source.Source;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.common.query.domain.MessageObject;
-import net.ripe.db.whois.common.query.domain.QueryException;
-import net.ripe.db.whois.common.query.QueryMessages;
-import net.ripe.db.whois.common.query.planner.RpslResponseDecorator;
-import net.ripe.db.whois.common.query.query.Query;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class SearchQueryExecutorTest {
 
     @Test
     public void all_attributes_handled() {
-        for (final AttributeType attributeType : AttributeType.values()) {
+        for (final AttributeType attributeType : AttributeTypes.values()) {
             assertTrue(subject.supports(Query.parse("-i " + attributeType.getName() + " query")));
         }
     }

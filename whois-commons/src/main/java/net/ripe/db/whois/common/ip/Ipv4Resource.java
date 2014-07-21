@@ -4,7 +4,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.net.InetAddresses;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,7 +177,7 @@ public final class Ipv4Resource extends IpInterval<Ipv4Resource> implements Comp
 
     @Override
     public AttributeType getAttributeType() {
-        return AttributeType.INETNUM;
+        return AttributeTypes.INETNUM;
     }
 
     /**

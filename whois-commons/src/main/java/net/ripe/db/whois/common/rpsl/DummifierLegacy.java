@@ -4,15 +4,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class DummifierLegacy implements Dummifier {
@@ -63,24 +62,25 @@ public class DummifierLegacy implements Dummifier {
     static final Set<ObjectType> STRIPPED_OBJECT_TYPES = Sets.immutableEnumSet(ObjectType.MNTNER, ObjectType.ORGANISATION);
 
     private static final String PERSON_ROLE_PLACEHOLDER = "DUMY-RIPE";
-    static final Set<AttributeType> PERSON_ROLE_REFERENCES = Sets.immutableEnumSet(
-            AttributeType.ADMIN_C,
-            AttributeType.AUTHOR,
-            AttributeType.PING_HDL,
-            AttributeType.TECH_C,
-            AttributeType.ZONE_C
-    );
 
-    static final Map<AttributeType, String> DUMMIFICATION_REPLACEMENTS = Maps.newEnumMap(AttributeType.class);
+    static final Set<AttributeType> PERSON_ROLE_REFERENCES = new HashSet<AttributeType>(Lists.newArrayList(AttributeTypes.ADMIN_C,
+            AttributeTypes.AUTHOR,
+            AttributeTypes.PING_HDL,
+            AttributeTypes.TECH_C,
+            AttributeTypes.ZONE_C
+    ));
+
+
+    static final Map<AttributeType, String> DUMMIFICATION_REPLACEMENTS = Maps.newHashMap();
 
     static {
-        DUMMIFICATION_REPLACEMENTS.put(AttributeType.ADDRESS, "Dummy address for %s");
-        DUMMIFICATION_REPLACEMENTS.put(AttributeType.AUTH, "MD5-PW $1$SaltSalt$DummifiedMD5HashValue.   # Real value hidden for security");
-        DUMMIFICATION_REPLACEMENTS.put(AttributeType.CHANGED, "unread@ripe.net 20000101");
-        DUMMIFICATION_REPLACEMENTS.put(AttributeType.E_MAIL, "unread@ripe.net");
-        DUMMIFICATION_REPLACEMENTS.put(AttributeType.FAX_NO, "+31205354444");
-        DUMMIFICATION_REPLACEMENTS.put(AttributeType.PHONE, "+31205354444");
-        DUMMIFICATION_REPLACEMENTS.put(AttributeType.UPD_TO, "unread@ripe.net");
+        DUMMIFICATION_REPLACEMENTS.put(AttributeTypes.ADDRESS, "Dummy address for %s");
+        DUMMIFICATION_REPLACEMENTS.put(AttributeTypes.AUTH, "MD5-PW $1$SaltSalt$DummifiedMD5HashValue.   # Real value hidden for security");
+        DUMMIFICATION_REPLACEMENTS.put(AttributeTypes.CHANGED, "unread@ripe.net 20000101");
+        DUMMIFICATION_REPLACEMENTS.put(AttributeTypes.E_MAIL, "unread@ripe.net");
+        DUMMIFICATION_REPLACEMENTS.put(AttributeTypes.FAX_NO, "+31205354444");
+        DUMMIFICATION_REPLACEMENTS.put(AttributeTypes.PHONE, "+31205354444");
+        DUMMIFICATION_REPLACEMENTS.put(AttributeTypes.UPD_TO, "unread@ripe.net");
     }
 
     public RpslObject dummify(final int version, final RpslObject rpslObject) {
@@ -113,7 +113,7 @@ public class DummifierLegacy implements Dummifier {
         for (Iterator<RpslAttribute> iterator = attributes.iterator(); iterator.hasNext(); ) {
             final RpslAttribute attribute = iterator.next();
 
-            if (!mandatoryAttributes.contains(attribute.getType()) && !AttributeType.ABUSE_C.equals(attribute.getType())) {
+            if (!mandatoryAttributes.contains(attribute.getType()) && !AttributeTypes.ABUSE_C.equals(attribute.getType())) {
                 iterator.remove();
             }
         }
@@ -175,11 +175,11 @@ public class DummifierLegacy implements Dummifier {
         final ObjectType objectType = rpslObject.getType();
 
         return SKIPPED_OBJECT_TYPES.contains(objectType)
-                && (!ObjectType.ROLE.equals(objectType) || rpslObject.findAttributes(AttributeType.ABUSE_MAILBOX).isEmpty());
+                && (!ObjectType.ROLE.equals(objectType) || rpslObject.findAttributes(AttributeTypes.ABUSE_MAILBOX).isEmpty());
     }
 
     private static List<RpslAttribute> getDummificationRemarks(final RpslObject rpslObject) {
-        final String source = rpslObject.getValueForAttribute(AttributeType.SOURCE).toLowerCase();
+        final String source = rpslObject.getValueForAttribute(AttributeTypes.SOURCE).toLowerCase();
         switch(source) {
             case "ripe":
             case "ripe-grs":

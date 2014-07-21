@@ -3,6 +3,8 @@ package net.ripe.db.whois.common.rpsl;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.rpsl.attrs.MntRoutes;
 import org.apache.commons.lang.Validate;
 
@@ -14,7 +16,6 @@ import java.io.Writer;
 import java.util.Collections;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.domain.CIString.ciImmutableSet;
 import static net.ripe.db.whois.common.domain.CIString.ciString;
 
 @Immutable
@@ -51,7 +52,7 @@ public final class RpslAttribute {
         Validate.notNull(value);
         this.key = key.toLowerCase();
         this.value = value;
-        this.type = AttributeType.getByNameOrNull(this.key);
+        this.type = AttributeTypes.getByNameOrNull(this.key);
     }
 
     public String getKey() {
@@ -97,7 +98,7 @@ public final class RpslAttribute {
      * the rest of that value is discarded and only the reference is retained.
      */
     public Set<CIString> getReferenceValues() {
-        if (AttributeType.MNT_ROUTES.equals(type)) {
+        if (AttributeTypes.MNT_ROUTES.equals(type)) {
             final Set<CIString> values = getCleanValues();
             final Set<CIString> result = Sets.newLinkedHashSetWithExpectedSize(values.size());
             for (final CIString value : values) {

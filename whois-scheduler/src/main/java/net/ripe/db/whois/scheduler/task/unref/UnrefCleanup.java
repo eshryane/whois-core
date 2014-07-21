@@ -10,12 +10,13 @@ import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.TagsDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Tag;
-import net.ripe.db.whois.common.rpsl.attrs.AttributeParseException;
-import net.ripe.db.whois.common.rpsl.attrs.OrgType;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.AttributeParseException;
+import net.ripe.db.whois.common.rpsl.attrs.OrgType;
 import net.ripe.db.whois.common.scheduler.DailyScheduledTask;
 import net.ripe.db.whois.common.source.SourceContext;
 import net.ripe.db.whois.update.domain.*;
@@ -106,7 +107,7 @@ public class UnrefCleanup implements DailyScheduledTask {
     private static final Set<AttributeType> REFERENCE_ATTRIBUTETYPES = Sets.newHashSet();
 
     static {
-        for (final AttributeType attributeType : AttributeType.values()) {
+        for (final AttributeType attributeType : AttributeTypes.values()) {
             if (!Sets.intersection(attributeType.getReferences(), CLEANUP_OBJECTS).isEmpty()) {
                 REFERENCE_ATTRIBUTETYPES.add(attributeType);
             }
@@ -178,7 +179,7 @@ public class UnrefCleanup implements DailyScheduledTask {
             @Override
             public void filter(final RpslObject rpslObject, final LocalDate date) {
                 if (ObjectType.ORGANISATION.equals(rpslObject.getType())) {
-                    final OrgType orgType = OrgType.getFor(rpslObject.getValueForAttribute(AttributeType.ORG_TYPE));
+                    final OrgType orgType = OrgType.getFor(rpslObject.getValueForAttribute(AttributeTypes.ORG_TYPE));
                     if (OrgType.LIR.equals(orgType)) {
                         LOGGER.debug("Never remove organisation of type LIR:\n\n{}\n", rpslObject);
                         deleteCandidates.remove(new ObjectKey(ObjectType.ORGANISATION, rpslObject.getKey()));

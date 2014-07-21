@@ -4,10 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.dao.jdbc.domain.RpslObjectInfoResultSetExtractor;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectTemplate;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.text.MessageFormat;
@@ -65,12 +66,12 @@ class IndexWithMemberOf extends IndexWithReference {
     private AttributeType getReferenceAttribute(final ObjectType objectType) {
         switch (objectType) {
             case AUT_NUM:
-                return AttributeType.AS_SET;
+                return AttributeTypes.AS_SET;
             case ROUTE:
             case ROUTE6:
-                return AttributeType.ROUTE_SET;
+                return AttributeTypes.ROUTE_SET;
             case INET_RTR:
-                return AttributeType.RTR_SET;
+                return AttributeTypes.RTR_SET;
             default:
                 throw new IllegalArgumentException("Unexpected object type: " + objectType);
         }

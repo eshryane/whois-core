@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import net.ripe.db.whois.common.domain.CIString;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -103,8 +104,8 @@ public class RpslObjectTest {
 
         assertThat(subject, is(not(nullValue())));
         assertThat(subject.getType(), is(ObjectType.MNTNER));
-        Assert.assertTrue(subject.containsAttribute(AttributeType.MNTNER));
-        assertThat(subject.getValueForAttribute(AttributeType.MNTNER).toString().toString(), is("DEV-MNT"));
+        Assert.assertTrue(subject.containsAttribute(AttributeTypes.MNTNER));
+        assertThat(subject.getValueForAttribute(AttributeTypes.MNTNER).toString().toString(), is("DEV-MNT"));
     }
 
     @Test
@@ -113,9 +114,9 @@ public class RpslObjectTest {
         String value = ":#!@#$%^&*()_+~![]{};':<>,./?\\";
         parseAndAssign(key + ":" + value);
 
-        Assert.assertTrue(subject.containsAttribute(AttributeType.MNTNER));
-        assertThat(subject.findAttributes(AttributeType.MNTNER), hasSize(1));
-        assertThat(subject.findAttributes(AttributeType.MNTNER).get(0).getValue(), is(value));
+        Assert.assertTrue(subject.containsAttribute(AttributeTypes.MNTNER));
+        assertThat(subject.findAttributes(AttributeTypes.MNTNER), hasSize(1));
+        assertThat(subject.findAttributes(AttributeTypes.MNTNER).get(0).getValue(), is(value));
     }
 
     @Test
@@ -125,9 +126,9 @@ public class RpslObjectTest {
 
         parseAndAssign(key + ":" + value);
 
-        Assert.assertTrue(subject.containsAttribute(AttributeType.MNTNER));
-        assertThat(subject.findAttributes(AttributeType.MNTNER), hasSize(1));
-        assertThat(subject.findAttributes(AttributeType.MNTNER).get(0).getValue(), is(value));
+        Assert.assertTrue(subject.containsAttribute(AttributeTypes.MNTNER));
+        assertThat(subject.findAttributes(AttributeTypes.MNTNER), hasSize(1));
+        assertThat(subject.findAttributes(AttributeTypes.MNTNER).get(0).getValue(), is(value));
     }
 
     @Test
@@ -137,11 +138,11 @@ public class RpslObjectTest {
 
         parseAndAssign("mntner: DEV-MNT\n" + key + ":" + value + "\n" + key + ":" + value);
 
-        Assert.assertTrue(subject.containsAttribute(AttributeType.MNTNER));
-        Assert.assertTrue(subject.containsAttribute(AttributeType.DESCR));
-        assertThat(subject.findAttributes(AttributeType.MNTNER), hasSize(1));
-        assertThat(subject.findAttributes(AttributeType.DESCR), hasSize(2));
-        assertThat(subject.findAttributes(AttributeType.DESCR).get(0).getValue(), is(value));
+        Assert.assertTrue(subject.containsAttribute(AttributeTypes.MNTNER));
+        Assert.assertTrue(subject.containsAttribute(AttributeTypes.DESCR));
+        assertThat(subject.findAttributes(AttributeTypes.MNTNER), hasSize(1));
+        assertThat(subject.findAttributes(AttributeTypes.DESCR), hasSize(2));
+        assertThat(subject.findAttributes(AttributeTypes.DESCR).get(0).getValue(), is(value));
     }
 
     @Test
@@ -151,7 +152,7 @@ public class RpslObjectTest {
 
         parseAndAssign("mntner: DEV-MNT\n" + StringUtils.repeat(key + ": value", "\n", amount));
 
-        assertThat(subject.findAttributes(AttributeType.DESCR), hasSize(amount));
+        assertThat(subject.findAttributes(AttributeTypes.DESCR), hasSize(amount));
     }
 
     private byte[] bytesFrom(String input) {
@@ -183,15 +184,15 @@ public class RpslObjectTest {
                 "changed:        BECHA@example.net 20101010\n" +
                 "source:         DEV\n"));
 
-        assertThat(subject.findAttributes(AttributeType.MNTNER), hasSize(1));
-        assertThat(subject.getValueForAttribute(AttributeType.MNTNER).toString(), is("DEV-MNT"));
-        assertThat(subject.getValueForAttribute(AttributeType.SOURCE).toString(), is("DEV"));
+        assertThat(subject.findAttributes(AttributeTypes.MNTNER), hasSize(1));
+        assertThat(subject.getValueForAttribute(AttributeTypes.MNTNER).toString(), is("DEV-MNT"));
+        assertThat(subject.getValueForAttribute(AttributeTypes.SOURCE).toString(), is("DEV"));
     }
 
     @Test
     public void findAttributes_multiple() {
         parseAndAssign(maintainer);
-        assertThat(subject.findAttributes(AttributeType.MNTNER, AttributeType.ADMIN_C, AttributeType.TECH_C), hasSize(3));
+        assertThat(subject.findAttributes(AttributeTypes.MNTNER, AttributeTypes.ADMIN_C, AttributeTypes.TECH_C), hasSize(3));
     }
 
     @Test
@@ -214,7 +215,7 @@ public class RpslObjectTest {
     @Test
     public void testEquality_Attribute() {
         final RpslObject object = parse("mntner:DEV-TST-MNT\nsource:RIPE\nsource:RIPE2\nsource:RIPE\nauth:bar");
-        final List<RpslAttribute> source = object.findAttributes(AttributeType.SOURCE);
+        final List<RpslAttribute> source = object.findAttributes(AttributeTypes.SOURCE);
         final RpslAttribute attribute = source.get(0);
 
         assertThat(attribute, is(attribute));
@@ -223,7 +224,7 @@ public class RpslObjectTest {
         assertThat(attribute, is(not(source.get(1))));
         assertThat(attribute, is(source.get(2)));
 
-        assertThat(attribute, is(not(object.findAttributes(AttributeType.AUTH).get(0))));
+        assertThat(attribute, is(not(object.findAttributes(AttributeTypes.AUTH).get(0))));
     }
 
     @Test
@@ -244,7 +245,7 @@ public class RpslObjectTest {
     public void testNumberInKey() {
         RpslObject ro = parse("route6:         2001:0000::/32\norigin:AS10");
         assertThat(ro.getAttributes().get(0).getKey().toString(), is("route6"));
-        assertThat(ro.findAttributes(AttributeType.ROUTE6), hasSize(1));
+        assertThat(ro.findAttributes(AttributeTypes.ROUTE6), hasSize(1));
     }
 
     @Test
@@ -315,13 +316,13 @@ public class RpslObjectTest {
     @Test
     public void containsAttribute_works() {
         parseAndAssign(maintainer);
-        assertThat(subject.containsAttribute(AttributeType.SOURCE), is(true));
+        assertThat(subject.containsAttribute(AttributeTypes.SOURCE), is(true));
     }
 
     @Test
     public void containsAttribute_unknown() {
         parseAndAssign(maintainer);
-        assertThat(subject.containsAttribute(AttributeType.PERSON), is(false));
+        assertThat(subject.containsAttribute(AttributeTypes.PERSON), is(false));
     }
 
     @Test
@@ -377,12 +378,12 @@ public class RpslObjectTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void getValueForAttributeNone() {
-        RpslObject.parse("mntner: DEV-MNT\n").getValueForAttribute(AttributeType.MNT_BY);
+        RpslObject.parse("mntner: DEV-MNT\n").getValueForAttribute(AttributeTypes.MNT_BY);
     }
 
     @Test
     public void getValueForAttribute() {
-        assertThat(RpslObject.parse("mntner: DEV-MNT\n").getValueForAttribute(AttributeType.MNTNER).toString(), is("DEV-MNT"));
+        assertThat(RpslObject.parse("mntner: DEV-MNT\n").getValueForAttribute(AttributeTypes.MNTNER).toString(), is("DEV-MNT"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -394,7 +395,7 @@ public class RpslObjectTest {
                 "mnt-by: DEV-MNT3, DEV-MNT2\n" +
                 "mnt-by: DEV-MNT1, DEV-MNT2\n");
 
-        object.getValueForAttribute(AttributeType.MNT_BY);
+        object.getValueForAttribute(AttributeTypes.MNT_BY);
     }
 
     @Test
@@ -406,8 +407,8 @@ public class RpslObjectTest {
                 "mnt-by: DEV-MNT3, DEV-MNT2\n" +
                 "mnt-by: DEV-MNT1, DEV-MNT2\n");
 
-        assertThat(convertToString(object.getValuesForAttribute(AttributeType.MNT_BY)), contains("DEV-MNT5", "DEV-MNT4", "DEV-MNT3", "DEV-MNT2", "DEV-MNT1"));
-        assertThat(object.getValuesForAttribute(AttributeType.ADMIN_C), hasSize(0));
+        assertThat(convertToString(object.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("DEV-MNT5", "DEV-MNT4", "DEV-MNT3", "DEV-MNT2", "DEV-MNT1"));
+        assertThat(object.getValuesForAttribute(AttributeTypes.ADMIN_C), hasSize(0));
     }
 
     @Test
@@ -472,7 +473,7 @@ public class RpslObjectTest {
                 "mntner: DEV-MNT\n" +
                 "mnt-by :DEV-MNT1,DEV-MNT2,DEV-MNT3");
 
-        assertThat(object.findAttributes(AttributeType.MNT_BY), hasSize(0));
+        assertThat(object.findAttributes(AttributeTypes.MNT_BY), hasSize(0));
         assertNull(object.getAttributes().get(1).getType());
     }
 
@@ -485,7 +486,7 @@ public class RpslObjectTest {
                 " DEV-MNT3,\n" +
                 " DEV-MNT4");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +
@@ -504,7 +505,7 @@ public class RpslObjectTest {
                 " +DEV+MNT3,\n" +
                 " +DEV+MNT4");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("+DEV+MNT1", "+DEV+MNT2", "+DEV+MNT3", "+DEV+MNT4"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("+DEV+MNT1", "+DEV+MNT2", "+DEV+MNT3", "+DEV+MNT4"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +
@@ -523,7 +524,7 @@ public class RpslObjectTest {
                 "    DEV-MNT3,\n" +
                 "                                   DEV-MNT4");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +
@@ -542,7 +543,7 @@ public class RpslObjectTest {
                 "\tDEV-MNT3,\n" +
                 "\tDEV-MNT4");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +
@@ -561,7 +562,7 @@ public class RpslObjectTest {
                 "\t\t\t\t\t\t\t\t\t\t\t\t\t\tDEV-MNT3,\n" +
                 "\tDEV-MNT4");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +
@@ -580,7 +581,7 @@ public class RpslObjectTest {
                 "+DEV-MNT3,\n" +
                 "+DEV-MNT4");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +
@@ -599,7 +600,7 @@ public class RpslObjectTest {
                 "          DEV-MNT2,\n" +
                 "          DEV-MNT3");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +
@@ -618,7 +619,7 @@ public class RpslObjectTest {
                 "+ +DEV+MNT3,\n" +
                 "+  +DEV+MNT4");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("+DEV+MNT1", "+DEV+MNT2", "+DEV+MNT3", "+DEV+MNT4"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("+DEV+MNT1", "+DEV+MNT2", "+DEV+MNT3", "+DEV+MNT4"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +
@@ -637,7 +638,7 @@ public class RpslObjectTest {
                 "+ DEV-MNT3,\n" +
                 "+                                          DEV-MNT4");
 
-        assertThat(convertToString(subject.getValuesForAttribute(AttributeType.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
+        assertThat(convertToString(subject.getValuesForAttribute(AttributeTypes.MNT_BY)), contains("DEV-MNT1", "DEV-MNT2", "DEV-MNT3", "DEV-MNT4"));
 
         assertThat(subject.toString().toString(), is("" +
                 "mntner:         DEV-MNT\n" +

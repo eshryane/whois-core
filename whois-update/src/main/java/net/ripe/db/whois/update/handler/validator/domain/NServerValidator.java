@@ -1,12 +1,12 @@
 package net.ripe.db.whois.update.handler.validator.domain;
 
 import com.google.common.collect.Lists;
-import net.ripe.db.whois.common.rpsl.attrs.Domain;
-import net.ripe.db.whois.common.rpsl.attrs.NServer;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.Domain;
+import net.ripe.db.whois.common.rpsl.attrs.NServer;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -34,7 +34,7 @@ public class NServerValidator implements BusinessRuleValidator {
 
         final Domain domain = Domain.parse(updatedObject.getKey());
 
-        for (final RpslAttribute nServerAttribute : updatedObject.findAttributes(AttributeType.NSERVER)) {
+        for (final RpslAttribute nServerAttribute : updatedObject.findAttributes(AttributeTypes.NSERVER)) {
             final NServer nServer = NServer.parse(nServerAttribute.getCleanValue());
 
             switch (domain.getType()) {

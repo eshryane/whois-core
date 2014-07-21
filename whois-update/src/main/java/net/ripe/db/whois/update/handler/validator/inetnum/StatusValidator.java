@@ -11,10 +11,10 @@ import net.ripe.db.whois.common.iptree.IpEntry;
 import net.ripe.db.whois.common.iptree.IpTree;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.rpsl.attrs.InetStatus;
 import net.ripe.db.whois.common.rpsl.attrs.InetnumStatus;
 import net.ripe.db.whois.update.authentication.Principal;
@@ -95,7 +95,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
             return;
         }
 
-        final CIString statusValue = updatedObject.getValueForAttribute(AttributeType.STATUS);
+        final CIString statusValue = updatedObject.getValueForAttribute(AttributeTypes.STATUS);
         if (statusValue.equals(NOT_SET)) {
             updateContext.addMessage(update, UpdateMessages.statusRequiresAuthorization(NOT_SET.toString()));
         } else {
@@ -108,7 +108,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
             checkAuthorisationForStatus(update, updateContext, updatedObject, currentStatus);
 
             final RpslObject parentObject = objectDao.getById(parents.get(0).getObjectId());
-            final List<RpslAttribute> parentStatuses = parentObject.findAttributes(AttributeType.STATUS);
+            final List<RpslAttribute> parentStatuses = parentObject.findAttributes(AttributeTypes.STATUS);
             if (parentStatuses.isEmpty()) {
                 updateContext.addMessage(update, UpdateMessages.objectLacksStatus("Parent", parentObject.getKey()));
                 return;
@@ -116,11 +116,11 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
 
             final InetStatus parentStatus = InetStatusHelper.getStatus(parentObject);
             if (parentStatus == null) {
-                updateContext.addMessage(update, UpdateMessages.objectHasInvalidStatus("Parent", parentObject.getKey(), parentObject.getValueForAttribute(AttributeType.STATUS)));
+                updateContext.addMessage(update, UpdateMessages.objectHasInvalidStatus("Parent", parentObject.getKey(), parentObject.getValueForAttribute(AttributeTypes.STATUS)));
                 return;
             }
 
-            final Set<CIString> updateMntBy = updatedObject.getValuesForAttribute(AttributeType.MNT_BY);
+            final Set<CIString> updateMntBy = updatedObject.getValuesForAttribute(AttributeTypes.MNT_BY);
             final boolean hasRsMaintainer = !Sets.intersection(maintainers.getRsMaintainers(), updateMntBy).isEmpty();
 
             if (currentStatus.equals(InetnumStatus.ASSIGNED_PA) && parentStatus.equals(InetnumStatus.ASSIGNED_PA)) {
@@ -131,7 +131,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
 
             if (currentStatus.equals(InetnumStatus.ASSIGNED_PI)) {
                 if (parentStatus.equals(InetnumStatus.ASSIGNED_PI)) {
-                    final Set<CIString> parentMntBy = parentObject.getValuesForAttribute(AttributeType.MNT_BY);
+                    final Set<CIString> parentMntBy = parentObject.getValuesForAttribute(AttributeTypes.MNT_BY);
                     final boolean parentHasRsMaintainer = !Sets.intersection(maintainers.getRsMaintainers(), parentMntBy).isEmpty();
                     if (parentHasRsMaintainer) {
                         updateContext.addMessage(update, UpdateMessages.incorrectParentStatus(updatedObject.getType(), parentStatus.toString()));
@@ -152,7 +152,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
 
         if (parentInHierarchyMaintainedByRs != null) {
 
-            final List<RpslAttribute> parentStatuses = parentInHierarchyMaintainedByRs.findAttributes(AttributeType.STATUS);
+            final List<RpslAttribute> parentStatuses = parentInHierarchyMaintainedByRs.findAttributes(AttributeTypes.STATUS);
             if (parentStatuses.isEmpty()) {
                 return;
             }
@@ -163,7 +163,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
             if (parentStatus == null) {
                 updateContext.addMessage(update, UpdateMessages.objectHasInvalidStatus("Parent", parentInHierarchyMaintainedByRs.getKey(), parentStatusValue));
             } else {
-                final Set<CIString> mntLower = parentInHierarchyMaintainedByRs.getValuesForAttribute(AttributeType.MNT_LOWER);
+                final Set<CIString> mntLower = parentInHierarchyMaintainedByRs.getValuesForAttribute(AttributeTypes.MNT_LOWER);
                 final boolean parentHasRsMntLower = !Sets.intersection(maintainers.getRsMaintainers(), mntLower).isEmpty();
                 final InetStatus currentStatus = InetStatusHelper.getStatus(update);
 
@@ -180,7 +180,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
         final List<IpEntry> allLessSpecific = Lists.reverse(ipTree.findAllLessSpecific(ipInterval));
         for (final IpEntry parent : allLessSpecific) {
             final RpslObject parentObject = objectDao.getById(parent.getObjectId());
-            final Set<CIString> mntBy = parentObject.getValuesForAttribute(AttributeType.MNT_BY);
+            final Set<CIString> mntBy = parentObject.getValuesForAttribute(AttributeTypes.MNT_BY);
 
             final boolean missingRsMaintainer = Sets.intersection(maintainers.getRsMaintainers(), mntBy).isEmpty();
             if (!missingRsMaintainer) {
@@ -192,7 +192,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
     }
 
     private void checkAuthorisationForStatus(final PreparedUpdate update, final UpdateContext updateContext, final RpslObject updatedObject, final InetStatus currentStatus) {
-        final Set<CIString> mntBy = updatedObject.getValuesForAttribute(AttributeType.MNT_BY);
+        final Set<CIString> mntBy = updatedObject.getValuesForAttribute(AttributeTypes.MNT_BY);
 
         if (currentStatus.requiresAllocMaintainer()) {
             final boolean hasOnlyAllocMaintainer = Sets.intersection(maintainers.getAllocMaintainers(), mntBy).containsAll(mntBy);
@@ -209,7 +209,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
         if (currentStatus.requiresRsMaintainer()) {
             final boolean missingRsMaintainer = Sets.intersection(maintainers.getRsMaintainers(), mntBy).isEmpty();
             if (missingRsMaintainer) {
-                updateContext.addMessage(update, UpdateMessages.statusRequiresAuthorization(updatedObject.getValueForAttribute(AttributeType.STATUS).toString()));
+                updateContext.addMessage(update, UpdateMessages.statusRequiresAuthorization(updatedObject.getValueForAttribute(AttributeTypes.STATUS).toString()));
                 return;
             }
             if (!updateContext.getSubject(update).hasPrincipal(Principal.RS_MAINTAINER)) {
@@ -221,12 +221,12 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
     @SuppressWarnings("unchecked")
     private boolean allChildrenHaveCorrectStatus(final PreparedUpdate update, final UpdateContext updateContext, final IpTree ipTree, final IpInterval ipInterval) {
         final List<IpEntry> children = ipTree.findFirstMoreSpecific(ipInterval);
-        final RpslAttribute updateStatusAttribute = update.getUpdatedObject().findAttribute(AttributeType.STATUS);
+        final RpslAttribute updateStatusAttribute = update.getUpdatedObject().findAttribute(AttributeTypes.STATUS);
         final InetStatus updatedStatus = InetStatusHelper.getStatus(update);
 
         for (final IpEntry child : children) {
             final RpslObject childObject = objectDao.getById(child.getObjectId());
-            final List<RpslAttribute> childStatuses = childObject.findAttributes(AttributeType.STATUS);
+            final List<RpslAttribute> childStatuses = childObject.findAttributes(AttributeTypes.STATUS);
             if (childStatuses.isEmpty()) {
                 updateContext.addMessage(update, UpdateMessages.objectLacksStatus("Child", childObject.getKey()));
                 continue;
@@ -238,7 +238,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
                 updateContext.addMessage(update, UpdateMessages.objectHasInvalidStatus("Child", childObject.getKey(), childStatusValue));
                 return false;
             }
-            final Set<CIString> childMntBy = childObject.getValuesForAttribute(AttributeType.MNT_BY);
+            final Set<CIString> childMntBy = childObject.getValuesForAttribute(AttributeTypes.MNT_BY);
             final boolean hasRsMaintainer = !Sets.intersection(maintainers.getRsMaintainers(), childMntBy).isEmpty();
 
             if (!childStatus.worksWithParentStatus(updatedStatus, hasRsMaintainer)) {
@@ -252,8 +252,8 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
     }
 
     private void validateModify(final PreparedUpdate update, final UpdateContext updateContext) {
-        final CIString originalStatus = update.getReferenceObject() != null ? update.getReferenceObject().getValueForAttribute(AttributeType.STATUS) : null;
-        final CIString updateStatus = update.getUpdatedObject() != null ? update.getUpdatedObject().getValueForAttribute(AttributeType.STATUS) : null;
+        final CIString originalStatus = update.getReferenceObject() != null ? update.getReferenceObject().getValueForAttribute(AttributeTypes.STATUS) : null;
+        final CIString updateStatus = update.getUpdatedObject() != null ? update.getUpdatedObject().getValueForAttribute(AttributeTypes.STATUS) : null;
 
 
         if (!Objects.equals(originalStatus, updateStatus)) {
@@ -281,7 +281,7 @@ public class StatusValidator implements BusinessRuleValidator { // TODO [AK] Red
         }
 
         if (status.requiresRsMaintainer()) {
-            final Set<CIString> mntBy = update.getUpdatedObject().getValuesForAttribute(AttributeType.MNT_BY);
+            final Set<CIString> mntBy = update.getUpdatedObject().getValuesForAttribute(AttributeTypes.MNT_BY);
             if (Sets.intersection(maintainers.getRsMaintainers(), mntBy).isEmpty()) {
                 updateContext.addMessage(update, UpdateMessages.deleteWithStatusRequiresAuthorization(status.toString()));
             }

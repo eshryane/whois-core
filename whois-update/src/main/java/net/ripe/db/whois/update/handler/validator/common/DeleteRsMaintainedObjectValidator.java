@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.domain.Action;
@@ -45,7 +45,7 @@ public class DeleteRsMaintainedObjectValidator implements BusinessRuleValidator 
             return;
         }
 
-        final Set<CIString> mntBys = update.getUpdatedObject().getValuesForAttribute(AttributeType.MNT_BY);
+        final Set<CIString> mntBys = update.getUpdatedObject().getValuesForAttribute(AttributeTypes.MNT_BY);
         if (!Sets.intersection(maintainers.getRsMaintainers(), mntBys).isEmpty()) {
             updateContext.addMessage(update, UpdateMessages.authorisationRequiredForDeleteRsMaintainedObject());
         }

@@ -5,9 +5,9 @@ import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
 import net.ripe.db.whois.common.iptree.*;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -120,7 +120,7 @@ public class RouteIpAddressAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected authentication exception");
         } catch (AuthenticationFailedException e) {
-            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeType.MNT_BY, candidates)));
+            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeTypes.MNT_BY, candidates)));
         }
     }
 
@@ -172,7 +172,7 @@ public class RouteIpAddressAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected authentication exception");
         } catch (AuthenticationFailedException e) {
-            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeType.MNT_ROUTES, candidates)));
+            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeTypes.MNT_ROUTES, candidates)));
         }
     }
 
@@ -199,7 +199,7 @@ public class RouteIpAddressAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected authentication exception");
         } catch (AuthenticationFailedException e) {
-            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeType.MNT_LOWER, candidates)));
+            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeTypes.MNT_LOWER, candidates)));
         }
     }
 
@@ -226,7 +226,7 @@ public class RouteIpAddressAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected authentication exception");
         } catch (AuthenticationFailedException e) {
-            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeType.MNT_LOWER, candidates)));
+            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeTypes.MNT_LOWER, candidates)));
         }
     }
 
@@ -240,7 +240,7 @@ public class RouteIpAddressAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected authentication exception");
         } catch (AuthenticationFailedException e) {
-            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(routeObject, AttributeType.ROUTE, Collections.<RpslObject>emptyList())));
+            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(routeObject, AttributeTypes.ROUTE, Collections.<RpslObject>emptyList())));
         }
     }
 
@@ -276,7 +276,7 @@ public class RouteIpAddressAuthenticationTest {
             subject.authenticate(update, updateContext);
             fail("Expected authentication exception");
         } catch (AuthenticationFailedException e) {
-            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeType.MNT_LOWER, candidates)));
+            assertThat(e.getAuthenticationMessages(), contains(UpdateMessages.authenticationFailed(existingRoute, AttributeTypes.MNT_LOWER, candidates)));
         }
     }
 

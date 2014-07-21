@@ -1,9 +1,9 @@
 package net.ripe.db.whois.update.handler.validator.common;
 
 import net.ripe.db.whois.common.Message;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectMessages;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -68,7 +68,7 @@ public class ChangedAttributeValidatorTest {
         final RpslObject object = RpslObject.parse("mntner: MNT\nchanged: user@host.org 19000229");
         final ObjectMessages messages = validateUpdate(subject, null, object);
 
-        assertThat(messages.getMessages(object.findAttribute(AttributeType.CHANGED)).getAllMessages(), contains(UpdateMessages.invalidDateFormat()));
+        assertThat(messages.getMessages(object.findAttribute(AttributeTypes.CHANGED)).getAllMessages(), contains(UpdateMessages.invalidDateFormat()));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ChangedAttributeValidatorTest {
         final RpslObject object = RpslObject.parse("mntner: MNT\nchanged: user@host.org 19800505");
         final ObjectMessages messages = validateUpdate(subject, null, object);
 
-        assertThat(messages.getMessages(object.findAttribute(AttributeType.CHANGED)).getAllMessages(), contains(UpdateMessages.invalidDate("19800505")));
+        assertThat(messages.getMessages(object.findAttribute(AttributeTypes.CHANGED)).getAllMessages(), contains(UpdateMessages.invalidDate("19800505")));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class ChangedAttributeValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, object.findAttribute(AttributeType.CHANGED), UpdateMessages.dateTooFuturistic(dateString));
+        verify(updateContext).addMessage(update, object.findAttribute(AttributeTypes.CHANGED), UpdateMessages.dateTooFuturistic(dateString));
     }
 
     @Test

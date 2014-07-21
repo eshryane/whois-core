@@ -3,8 +3,8 @@ package net.ripe.db.whois.update.handler.validator.inetnum;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.domain.Action;
@@ -47,7 +47,7 @@ public class EndUserMaintainerChecks implements BusinessRuleValidator {
         if (subject.hasPrincipal(Principal.ENDUSER_MAINTAINER)) {
             final boolean hasEnduserMaintainers = !Sets.intersection(
                     maintainers.getEnduserMaintainers(),
-                    update.getUpdatedObject().getValuesForAttribute(AttributeType.MNT_BY)).isEmpty();
+                    update.getUpdatedObject().getValuesForAttribute(AttributeTypes.MNT_BY)).isEmpty();
 
             if (!hasEnduserMaintainers) {
                 updateContext.addMessage(update, UpdateMessages.adminMaintainerRemoved());

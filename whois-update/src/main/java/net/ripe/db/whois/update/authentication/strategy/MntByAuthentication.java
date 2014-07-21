@@ -13,10 +13,11 @@ import net.ripe.db.whois.common.ip.Ipv6Resource;
 import net.ripe.db.whois.common.iptree.IpEntry;
 import net.ripe.db.whois.common.iptree.Ipv4Tree;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectTemplate;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.rpsl.attrs.Domain;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.Action;
@@ -59,7 +60,7 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
 
     @Override
     public boolean supports(final PreparedUpdate update) {
-        return ObjectTemplate.getTemplate(update.getType()).hasAttribute(AttributeType.MNT_BY);
+        return ObjectTemplate.getTemplate(update.getType()).hasAttribute(AttributeTypes.MNT_BY);
     }
 
     @Override
@@ -73,12 +74,12 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
 
     private List<RpslObject> authenticateMntBy(final PreparedUpdate update, final UpdateContext updateContext) {
         RpslObject authenticationObject = update.getReferenceObject();
-        Set<CIString> keys = authenticationObject.getValuesForAttribute(AttributeType.MNT_BY);
+        Set<CIString> keys = authenticationObject.getValuesForAttribute(AttributeTypes.MNT_BY);
 
         if (keys.isEmpty()) {
             if (update.getAction().equals(Action.MODIFY)) {
                 authenticationObject = update.getUpdatedObject();
-                keys = authenticationObject.getValuesForAttribute(AttributeType.MNT_BY);
+                keys = authenticationObject.getValuesForAttribute(AttributeTypes.MNT_BY);
             }
 
             if (update.getAction().equals(Action.DELETE)) {
@@ -93,7 +94,7 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
 
         final List<RpslObject> authenticatedBy = authenticationModule.authenticate(update, updateContext, candidates);
         if (authenticatedBy.isEmpty()) {
-            throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(authenticationObject, AttributeType.MNT_BY, candidates), candidates);
+            throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(authenticationObject, AttributeTypes.MNT_BY, candidates), candidates);
         }
 
         return authenticatedBy;
@@ -139,7 +140,7 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
             final List<? extends IpEntry> exact = findExact(ipInterval);
             for (final IpEntry ipEntry : exact) {
                 final RpslObject ipObject = rpslObjectDao.getById(ipEntry.getObjectId());
-                final List<RpslObject> candidates = rpslObjectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeType.MNT_DOMAINS));
+                final List<RpslObject> candidates = rpslObjectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeTypes.MNT_DOMAINS));
                 final List<RpslObject> authenticated = authenticationModule.authenticate(update, updateContext, candidates);
                 if (!authenticated.isEmpty()) {
                     return authenticated;
@@ -194,12 +195,12 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
     }
 
     private List<RpslObject> authenticateAddressSpaceHolder(final PreparedUpdate update, final UpdateContext updateContext, final RpslObject ipObject, final AuthenticationFailedException originalAuthenticationException) {
-        if (!hasRsMaintainer(ipObject, AttributeType.MNT_LOWER) && !hasRsMaintainer(ipObject, AttributeType.MNT_BY)) {
+        if (!hasRsMaintainer(ipObject, AttributeTypes.MNT_LOWER) && !hasRsMaintainer(ipObject, AttributeTypes.MNT_BY)) {
             return Collections.emptyList();
         }
 
-        final List<RpslObject> mntLowerCandidates = rpslObjectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeType.MNT_LOWER));
-        final List<RpslObject> mntByCandidates = rpslObjectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeType.MNT_BY));
+        final List<RpslObject> mntLowerCandidates = rpslObjectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeTypes.MNT_LOWER));
+        final List<RpslObject> mntByCandidates = rpslObjectDao.getByKeys(ObjectType.MNTNER, ipObject.getValuesForAttribute(AttributeTypes.MNT_BY));
 
         final Set<RpslObject> candidates = Sets.newLinkedHashSet();
         candidates.addAll(mntLowerCandidates);
@@ -208,8 +209,8 @@ public class MntByAuthentication extends AuthenticationStrategyBase {
         final List<RpslObject> authenticated = authenticationModule.authenticate(update, updateContext, candidates);
         if (authenticated.isEmpty()) {
             final List<Message> messages = Lists.newArrayList(originalAuthenticationException.getAuthenticationMessages());
-            messages.add(UpdateMessages.authenticationFailed(ipObject, AttributeType.MNT_LOWER, mntLowerCandidates));
-            messages.add(UpdateMessages.authenticationFailed(ipObject, AttributeType.MNT_BY, mntByCandidates));
+            messages.add(UpdateMessages.authenticationFailed(ipObject, AttributeTypes.MNT_LOWER, mntLowerCandidates));
+            messages.add(UpdateMessages.authenticationFailed(ipObject, AttributeTypes.MNT_BY, mntByCandidates));
             throw new AuthenticationFailedException(messages, candidates);
         }
 

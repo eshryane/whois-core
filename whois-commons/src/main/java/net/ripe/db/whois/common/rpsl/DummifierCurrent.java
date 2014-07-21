@@ -2,29 +2,18 @@ package net.ripe.db.whois.common.rpsl;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static net.ripe.db.whois.common.rpsl.AttributeType.ABUSE_MAILBOX;
-import static net.ripe.db.whois.common.rpsl.AttributeType.ADDRESS;
-import static net.ripe.db.whois.common.rpsl.AttributeType.AUTH;
-import static net.ripe.db.whois.common.rpsl.AttributeType.CHANGED;
-import static net.ripe.db.whois.common.rpsl.AttributeType.E_MAIL;
-import static net.ripe.db.whois.common.rpsl.AttributeType.FAX_NO;
-import static net.ripe.db.whois.common.rpsl.AttributeType.IRT_NFY;
-import static net.ripe.db.whois.common.rpsl.AttributeType.MNT_NFY;
-import static net.ripe.db.whois.common.rpsl.AttributeType.NOTIFY;
-import static net.ripe.db.whois.common.rpsl.AttributeType.PERSON;
-import static net.ripe.db.whois.common.rpsl.AttributeType.PHONE;
-import static net.ripe.db.whois.common.rpsl.AttributeType.REF_NFY;
-import static net.ripe.db.whois.common.rpsl.AttributeType.UPD_TO;
+import static net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes.*;
 
 @Component
 public class DummifierCurrent implements Dummifier {
@@ -35,8 +24,8 @@ public class DummifierCurrent implements Dummifier {
     private static final Splitter EMAIL_SPLITTER = Splitter.on('@');
     private static final Splitter SPACE_SPLITTER = Splitter.on(' ');
 
-    private static final Set<AttributeType> EMAIL_ATTRIBUTES = Sets.immutableEnumSet(E_MAIL, NOTIFY, CHANGED, REF_NFY, IRT_NFY, MNT_NFY, UPD_TO);
-    private static final Set<AttributeType> PHONE_FAX_ATTRIBUTES = Sets.immutableEnumSet(PHONE, FAX_NO);
+    private static final Set<AttributeType> EMAIL_ATTRIBUTES = new HashSet<AttributeType>(Lists.newArrayList(E_MAIL, NOTIFY, CHANGED, REF_NFY, IRT_NFY, MNT_NFY, UPD_TO));
+    private static final Set<AttributeType> PHONE_FAX_ATTRIBUTES = new HashSet<AttributeType>(Lists.newArrayList(PHONE, FAX_NO));
 
     public RpslObject dummify(final int version, final RpslObject rpslObject) {
         final ObjectType objectType = rpslObject.getType();
@@ -111,7 +100,7 @@ public class DummifierCurrent implements Dummifier {
 
         String passwordType = SPACE_SPLITTER.split(attribute.getCleanValue().toUpperCase()).iterator().next();
         if (passwordType.endsWith("-PW")) {     // history table has CRYPT-PW, has to be able to dummify that too!
-            return new RpslAttribute(AttributeType.AUTH, passwordType + FILTERED_APPENDIX);
+            return new RpslAttribute(AUTH, passwordType + FILTERED_APPENDIX);
         }
 
         return attribute;

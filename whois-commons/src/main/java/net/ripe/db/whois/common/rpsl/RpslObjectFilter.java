@@ -4,9 +4,10 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import difflib.DiffUtils;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class RpslObjectFilter {
         }
 
         final StringBuilder builder = new StringBuilder();
-        for (RpslAttribute next : object.findAttributes(AttributeType.CERTIF)) {
+        for (RpslAttribute next : object.findAttributes(AttributeTypes.CERTIF)) {
             for (String s : LINE_CONTINUATION_SPLITTER.split(next.getValue())) {
                 builder.append(s).append('\n');
             }
@@ -66,8 +67,8 @@ public class RpslObjectFilter {
     public static RpslObjectBuilder setFiltered(final RpslObjectBuilder builder) {
         for (int i = builder.size() - 1; i >= 0; i--) {
             RpslAttribute attribute = builder.get(i);
-            if (attribute.getType() == AttributeType.SOURCE) {
-                builder.set(i, new RpslAttribute(AttributeType.SOURCE, attribute.getCleanValue() + FILTERED));
+            if (attribute.getType() == AttributeTypes.SOURCE) {
+                builder.set(i, new RpslAttribute(AttributeTypes.SOURCE, attribute.getCleanValue() + FILTERED));
                 break;
             }
         }
@@ -75,12 +76,12 @@ public class RpslObjectFilter {
     }
 
     public static void addFilteredSourceReplacement(final RpslObject object, final Map<RpslAttribute, RpslAttribute> replacementsMap) {
-        final RpslAttribute attribute = object.findAttribute(AttributeType.SOURCE);
-        replacementsMap.put(attribute, new RpslAttribute(AttributeType.SOURCE, attribute.getCleanValue() + FILTERED));
+        final RpslAttribute attribute = object.findAttribute(AttributeTypes.SOURCE);
+        replacementsMap.put(attribute, new RpslAttribute(AttributeTypes.SOURCE, attribute.getCleanValue() + FILTERED));
     }
 
     public static boolean isFiltered(final RpslObject rpslObject) {
-        final List<RpslAttribute> attributes = rpslObject.findAttributes(AttributeType.SOURCE);
+        final List<RpslAttribute> attributes = rpslObject.findAttributes(AttributeTypes.SOURCE);
         return !attributes.isEmpty() && attributes.get(0).getValue().contains(FILTERED);
     }
 
@@ -101,7 +102,7 @@ public class RpslObjectFilter {
             attributeList.addAll(RpslObjectBuilder.getAttributes(attribute));
         }
 
-        final EnumSet<AttributeType> seenTypes = EnumSet.noneOf(AttributeType.class);
+        final Set<AttributeType> seenTypes = Sets.newHashSet();
         for (RpslAttribute rpslAttribute : attributeList) {
             seenTypes.add(rpslAttribute.getType());
         }

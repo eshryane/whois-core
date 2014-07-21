@@ -5,10 +5,11 @@ import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.Message;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Update;
 import net.ripe.db.whois.update.domain.UpdateContainer;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -29,10 +30,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KeycertAttributeGeneratorTest {
@@ -73,9 +71,9 @@ public class KeycertAttributeGeneratorTest {
 
         final RpslObject updatedObject = subject.generateAttributes(keycert, update, updateContext);
 
-        validateAttributeType(updatedObject, AttributeType.METHOD, "X509");
-        validateAttributeType(updatedObject, AttributeType.FINGERPR, "E7:0F:3B:D4:2F:DD:F5:84:3F:4C:D2:98:78:F3:10:3D");
-        validateAttributeType(updatedObject, AttributeType.OWNER, "/C=NL/O=RIPE NCC/OU=Members/CN=zz.example.denis/EMAILADDRESS=denis@ripe.net");
+        validateAttributeType(updatedObject, AttributeTypes.METHOD, "X509");
+        validateAttributeType(updatedObject, AttributeTypes.FINGERPR, "E7:0F:3B:D4:2F:DD:F5:84:3F:4C:D2:98:78:F3:10:3D");
+        validateAttributeType(updatedObject, AttributeTypes.OWNER, "/C=NL/O=RIPE NCC/OU=Members/CN=zz.example.denis/EMAILADDRESS=denis@ripe.net");
         validateMessages();
     }
 
@@ -122,9 +120,9 @@ public class KeycertAttributeGeneratorTest {
 
         final RpslObject updatedObject = subject.generateAttributes(keycert, update, updateContext);
 
-        validateAttributeType(updatedObject, AttributeType.METHOD, "PGP");
-        validateAttributeType(updatedObject, AttributeType.FINGERPR, "884F 8E23 69E5 E6F1 9FB3  63F4 BBCC BB2D 5763 950D");
-        validateAttributeType(updatedObject, AttributeType.OWNER, "noreply@ripe.net <noreply@ripe.net>");
+        validateAttributeType(updatedObject, AttributeTypes.METHOD, "PGP");
+        validateAttributeType(updatedObject, AttributeTypes.FINGERPR, "884F 8E23 69E5 E6F1 9FB3  63F4 BBCC BB2D 5763 950D");
+        validateAttributeType(updatedObject, AttributeTypes.OWNER, "noreply@ripe.net <noreply@ripe.net>");
         validateMessages();
     }
 
@@ -172,10 +170,10 @@ public class KeycertAttributeGeneratorTest {
 
         final RpslObject updatedObject = subject.generateAttributes(keycert, update, updateContext);
 
-        validateAttributeType(updatedObject, AttributeType.METHOD, "PGP");
-        validateAttributeType(updatedObject, AttributeType.FINGERPR, "884F 8E23 69E5 E6F1 9FB3  63F4 BBCC BB2D 5763 950D");
-        validateAttributeType(updatedObject, AttributeType.OWNER, "noreply@ripe.net <noreply@ripe.net>");
-        validateMessages(ValidationMessages.suppliedAttributeReplacedWithGeneratedValue(AttributeType.OWNER));
+        validateAttributeType(updatedObject, AttributeTypes.METHOD, "PGP");
+        validateAttributeType(updatedObject, AttributeTypes.FINGERPR, "884F 8E23 69E5 E6F1 9FB3  63F4 BBCC BB2D 5763 950D");
+        validateAttributeType(updatedObject, AttributeTypes.OWNER, "noreply@ripe.net <noreply@ripe.net>");
+        validateMessages(ValidationMessages.suppliedAttributeReplacedWithGeneratedValue(AttributeTypes.OWNER));
     }
 
     @Test
@@ -221,9 +219,9 @@ public class KeycertAttributeGeneratorTest {
 
         final RpslObject updatedObject = subject.generateAttributes(keycert, update, updateContext);
 
-        validateAttributeType(updatedObject, AttributeType.METHOD, "PGP");
-        validateAttributeType(updatedObject, AttributeType.FINGERPR, "884F 8E23 69E5 E6F1 9FB3  63F4 BBCC BB2D 5763 950D");
-        validateAttributeType(updatedObject, AttributeType.OWNER, "noreply@ripe.net <noreply@ripe.net>");
+        validateAttributeType(updatedObject, AttributeTypes.METHOD, "PGP");
+        validateAttributeType(updatedObject, AttributeTypes.FINGERPR, "884F 8E23 69E5 E6F1 9FB3  63F4 BBCC BB2D 5763 950D");
+        validateAttributeType(updatedObject, AttributeTypes.OWNER, "noreply@ripe.net <noreply@ripe.net>");
     }
 
 
@@ -266,10 +264,10 @@ public class KeycertAttributeGeneratorTest {
 
         final RpslObject updatedObject = subject.generateAttributes(keycert, update, updateContext);
 
-        validateAttributeType(updatedObject, AttributeType.METHOD, "PGP");
-        validateAttributeType(updatedObject, AttributeType.FINGERPR, "FBFD 0527 454D 5880 3484  413F C722 7EEC EA5F BB94");
-        validateAttributeType(updatedObject, AttributeType.OWNER, "Hostmaster <hostmaster@ripe.net>", "Admin User <admin@ripe.net>");
-        validateMessages(ValidationMessages.suppliedAttributeReplacedWithGeneratedValue(AttributeType.OWNER));
+        validateAttributeType(updatedObject, AttributeTypes.METHOD, "PGP");
+        validateAttributeType(updatedObject, AttributeTypes.FINGERPR, "FBFD 0527 454D 5880 3484  413F C722 7EEC EA5F BB94");
+        validateAttributeType(updatedObject, AttributeTypes.OWNER, "Hostmaster <hostmaster@ripe.net>", "Admin User <admin@ripe.net>");
+        validateMessages(ValidationMessages.suppliedAttributeReplacedWithGeneratedValue(AttributeTypes.OWNER));
     }
 
     @Test

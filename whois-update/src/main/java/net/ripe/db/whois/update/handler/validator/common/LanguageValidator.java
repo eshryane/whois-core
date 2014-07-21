@@ -2,10 +2,10 @@ package net.ripe.db.whois.update.handler.validator.common;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.dao.LanguageCodeRepository;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -40,12 +40,12 @@ public class LanguageValidator implements BusinessRuleValidator {
     @Override
     public void validate(final PreparedUpdate update, final UpdateContext updateContext) {
         final RpslObject updatedObject = update.getUpdatedObject();
-        if (!updatedObject.containsAttribute(AttributeType.LANGUAGE)) {
+        if (!updatedObject.containsAttribute(AttributeTypes.LANGUAGE)) {
             return;
         }
 
         final Set<CIString> languageCodes = languageRepository.getLanguageCodes();
-        for (final RpslAttribute attribute : updatedObject.findAttributes(AttributeType.LANGUAGE)) {
+        for (final RpslAttribute attribute : updatedObject.findAttributes(AttributeTypes.LANGUAGE)) {
             if (!languageCodes.contains(attribute.getCleanValue())) {
                 updateContext.addMessage(update, UpdateMessages.languageNotRecognised(attribute.getCleanValue()));
             }

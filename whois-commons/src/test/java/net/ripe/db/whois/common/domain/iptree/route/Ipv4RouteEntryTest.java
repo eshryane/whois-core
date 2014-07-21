@@ -3,7 +3,7 @@ package net.ripe.db.whois.common.domain.iptree.route;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.iptree.Ipv4Entry;
 import net.ripe.db.whois.common.iptree.Ipv4RouteEntry;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -26,7 +26,7 @@ public class Ipv4RouteEntryTest {
     public void testParse_valid() {
         final Ipv4RouteEntry entry = Ipv4RouteEntry.parse("10.0.0.0/32AS1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INETNUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INETNUM));
         assertThat(entry.getKey().toString(), is("10.0.0.0/32"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));
@@ -36,7 +36,7 @@ public class Ipv4RouteEntryTest {
     public void testParse_valid_range() {
         final Ipv4RouteEntry entry = Ipv4RouteEntry.parse("10.0.0.0 - 10.0.0.10 AS1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INETNUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INETNUM));
         assertThat(entry.getKey().toString(), is("10.0.0.0 - 10.0.0.10"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));
@@ -46,7 +46,7 @@ public class Ipv4RouteEntryTest {
     public void testParse_valid_lowercase() {
         final Ipv4RouteEntry entry = Ipv4RouteEntry.parse("10.0.0.0/32as1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INETNUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INETNUM));
         assertThat(entry.getKey().toString(), is("10.0.0.0/32"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));
@@ -56,7 +56,7 @@ public class Ipv4RouteEntryTest {
     public void testParse_valid_mixedcase() {
         final Ipv4RouteEntry entry = Ipv4RouteEntry.parse("10.0.0.0/32aS1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INETNUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INETNUM));
         assertThat(entry.getKey().toString(), is("10.0.0.0/32"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));
@@ -81,7 +81,7 @@ public class Ipv4RouteEntryTest {
     public void testParse_with_spaces() {
         final Ipv4RouteEntry entry = Ipv4RouteEntry.parse("10.0.0.0/32 AS1234", 11);
 
-        assertThat(entry.getKey().getAttributeType(), is(AttributeType.INETNUM));
+        assertThat(entry.getKey().getAttributeType(), is(AttributeTypes.INETNUM));
         assertThat(entry.getKey().toString(), is("10.0.0.0/32"));
         assertThat(entry.getObjectId(), is(11));
         assertThat(entry.getOrigin(), is("AS1234"));

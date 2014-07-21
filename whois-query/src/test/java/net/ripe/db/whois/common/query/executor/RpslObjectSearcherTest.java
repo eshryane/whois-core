@@ -5,18 +5,19 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
+import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.ip.Ipv4Resource;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.iptree.*;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.dao.Inet6numDao;
 import net.ripe.db.whois.common.query.dao.InetnumDao;
-import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.query.Query;
 import net.ripe.db.whois.common.query.support.Fixture;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,7 +86,7 @@ public class RpslObjectSearcherTest {
     public void forward_lookup_by_attribute() {
         final RpslObject irt = RpslObject.parse("irt: DEV-IRT\ne-mail: person@domain.com");
         mockRpslObjects(irt);
-        when(rpslObjectDao.findByAttribute(AttributeType.E_MAIL, "person@domain.com")).thenReturn(infosFor(irt));
+        when(rpslObjectDao.findByAttribute(AttributeTypes.E_MAIL, "person@domain.com")).thenReturn(infosFor(irt));
 
         assertQueryResult("-T irt person@domain.com", irt);
     }
@@ -137,7 +138,7 @@ public class RpslObjectSearcherTest {
 
     @Test
     public void inverse_lookup_never_returns_null() {
-        for (final AttributeType attributeType : AttributeType.values()) {
+        for (final AttributeType attributeType : AttributeTypes.values()) {
             assertNotNull(subject.search(Query.parse("-i " + attributeType.getName() + " query")));
         }
     }
@@ -158,8 +159,8 @@ public class RpslObjectSearcherTest {
 
         mockRpslObjects(mntner, organisation);
 
-        when(rpslObjectDao.findByAttribute(AttributeType.MNT_BY, "aardvark")).thenReturn(infosFor(mntner));
-        when(rpslObjectDao.findByAttribute(AttributeType.ORG, "aardvark")).thenReturn(infosFor(organisation));
+        when(rpslObjectDao.findByAttribute(AttributeTypes.MNT_BY, "aardvark")).thenReturn(infosFor(mntner));
+        when(rpslObjectDao.findByAttribute(AttributeTypes.ORG, "aardvark")).thenReturn(infosFor(organisation));
 
         assertQueryResult("-r -i mnt-by,mnt-ref,org aardvark", mntner, organisation);
     }
@@ -171,8 +172,8 @@ public class RpslObjectSearcherTest {
 
         mockRpslObjects(mntner, organisation);
 
-        when(rpslObjectDao.findByAttribute(AttributeType.MNT_BY, "aardvark")).thenReturn(infosFor(mntner));
-        when(rpslObjectDao.findByAttribute(AttributeType.ORG, "aardvark")).thenReturn(infosFor(organisation));
+        when(rpslObjectDao.findByAttribute(AttributeTypes.MNT_BY, "aardvark")).thenReturn(infosFor(mntner));
+        when(rpslObjectDao.findByAttribute(AttributeTypes.ORG, "aardvark")).thenReturn(infosFor(organisation));
 
         assertQueryResult("-r -T organisation -i mnt-by,mnt-ref,org aardvark", organisation);
     }

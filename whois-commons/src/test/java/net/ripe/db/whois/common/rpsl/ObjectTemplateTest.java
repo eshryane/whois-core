@@ -1,6 +1,8 @@
 package net.ripe.db.whois.common.rpsl;
 
 import net.ripe.db.whois.common.Message;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,7 +66,7 @@ public class ObjectTemplateTest {
         final ObjectMessages objectMessages = subject.validate(rpslObject);
 
         assertThat(objectMessages.hasErrors(), is(true));
-        assertThat(objectMessages.getMessages().getErrors(), contains(ValidationMessages.missingMandatoryAttribute(AttributeType.SOURCE)));
+        assertThat(objectMessages.getMessages().getErrors(), contains(ValidationMessages.missingMandatoryAttribute(AttributeTypes.SOURCE)));
 
         assertZeroAttributeErrors(rpslObject, objectMessages);
     }
@@ -75,7 +77,7 @@ public class ObjectTemplateTest {
         final ObjectMessages objectMessages = subject.validate(rpslObject);
 
         assertThat(objectMessages.hasErrors(), is(true));
-        assertThat(objectMessages.getMessages().getErrors(), contains(ValidationMessages.tooManyAttributesOfType(AttributeType.SOURCE)));
+        assertThat(objectMessages.getMessages().getErrors(), contains(ValidationMessages.tooManyAttributesOfType(AttributeTypes.SOURCE)));
 
         assertZeroAttributeErrors(rpslObject, objectMessages);
     }
@@ -109,7 +111,7 @@ public class ObjectTemplateTest {
         final Collection<Message> messages = objectMessages.getMessages(lastAttribute).getAllMessages();
 
         assertThat(messages, hasSize(1));
-        assertThat(messages, contains(ValidationMessages.invalidAttributeForObject(AttributeType.PERSON)));
+        assertThat(messages, contains(ValidationMessages.invalidAttributeForObject(AttributeTypes.PERSON)));
     }
 
     @Test

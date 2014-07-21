@@ -9,40 +9,27 @@ import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.Identifiable;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.ip.IpInterval;
-import net.ripe.db.whois.common.iptree.IpEntry;
-import net.ripe.db.whois.common.iptree.IpTree;
-import net.ripe.db.whois.common.iptree.Ipv4DomainTree;
-import net.ripe.db.whois.common.iptree.Ipv4RouteTree;
-import net.ripe.db.whois.common.iptree.Ipv4Tree;
-import net.ripe.db.whois.common.iptree.Ipv6DomainTree;
-import net.ripe.db.whois.common.iptree.Ipv6RouteTree;
-import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.iptree.RouteEntry;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.rpsl.attrs.AsBlockRange;
+import net.ripe.db.whois.common.iptree.*;
 import net.ripe.db.whois.common.query.QueryMessages;
 import net.ripe.db.whois.common.query.dao.Inet6numDao;
 import net.ripe.db.whois.common.query.dao.InetnumDao;
 import net.ripe.db.whois.common.query.domain.MessageObject;
 import net.ripe.db.whois.common.query.query.Query;
+import net.ripe.db.whois.common.rpsl.ObjectTemplate;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.AsBlockRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 class RpslObjectSearcher {
-    private static final Set<AttributeType> INVERSE_ATTRIBUTE_TYPES = EnumSet.noneOf(AttributeType.class);
+    private static final Set<AttributeType> INVERSE_ATTRIBUTE_TYPES = Sets.newHashSet();
 
     static {
         for (final ObjectType objectType : ObjectType.values()) {
@@ -168,14 +155,15 @@ class RpslObjectSearcher {
             return Collections.emptyList();
         }
 
-        switch (ipInterval.getAttributeType()) {
-            case INETNUM:
-                return proxy(ipTreeLookup(ipv4DomainTree, ipInterval, query));
-            case INET6NUM:
-                return proxy(ipTreeLookup(ipv6DomainTree, ipInterval, query));
-            default:
-                throw new IllegalArgumentException(String.format("Unexpected type: %s", ipInterval.getAttributeType()));
+        AttributeType ipType = ipInterval.getAttributeType();
+
+        if (ipType.equals(AttributeTypes.INETNUM)) {
+            return proxy(ipTreeLookup(ipv4DomainTree, ipInterval, query));
+        } else if (ipType.equals(AttributeTypes.INET6NUM)) {
+            return proxy(ipTreeLookup(ipv6DomainTree, ipInterval, query));
         }
+
+        throw new IllegalArgumentException(String.format("Unexpected type: %s", ipInterval.getAttributeType()));
     }
 
     private List<IpEntry> ipTreeLookup(final IpTree tree, final IpInterval<?> key, Query query) {

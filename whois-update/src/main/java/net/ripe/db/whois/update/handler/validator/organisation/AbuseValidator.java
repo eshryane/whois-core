@@ -8,9 +8,9 @@ import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.RpslObjectInfo;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Maintainers;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.rpsl.attrs.OrgType;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
@@ -59,18 +59,18 @@ public class AbuseValidator implements BusinessRuleValidator {
 
         validateRemovedAbuseC(updatedObject, update, updateContext);
 
-        if (!updatedObject.containsAttribute(AttributeType.ABUSE_C)) {
+        if (!updatedObject.containsAttribute(AttributeTypes.ABUSE_C)) {
             return;
         }
 
-        final CIString abuseC = updatedObject.getValueForAttribute(AttributeType.ABUSE_C);
+        final CIString abuseC = updatedObject.getValueForAttribute(AttributeTypes.ABUSE_C);
         final RpslObject referencedRole = uniqueResult(objectDao.getByKeys(ObjectType.ROLE, Lists.newArrayList(abuseC)));
 
         if (referencedRole == null) {
             if (null != uniqueResult(objectDao.getByKeys(ObjectType.PERSON, Lists.newArrayList(abuseC)))) {
                 updateContext.addMessage(update, UpdateMessages.abuseCPersonReference());
             }
-        } else if (!referencedRole.containsAttribute(AttributeType.ABUSE_MAILBOX)) {
+        } else if (!referencedRole.containsAttribute(AttributeTypes.ABUSE_MAILBOX)) {
             updateContext.addMessage(update, UpdateMessages.abuseMailboxRequired(abuseC));
         }
     }
@@ -78,7 +78,7 @@ public class AbuseValidator implements BusinessRuleValidator {
     private void validateRemovedAbuseC(final RpslObject updatedObject, final PreparedUpdate update, final UpdateContext updateContext) {
         if (hasRemovedAbuseC(updatedObject, update)) {
             boolean isAllowedToUpdate = true;
-            if (OrgType.getFor(updatedObject.getValueForAttribute(AttributeType.ORG_TYPE)) == OrgType.LIR) {
+            if (OrgType.getFor(updatedObject.getValueForAttribute(AttributeTypes.ORG_TYPE)) == OrgType.LIR) {
                 isAllowedToUpdate = false;
             }
 
@@ -94,9 +94,9 @@ public class AbuseValidator implements BusinessRuleValidator {
                         .toList();
                 for (RpslObjectInfo rpslObjectInfo : rpslObjectInfos) {
                     final RpslObject referencingObject = objectDao.getById(rpslObjectInfo.getObjectId());
-                    final Set<CIString> objectMaintainers = referencingObject.getValuesForAttribute(AttributeType.MNT_BY);
+                    final Set<CIString> objectMaintainers = referencingObject.getValuesForAttribute(AttributeTypes.MNT_BY);
                     if (!Sets.intersection(maintainers.getRsMaintainers(), objectMaintainers).isEmpty()
-                            && updatedObject.getKey().equals(referencingObject.getValueForAttribute(AttributeType.ORG))) {
+                            && updatedObject.getKey().equals(referencingObject.getValueForAttribute(AttributeTypes.ORG))) {
                         isAllowedToUpdate = false;
                         break;
                     }
@@ -110,10 +110,10 @@ public class AbuseValidator implements BusinessRuleValidator {
 
 
     private boolean hasRemovedAbuseC(final RpslObject updatedObject, final PreparedUpdate update) {
-        final boolean hasAbuseC = updatedObject.containsAttribute(AttributeType.ABUSE_C);
+        final boolean hasAbuseC = updatedObject.containsAttribute(AttributeTypes.ABUSE_C);
 
         final RpslObject referenceObject = update.getReferenceObject();
-        final boolean originalHasAbuseC = null != referenceObject && referenceObject.containsAttribute(AttributeType.ABUSE_C);
+        final boolean originalHasAbuseC = null != referenceObject && referenceObject.containsAttribute(AttributeTypes.ABUSE_C);
 
         return update.getAction() == Action.MODIFY && !hasAbuseC && originalHasAbuseC;
     }

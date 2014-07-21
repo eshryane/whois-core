@@ -2,9 +2,9 @@ package net.ripe.db.whois.update.authentication.strategy;
 
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -27,23 +27,23 @@ public class RouteAutnumAuthentication extends RouteAuthentication {
     @Override
     public List<RpslObject> authenticate(final PreparedUpdate update, final UpdateContext updateContext) {
         final RpslObject updatedObject = update.getUpdatedObject();
-        final CIString origin = updatedObject.getValueForAttribute(AttributeType.ORIGIN);
+        final CIString origin = updatedObject.getValueForAttribute(AttributeTypes.ORIGIN);
 
         final RpslObject autNum = getAutNum(updatedObject, origin);
-        if (autNum.containsAttribute(AttributeType.MNT_ROUTES)) {
+        if (autNum.containsAttribute(AttributeTypes.MNT_ROUTES)) {
             final List<RpslObject> candidates = getCandidatesForMntRoutesAuthentication(autNum, update);
             final List<RpslObject> authenticated = authenticationModule.authenticate(update, updateContext, candidates);
             if (authenticated.isEmpty()) {
-                throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(autNum, AttributeType.MNT_ROUTES, candidates), candidates);
+                throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(autNum, AttributeTypes.MNT_ROUTES, candidates), candidates);
             }
 
             return authenticated;
         }
 
-        final List<RpslObject> candidates = objectDao.getByKeys(ObjectType.MNTNER, autNum.getValuesForAttribute(AttributeType.MNT_BY));
+        final List<RpslObject> candidates = objectDao.getByKeys(ObjectType.MNTNER, autNum.getValuesForAttribute(AttributeTypes.MNT_BY));
         final List<RpslObject> authenticated = authenticationModule.authenticate(update, updateContext, candidates);
         if (authenticated.isEmpty()) {
-            throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(autNum, AttributeType.MNT_BY, candidates), candidates);
+            throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(autNum, AttributeTypes.MNT_BY, candidates), candidates);
         }
 
         return authenticated;
@@ -53,7 +53,7 @@ public class RouteAutnumAuthentication extends RouteAuthentication {
         try {
             return objectDao.getByKey(ObjectType.AUT_NUM, origin.toString());
         } catch (EmptyResultDataAccessException ignored) {
-            throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(updatedObject, AttributeType.ORIGIN, Collections.<RpslObject>emptyList()), Collections.<RpslObject>emptyList());
+            throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(updatedObject, AttributeTypes.ORIGIN, Collections.<RpslObject>emptyList()), Collections.<RpslObject>emptyList());
         }
     }
 }

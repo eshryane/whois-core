@@ -3,17 +3,13 @@ package net.ripe.db.whois.update.handler.validator.sets;
 
 import com.google.common.collect.Lists;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Principal;
 import net.ripe.db.whois.update.authentication.Subject;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
-import net.ripe.db.whois.update.domain.Action;
-import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.UpdateContainer;
-import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.domain.UpdateMessages;
+import net.ripe.db.whois.update.domain.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,20 +21,21 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SetnameMustExistValidatorTest {
 
-    @Mock PreparedUpdate update;
-    @Mock UpdateContext updateContext;
-    @Mock RpslObjectDao objectDao;
-    @Mock AuthenticationModule authenticationModule;
-    @Mock Subject updateSubject;
+    @Mock
+    PreparedUpdate update;
+    @Mock
+    UpdateContext updateContext;
+    @Mock
+    RpslObjectDao objectDao;
+    @Mock
+    AuthenticationModule authenticationModule;
+    @Mock
+    Subject updateSubject;
 
     @InjectMocks
     SetnameMustExistValidator subject;
@@ -112,7 +109,7 @@ public class SetnameMustExistValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.parentAuthenticationFailed(RpslObject.parse("aut-num: AS101"), AttributeType.MNT_BY, Lists.<RpslObject>newArrayList()));
+        verify(updateContext).addMessage(update, UpdateMessages.parentAuthenticationFailed(RpslObject.parse("aut-num: AS101"), AttributeTypes.MNT_BY, Lists.<RpslObject>newArrayList()));
     }
 
 
@@ -165,6 +162,6 @@ public class SetnameMustExistValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, UpdateMessages.parentAuthenticationFailed(RpslObject.parse("route-set: RS-PARENT"), AttributeType.MNT_BY, Lists.<RpslObject>newArrayList()));
+        verify(updateContext).addMessage(update, UpdateMessages.parentAuthenticationFailed(RpslObject.parse("route-set: RS-PARENT"), AttributeTypes.MNT_BY, Lists.<RpslObject>newArrayList()));
     }
 }

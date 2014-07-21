@@ -4,24 +4,11 @@ import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.dao.UpdateLockDao;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.iptree.IpTreeUpdater;
-import net.ripe.db.whois.common.rpsl.AttributeSanitizer;
-import net.ripe.db.whois.common.rpsl.AttributeType;
-import net.ripe.db.whois.common.rpsl.ObjectMessages;
-import net.ripe.db.whois.common.rpsl.ObjectTemplate;
-import net.ripe.db.whois.common.rpsl.ObjectType;
-import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.common.rpsl.RpslObjectFilter;
+import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.Authenticator;
 import net.ripe.db.whois.update.autokey.AutoKeyResolver;
-import net.ripe.db.whois.update.domain.Action;
-import net.ripe.db.whois.update.domain.Keyword;
-import net.ripe.db.whois.update.domain.Operation;
-import net.ripe.db.whois.update.domain.Origin;
-import net.ripe.db.whois.update.domain.OverrideOptions;
-import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.Update;
-import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.domain.UpdateMessages;
+import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.generator.AttributeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -182,7 +169,7 @@ public class SingleUpdateHandler {
             updateContext.addMessage(update, UpdateMessages.filteredNotAllowed());
         }
 
-        final CIString objectSource = updatedObject.getValueOrNullForAttribute(AttributeType.SOURCE);
+        final CIString objectSource = updatedObject.getValueOrNullForAttribute(AttributeTypes.SOURCE);
         if (objectSource != null && !source.equals(objectSource)) {
             updateContext.addMessage(update, UpdateMessages.unrecognizedSource(objectSource.toUpperCase()));
         }

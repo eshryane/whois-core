@@ -1,8 +1,8 @@
 package net.ripe.db.whois.update.handler.validator.poem;
 
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -54,6 +54,6 @@ public class PoemHasOnlyPublicMaintainerValidatorTest {
 
         subject.validate(update, updateContext);
 
-        verify(updateContext).addMessage(update, poem.findAttribute(AttributeType.MNT_BY), UpdateMessages.poemRequiresPublicMaintainer());
+        verify(updateContext).addMessage(update, poem.findAttribute(AttributeTypes.MNT_BY), UpdateMessages.poemRequiresPublicMaintainer());
     }
 }

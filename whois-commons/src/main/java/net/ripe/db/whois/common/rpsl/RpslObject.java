@@ -9,23 +9,14 @@ import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.Identifiable;
 import net.ripe.db.whois.common.domain.ResponseObject;
 import net.ripe.db.whois.common.io.ByteArrayOutput;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 import org.apache.commons.lang.Validate;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 @Immutable
 public class RpslObject implements Identifiable, ResponseObject {
@@ -160,7 +151,7 @@ public class RpslObject implements Identifiable, ResponseObject {
 
     Map<AttributeType, List<RpslAttribute>> getOrCreateCache() {
         if (typeCache == null) {
-            final EnumMap<AttributeType, List<RpslAttribute>> map = Maps.newEnumMap(AttributeType.class);
+            final Map<AttributeType, List<RpslAttribute>> map = Maps.newHashMap();
 
             for (final RpslAttribute attribute : getAttributes()) {
                 final AttributeType attributeType = attribute.getType();

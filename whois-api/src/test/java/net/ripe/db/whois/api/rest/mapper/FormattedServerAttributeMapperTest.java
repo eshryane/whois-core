@@ -3,8 +3,8 @@ package net.ripe.db.whois.api.rest.mapper;
 import net.ripe.db.whois.api.rest.ReferencedTypeResolver;
 import net.ripe.db.whois.api.rest.domain.Attribute;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Collection;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,10 +48,10 @@ public class FormattedServerAttributeMapperTest {
 
     @Test
     public void mapAttribute_attributeType_given() {
-        when(referencedTypeResolver.getReferencedType(AttributeType.NIC_HDL, CIString.ciString("TP-TEST"))).thenReturn(AttributeType.ROLE.getName());
+        when(referencedTypeResolver.getReferencedType(AttributeTypes.NIC_HDL, CIString.ciString("TP-TEST"))).thenReturn(AttributeTypes.ROLE.getName());
 
         final Collection<Attribute> attributes = subject.map(
-                new RpslAttribute(AttributeType.NIC_HDL, CIString.ciString("TP-TEST")),
+                new RpslAttribute(AttributeTypes.NIC_HDL, CIString.ciString("TP-TEST")),
                 "TEST");
 
         assertThat(attributes, hasSize(1));

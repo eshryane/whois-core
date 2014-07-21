@@ -3,15 +3,9 @@ package net.ripe.db.whois.update.authentication.credential;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
-import net.ripe.db.whois.update.domain.Credential;
-import net.ripe.db.whois.update.domain.Credentials;
-import net.ripe.db.whois.update.domain.PasswordCredential;
-import net.ripe.db.whois.update.domain.PgpCredential;
-import net.ripe.db.whois.update.domain.PreparedUpdate;
-import net.ripe.db.whois.update.domain.UpdateContext;
-import net.ripe.db.whois.update.domain.X509Credential;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.update.domain.*;
 import net.ripe.db.whois.update.log.LoggerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +52,7 @@ public class AuthenticationModule {
     }
 
     private boolean hasValidCredentialForCandidate(final PreparedUpdate update, final UpdateContext updateContext, final Credentials offered, final RpslObject maintainer) {
-        final List<CIString> authAttributes = Lists.newArrayList(maintainer.getValuesForAttribute(AttributeType.AUTH));
+        final List<CIString> authAttributes = Lists.newArrayList(maintainer.getValuesForAttribute(AttributeTypes.AUTH));
 
         for (final CIString auth : authAttributes) {
             final Credential credential = getCredential(auth);

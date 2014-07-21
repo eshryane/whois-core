@@ -3,9 +3,10 @@ package net.ripe.db.whois.api.rest;
 import com.google.common.base.Splitter;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectTemplate;
 import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
@@ -31,38 +32,38 @@ public class ReferencedTypeResolver {
         final Set<ObjectType> references = attributeType.getReferences();
         switch (references.size()) {
             case 0:
-                if (AttributeType.MEMBERS.equals(attributeType)) {
-                    if (AttributeType.AUT_NUM.isValidValue(ObjectType.AUT_NUM, value)) {
+                if (AttributeTypes.MEMBERS.equals(attributeType)) {
+                    if (AttributeTypes.AUT_NUM.isValidValue(ObjectType.AUT_NUM, value)) {
                         return ObjectType.AUT_NUM.getName();
                     }
 
-                    if (AttributeType.AS_SET.isValidValue(ObjectType.AS_SET, value)) {
+                    if (AttributeTypes.AS_SET.isValidValue(ObjectType.AS_SET, value)) {
                         return ObjectType.AS_SET.getName();
                     }
 
-                    if (AttributeType.ROUTE_SET.isValidValue(ObjectType.ROUTE_SET, value)) {
+                    if (AttributeTypes.ROUTE_SET.isValidValue(ObjectType.ROUTE_SET, value)) {
                         return ObjectType.ROUTE_SET.getName();
                     }
 
-                    if (AttributeType.RTR_SET.isValidValue(ObjectType.RTR_SET, value)) {
+                    if (AttributeTypes.RTR_SET.isValidValue(ObjectType.RTR_SET, value)) {
                         return ObjectType.RTR_SET.getName();
                     }
                 }
                 return null;
 
             case 1:
-                if (AttributeType.AUTH.equals(attributeType)) {
+                if (AttributeTypes.AUTH.equals(attributeType)) {
                     final String authType = SPACE_SPLITTER.split(value).iterator().next().toUpperCase();
                     if (authType.endsWith("-PW")) {
                         return null;
                     }
                 }
-                if (AttributeType.MBRS_BY_REF.equals(attributeType)) {
+                if (AttributeTypes.MBRS_BY_REF.equals(attributeType)) {
                     if (value.toLowerCase().equals("any")) {
                         return null;
                     }
                 }
-                if (AttributeType.MNT_ROUTES.equals(attributeType)) {
+                if (AttributeTypes.MNT_ROUTES.equals(attributeType)) {
                     if (MNT_ROUTES_NO_REFERENCE.matcher(value).matches()) {
                         return null;
                     }

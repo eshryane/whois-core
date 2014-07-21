@@ -4,11 +4,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.ip.Ipv6Resource;
-import net.ripe.db.whois.common.rpsl.attrs.Inet6numStatus;
-import net.ripe.db.whois.common.rpsl.attrs.InetStatus;
 import net.ripe.db.whois.common.iptree.Ipv6Entry;
 import net.ripe.db.whois.common.iptree.Ipv6Tree;
-import net.ripe.db.whois.common.rpsl.*;
+import net.ripe.db.whois.common.rpsl.ObjectType;
+import net.ripe.db.whois.common.rpsl.RpslAttribute;
+import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.ValidationMessages;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
+import net.ripe.db.whois.common.rpsl.attrs.Inet6numStatus;
+import net.ripe.db.whois.common.rpsl.attrs.InetStatus;
 import net.ripe.db.whois.update.domain.Action;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -57,12 +61,12 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
         final RpslObject object = update.getUpdatedObject();
         final Ipv6Resource ipv6Resource = Ipv6Resource.parse(object.getKey());
 
-        final Inet6numStatus status = Inet6numStatus.getStatusFor(object.getValueForAttribute(AttributeType.STATUS));
+        final Inet6numStatus status = Inet6numStatus.getStatusFor(object.getValueForAttribute(AttributeTypes.STATUS));
         if (status.equals(Inet6numStatus.AGGREGATED_BY_LIR)) {
             validateRequiredAssignmentSize(update, updateContext, object, ipv6Resource);
             validTotalNrAggregatedByLirInHierarchy(update, updateContext, ipv6Resource);
         } else {
-            for (final RpslAttribute attribute : object.findAttributes(AttributeType.ASSIGNMENT_SIZE)) {
+            for (final RpslAttribute attribute : object.findAttributes(AttributeTypes.ASSIGNMENT_SIZE)) {
                 updateContext.addMessage(update, attribute, UpdateMessages.attributeAssignmentSizeNotAllowed());
             }
         }
@@ -71,8 +75,8 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
     }
 
     private void validateRequiredAssignmentSize(final PreparedUpdate update, final UpdateContext updateContext, final RpslObject object, final Ipv6Resource ipv6Resource) {
-        if (object.containsAttribute(AttributeType.ASSIGNMENT_SIZE)) {
-            final int assignmentSize = object.getValueForAttribute(AttributeType.ASSIGNMENT_SIZE).toInt();
+        if (object.containsAttribute(AttributeTypes.ASSIGNMENT_SIZE)) {
+            final int assignmentSize = object.getValueForAttribute(AttributeTypes.ASSIGNMENT_SIZE).toInt();
             if (assignmentSize > MAX_ASSIGNMENT_SIZE) {
                 updateContext.addMessage(update, UpdateMessages.assignmentSizeTooLarge(MAX_ASSIGNMENT_SIZE));
             } else if (assignmentSize <= ipv6Resource.getPrefixLength()) {
@@ -86,7 +90,7 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
                 }
             }
         } else {
-            updateContext.addMessage(update, ValidationMessages.missingConditionalRequiredAttribute(AttributeType.ASSIGNMENT_SIZE));
+            updateContext.addMessage(update, ValidationMessages.missingConditionalRequiredAttribute(AttributeTypes.ASSIGNMENT_SIZE));
         }
     }
 
@@ -97,12 +101,12 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
 
         final InetStatus parentStatus = InetStatusHelper.getStatus(parent);
         if (parentStatus == null) {
-            updateContext.addMessage(update, UpdateMessages.objectHasInvalidStatus("Parent", parent.getKey(), parent.getValueForAttribute(AttributeType.STATUS)));
+            updateContext.addMessage(update, UpdateMessages.objectHasInvalidStatus("Parent", parent.getKey(), parent.getValueForAttribute(AttributeTypes.STATUS)));
             return;
         }
 
         if (parentStatus.equals(Inet6numStatus.AGGREGATED_BY_LIR)) {
-            final int parentAssignmentSize = parent.getValueForAttribute(AttributeType.ASSIGNMENT_SIZE).toInt();
+            final int parentAssignmentSize = parent.getValueForAttribute(AttributeTypes.ASSIGNMENT_SIZE).toInt();
             final int prefixLength = ipv6Resource.getPrefixLength();
             if (prefixLength != parentAssignmentSize) {
                 updateContext.addMessage(update, UpdateMessages.invalidPrefixLength(ipv6Resource, parentAssignmentSize));
@@ -137,12 +141,12 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
 
     private boolean isAggregatedByLir(final Ipv6Entry entry) {
         final RpslObject object = rpslObjectDao.getById(entry.getObjectId());
-        final Inet6numStatus status = Inet6numStatus.getStatusFor(object.getValueForAttribute(AttributeType.STATUS));
+        final Inet6numStatus status = Inet6numStatus.getStatusFor(object.getValueForAttribute(AttributeTypes.STATUS));
         return Inet6numStatus.AGGREGATED_BY_LIR.equals(status);
     }
 
     private void validateModify(final PreparedUpdate update, final UpdateContext updateContext) {
-        final RpslAttribute updatedStatus = update.getUpdatedObject().findAttribute(AttributeType.STATUS);
+        final RpslAttribute updatedStatus = update.getUpdatedObject().findAttribute(AttributeTypes.STATUS);
 
         final Inet6numStatus inet6numStatus = Inet6numStatus.getStatusFor(updatedStatus.getCleanValue());
         if (inet6numStatus.equals(Inet6numStatus.AGGREGATED_BY_LIR) && assignmentSizeHasChanged(update)) {
@@ -151,8 +155,8 @@ public class AggregatedByLirStatusValidator implements BusinessRuleValidator {
     }
 
     private boolean assignmentSizeHasChanged(final PreparedUpdate update) {
-        final List<RpslAttribute> originalAssignmentSize = update.getReferenceObject().findAttributes(AttributeType.ASSIGNMENT_SIZE);
-        final List<RpslAttribute> updatedAssignmentSize = update.getUpdatedObject().findAttributes(AttributeType.ASSIGNMENT_SIZE);
+        final List<RpslAttribute> originalAssignmentSize = update.getReferenceObject().findAttributes(AttributeTypes.ASSIGNMENT_SIZE);
+        final List<RpslAttribute> updatedAssignmentSize = update.getUpdatedObject().findAttributes(AttributeTypes.ASSIGNMENT_SIZE);
 
         return !(originalAssignmentSize.size() == updatedAssignmentSize.size() &&
                 Sets.difference(Sets.newLinkedHashSet(originalAssignmentSize), Sets.newLinkedHashSet(updatedAssignmentSize)).size() == 0);

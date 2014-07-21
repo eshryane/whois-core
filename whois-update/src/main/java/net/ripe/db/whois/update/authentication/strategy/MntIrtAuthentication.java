@@ -2,9 +2,9 @@ package net.ripe.db.whois.update.authentication.strategy;
 
 import net.ripe.db.whois.common.dao.RpslObjectDao;
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
 import net.ripe.db.whois.common.rpsl.ObjectType;
 import net.ripe.db.whois.common.rpsl.RpslObject;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.update.authentication.credential.AuthenticationModule;
 import net.ripe.db.whois.update.domain.PreparedUpdate;
 import net.ripe.db.whois.update.domain.UpdateContext;
@@ -28,12 +28,12 @@ public class MntIrtAuthentication extends AuthenticationStrategyBase {
 
     @Override
     public boolean supports(final PreparedUpdate update) {
-        return !update.getNewValues(AttributeType.MNT_IRT).isEmpty();
+        return !update.getNewValues(AttributeTypes.MNT_IRT).isEmpty();
     }
 
     @Override
     public List<RpslObject> authenticate(final PreparedUpdate update, final UpdateContext updateContext) {
-        final Collection<CIString> keys = update.getNewValues(AttributeType.MNT_IRT);
+        final Collection<CIString> keys = update.getNewValues(AttributeTypes.MNT_IRT);
         final List<RpslObject> candidates = rpslObjectDao.getByKeys(ObjectType.IRT, keys);
         if (isSelfReference(update, keys)) {
             candidates.add(update.getUpdatedObject());
@@ -41,7 +41,7 @@ public class MntIrtAuthentication extends AuthenticationStrategyBase {
 
         final List<RpslObject> authenticatedBy = credentialValidators.authenticate(update, updateContext, candidates);
         if (authenticatedBy.isEmpty()) {
-            throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(update.getReferenceObject(), AttributeType.MNT_IRT, candidates), candidates);
+            throw new AuthenticationFailedException(UpdateMessages.authenticationFailed(update.getReferenceObject(), AttributeTypes.MNT_IRT, candidates), candidates);
         }
 
         return authenticatedBy;

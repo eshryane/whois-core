@@ -1,7 +1,7 @@
 package net.ripe.db.whois.common.ip;
 
 import net.ripe.db.whois.common.domain.CIString;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.rpsl.attributetype.AttributeType;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;

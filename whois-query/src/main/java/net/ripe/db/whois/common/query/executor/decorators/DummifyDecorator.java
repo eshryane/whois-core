@@ -3,13 +3,13 @@ package net.ripe.db.whois.common.query.executor.decorators;
 import net.ripe.db.whois.common.collect.IterableTransformer;
 import net.ripe.db.whois.common.domain.CIString;
 import net.ripe.db.whois.common.domain.ResponseObject;
-import net.ripe.db.whois.common.rpsl.AttributeType;
+import net.ripe.db.whois.common.query.query.Query;
 import net.ripe.db.whois.common.rpsl.Dummifier;
 import net.ripe.db.whois.common.rpsl.RpslAttribute;
 import net.ripe.db.whois.common.rpsl.RpslObject;
 import net.ripe.db.whois.common.rpsl.RpslObjectBuilder;
+import net.ripe.db.whois.common.rpsl.attributetype.impl.AttributeTypes;
 import net.ripe.db.whois.common.source.SourceContext;
-import net.ripe.db.whois.common.query.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -51,9 +51,9 @@ public class DummifyDecorator implements ResponseDecorator {
                 rpslObject = dummifier.dummify(DUMMIFIER_VERSION, rpslObject);
 
                 final CIString source = sourceContext.getCurrentSource().getName();
-                final RpslAttribute sourceAttribute = rpslObject.findAttribute(AttributeType.SOURCE);
+                final RpslAttribute sourceAttribute = rpslObject.findAttribute(AttributeTypes.SOURCE);
                 rpslObject = new RpslObjectBuilder(rpslObject)
-                        .replaceAttribute(sourceAttribute, new RpslAttribute(AttributeType.SOURCE, source))
+                        .replaceAttribute(sourceAttribute, new RpslAttribute(AttributeTypes.SOURCE, source))
                         .get();
                 result.add(rpslObject);
             }
